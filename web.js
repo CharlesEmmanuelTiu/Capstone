@@ -76,17 +76,7 @@ app.get('/', async (req, res) => {
     // }
 
     res.render('dashboard', {
-        // user:Current_User,
-        // stations:stations,
-        // public:isPublic,
-        // admin:isAdmin,
-        // manager:isManager,
-        // mssg:fm,
-        // flashType:flashType,
-        // id:user,
-        // helpers: {
-        //     checkLevel
-        // }
+
     })
 })
 
