@@ -1,0 +1,74 @@
+<style>
+    img {
+        width:100%;
+    }
+</style>
+
+<body>
+<div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+        {{#if mssg}}
+            <div class="alert alert-{{flashType}}" role="alert">
+                {{mssg}}
+            </div>
+        {{/if}}
+
+        <h1 class="display-1">User Profile</h1>
+        <p class="lead">Hello, user <strong>{{user.name}}</strong>!</p>
+
+        <div class="row g-4">
+            <div class="col-2">
+                <div class="card">
+                    {{#if user.image}}
+                        <img class="card-img-top" src="/assets/img/avatars/{{user.image}}">
+                    {{else}}
+                        <img class="card-img-top" src="/assets/img/avatars/default.png">
+                    {{/if}}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="/settings" class="list-group-item-action">Settings</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/logout" class="list-group-item-action">Log out</a>
+                        </li>
+                    </ul>
+                </div>
+                <!----
+                <div class="col-2">
+                    {{#if image}}
+                        <img class="rounded mx-auto d-block" src="/assets/img/avatars/{{image}}">
+                    {{else}}
+                        <img class="rounded mx-auto d-block" src="/assets/img/avatars/1.jpg">
+                    {{/if}}
+
+                    <div class="list-group">
+                        <a href="/settings" class="list-group-item list-group-item-action">Settings</a>
+                        <a href="/logout" class="list-group-item list-group-item-action">Log out</a>
+                    </div>
+                </div>
+                ---->
+            </div>
+            <div class="col-10">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Profile</strong>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Account Information</h5>
+                        <p class="card-text">
+                            <strong>User ID:</strong> #{{user.ID}}<br>
+                            <strong>Role:</strong> {{user.account_type}}
+                        </p>
+
+                        <h5 class="card-title">User Information</h5>
+                        <p class="card-text">
+                            <strong>Username:</strong> {{user.name}}<br>
+                            <strong>Phone:</strong> {{user.phone_number}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+</body>

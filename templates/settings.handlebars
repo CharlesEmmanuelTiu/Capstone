@@ -1,0 +1,78 @@
+<body>
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+        <h1 class="display-1">Account Management</h1>
+        <p class="lead">Change user settings and manage your account.</p>
+
+        <div class="row g-4">
+          <div class="col-2">
+              <div class="card">
+                <form action="/uploadFile" enctype="multipart/form-data" method="post">
+                    {{#if user.image}}
+                        <img class="card-img" src="/assets/img/avatars/{{user.image}}">
+                    {{else}}
+                        <img class="card-img" src="/assets/img/avatars/default.png">
+                    {{/if}}
+                    <div class="card-body">
+                      <input class="form-control form-control-sm" type="file" name="submission"><br>
+                      <input class="btn btn-primary" type="submit" value="Upload">
+                      <input type="hidden" name="token" value="{{csrfToken}}">
+                    </div>
+                </form>
+              </div>
+          </div>
+
+          <div class="col-10">
+            <div class="card">
+              <div class="card-header">
+                <strong>Account</strong>
+              </div>
+              <div class="card-body">
+                {{#if mssg}}
+                    <div class="alert alert-{{flashType}}" role="alert">
+                        {{mssg}}
+                    </div>
+                {{/if}}
+                <form action="/settings" method="post">
+                    <div class="row g-3" style="margin-bottom:30px">
+                      <h3>Change Username</h3>
+                      <div class="col-md-12">
+                        <input class="form-control" type="text" name="uname" placeholder="New Username" value={{user.name}} required>
+                      </div>
+                    </div>
+                    
+                    <div class="row g-3" style="margin-bottom:30px">
+                      <h3>Change Password</h3>
+                      <div class="col-md-6">
+                        <input class="form-control" type="password" name="n_psswd" placeholder="New Password">
+                      </div>
+                      <div class="col-md-6">
+                        <input class="form-control" type="password" name="c_psswd" placeholder="Confirm Password">
+                      </div>
+                    </div>
+
+                    <div class="row g-3" style="margin-bottom:30px">
+                      <h3>Change Phone Number</h3>
+                      <div class="col-md-3">
+                        <input class="form-control" type="text" name="phone" placeholder="New Phone Number" value="{{user.phone_number}}" required>
+                      </div>
+                    </div>
+
+                    <div class="row g-4" style="margin-top:15px"> 
+                      <div class="col-md-3">
+                        <input class="form-control" id="o_psswd" type="password" name="o_psswd" placeholder="Confirm current password" required>
+                      </div>
+                      <div class="col-md-3">
+                        <input type="hidden" name="token" value="{{csrfToken}}">
+                        <input class="btn btn-primary" type="submit" value="Save Changes">
+                      </div>
+                    </div>
+                    <div id="emailHelp" class="form-text">Enter your old password to save changes</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</body>

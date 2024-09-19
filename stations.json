@@ -1,0 +1,182 @@
+[
+    {
+        "stationNumber": 1000,
+        "stationName": "Al Khor Petrol Station",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.00,
+                "fuelThreshold": 1000,
+                "tankCapacity": 10000
+            },
+            "Super": {
+                "price": 3.50,
+                "fuelThreshold": 800,
+                "tankCapacity": 8000
+            }
+        },
+        "managerID": 60,
+        "location": "Al Khor"
+    },
+    {
+        "stationNumber": 1001,
+        "stationName": "Doha Fuel Stop",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.20,
+                "fuelThreshold": 1000,
+                "tankCapacity": 12000
+            },
+            "Super": {
+                "price": 3.70,
+                "fuelThreshold": 800,
+                "tankCapacity": 10000
+            }
+        },
+        "managerID": 61,
+        "location": "Doha"
+    },
+    {
+        "stationNumber": 1002,
+        "stationName": "Ras Laffan Gasoline",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.10,
+                "fuelThreshold": 900,
+                "tankCapacity": 11000
+            },
+            "Super": {
+                "price": 3.60,
+                "fuelThreshold": 750,
+                "tankCapacity": 9000
+            }
+        },
+        "managerID": 62,
+        "location": "Ras Laffan"
+    },
+    {
+        "stationNumber": 1003,
+        "stationName": "Mesaieed Fuel Mart",
+        "fuelGrades": {
+            "Premium": {
+                "price": 1.90,
+                "fuelThreshold": 950,
+                "tankCapacity": 10000
+            },
+            "Super": {
+                "price": 3.40,
+                "fuelThreshold": 800,
+                "tankCapacity": 9000
+            }
+        },
+        "managerID": 63,
+        "location": "Mesaieed"
+    },
+    {
+        "stationNumber": 1004,
+        "stationName": "West Bay Gas N Go",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.30,
+                "fuelThreshold": 900,
+                "tankCapacity": 10000
+            },
+            "Super": {
+                "price": 3.80,
+                "fuelThreshold": 750,
+                "tankCapacity": 9000
+            }
+        },
+        "managerID": 64,
+        "location": "West Bay"
+    },
+    {
+        "stationNumber": 1005,
+        "stationName": "Industrial Area Fuels",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.00,
+                "fuelThreshold": 1000,
+                "tankCapacity": 11000
+            },
+            "Super": {
+                "price": 3.50,
+                "fuelThreshold": 900,
+                "tankCapacity": 10000
+            }
+        },
+        "managerID": 65,
+        "location": "Industrial Area"
+    },
+    {
+        "stationNumber": 1006,
+        "stationName": "Lusail Fuel Depot",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.10,
+                "fuelThreshold": 950,
+                "tankCapacity": 11000
+            },
+            "Super": {
+                "price": 3.60,
+                "fuelThreshold": 800,
+                "tankCapacity": 10000
+            }
+        },
+        "managerID": 66,
+        "location": "Lusail"
+    },
+    {
+        "stationNumber": 1007,
+        "stationName": "The Pearl Gas & Go",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.20,
+                "fuelThreshold": 1000,
+                "tankCapacity": 12000
+            },
+            "Super": {
+                "price": 3.70,
+                "fuelThreshold": 800,
+                "tankCapacity": 10000
+            }
+        },
+        "managerID": 67,
+        "location": "The Pearl"
+    },
+    {
+        "stationNumber": 1008,
+        "stationName": "Wakra Fuel Plaza",
+        "fuelGrades": {
+            "Premium": {
+                "price": 2.00,
+                "fuelThreshold": 900,
+                "tankCapacity": 11000
+            },
+            "Super": {
+                "price": 3.50,
+                "fuelThreshold": 750,
+                "tankCapacity": 9000
+            }
+        },
+        "managerID": 68,
+        "location": "Wakra"
+    },
+    {
+        "stationNumber": 1009,
+        "stationName": "Sealine Gas Station",
+        "fuelGrades": {
+            "Premium": {
+                "price": 1.90,
+                "fuelThreshold": 950,
+                "tankCapacity": 10000
+            },
+            "Super": {
+                "price": 3.40,
+                "fuelThreshold": 800,
+                "tankCapacity": 9000
+            }
+        },
+        "managerID": 69,
+        "location": "Sealine"
+    }
+]

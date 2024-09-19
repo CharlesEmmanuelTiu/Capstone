@@ -1,0 +1,47 @@
+<body>
+    <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            {{#if mssg}}
+                <div class="alert alert-{{flashType}}" role="alert">
+            {{mssg}}
+            </div>
+            {{/if}}
+            {{#if admin}}
+            <div class="alert alert-warning" role="alert">
+                You are logged in as an <strong>admin</strong>. Remember to <a href="/logout" class="alert-link">log out</a>.
+            </div>
+            {{/if}}
+            {{#if manager}}
+            <div class="alert alert-warning" role="alert">
+                You are logged in as a <strong>manager</strong>. Remember to <a href="/logout" class="alert-link">log out</a>.
+            </div>
+            {{/if}}
+            
+
+            <h1 class="display-1">Petrol Stations</h1>
+            <p class="lead">All petrol stations across Qatar and their information can be found here.</p>
+
+            <div class="row g-4">
+                {{#each stations}}
+                <div class="col-4">
+                    <div class="card">
+                        <h5 class="card-header"><strong>{{this.stationName}}</strong></h5>
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.location}} fuel prices</h5>
+
+                            {{#each this.fuelGrades}}
+                            <p class="card-text">
+                                <strong>{{@key}}</strong> QAR {{this.price}}/litre
+                                {{#if (checkLevel this.fuelAmount this.fuelThreshold)}}
+                                    <span class="badge text-bg-warning">running low</span>
+                                {{/if}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</body>

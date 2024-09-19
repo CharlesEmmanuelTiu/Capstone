@@ -1,0 +1,52 @@
+<body>
+      <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            <h1 class="display-1">Enter Sales Gained</h1>
+            <p class="lead">Record the Sales recieved for both Premium and Super.</p>
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            Receive Sales for <strong>{{station.stationName}}</strong>
+                        </div>
+                        <div class="card-body">
+                            {{#if mssg}}
+                                <div class="alert alert-success" role="alert">
+                                    {{mssg}}
+                                </div>
+                            {{/if}}
+                            
+                            <form method='post' class="row g-3" action="/manager/sales">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="Date" class="form-control" id="floatingInputGrid" name="Selected_Date">
+                                        <label for="floatingInputGrid">Date</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="floatingInputGrid" name="Sales_Premium">
+                                        <label for="floatingInputGrid">Premium Sales</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="floatingInputGrid" name="Sales_Super">
+                                        <label for="floatingInputGrid">Super Sales</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <input type="hidden" name="token" value="{{csrfToken}}">
+                                    <input type="hidden" name="station_id" value="{{station.managerID}}">
+                                    <div class="d-grid gap-2">
+                                        <input class="btn btn-primary" type="submit" value="Record Sales">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</body>
