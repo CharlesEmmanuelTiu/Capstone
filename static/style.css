@@ -523,12 +523,12 @@ progress {
 
 .display-1 {
   font-size: calc(1.625rem + 4.5vw);
-  font-weight: 300;
+  font-weight: 500;
   line-height: 1.2;
 }
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .display-1 {
-    font-size: 5rem;
+    font-size: 3rem;
   }
 }
 
@@ -7885,6 +7885,7 @@ html:not([dir=rtl]) .callout {
   min-height: calc(var(--cui-subheader-min-height) - 2 * var(--cui-header-padding-y));
 }
 .header.header-sticky {
+  background-color: lightsteelblue;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
