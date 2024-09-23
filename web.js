@@ -27,18 +27,18 @@ app.use('/images', express.static(__dirname+"/static/images"))
 //     return false
 // }
 
-// async function authenticateUser(key) {
-//     if (!key) {
-//         return false
-//     }
+async function authenticateUser(key) {
+    if (!key) {
+        return false
+    }
 
-//     let sd = await business.getSession(key)
-//     if (!sd) {
-//         return false
-//     }
+    let sd = await business.getSession(key)
+    if (!sd) {
+        return false
+    }
 
-//     return sd
-// }
+    return false
+}
 
 app.get('/', async (req, res) => {
     let key = req.cookies.session
@@ -98,99 +98,100 @@ app.post('/login', async (req, res) => {
     let result = await business.validateCredentials(username, password)
     
     if (!result) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
+        // let flashKey = await business.saveSession({username:""})
+        // res.cookie('flash', flashKey)
         await flash.setFlash(flashKey, 'Invalid Credentials')
         res.redirect('/login')
         return
     }
     
-    let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
-    res.cookie('session', key)
+    // let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
+    // res.cookie('session', key)
     
-    if (result["account_type"] === "manager") {
-        res.redirect('/manager-dashboard')
-    }
-    else if (result["account_type"] === "admin") {
-        res.redirect('/admin-dashboard')
-    }
-    else {
-        res.status(404).render('404_page', {})
-    }
+    // if (result["account_type"] === "manager") {
+    //     res.redirect('/manager-dashboard')
+    // }
+    // else if (result["account_type"] === "admin") {
+    //     res.redirect('/admin-dashboard')
+    // }
+    // else {
+    //     res.status(404).render('404_page', {})
+    // }
+    res.redirect('/dashboard')
 })
 
-// app.get('/logout', async (req, res) => {
-//     let key = req.cookies.session 
-//     let flashSession = req.cookies.flash
-//     if (key) {
-//         await business.deleteSession(key)
-//         res.clearCookie('session')
-//     }
+app.get('/logout', async (req, res) => {
+    // let key = req.cookies.session 
+    // let flashSession = req.cookies.flash
+    // if (key) {
+    //     await business.deleteSession(key)
+    //     res.clearCookie('session')
+    // }
 
-//     if (flashSession) {
-//         await business.deleteSession(flashSession)
-//         res.clearCookie('flash')
-//     }
+    // if (flashSession) {
+    //     await business.deleteSession(flashSession)
+    //     res.clearCookie('flash')
+    // }
 
-//     res.redirect('/')
-// })
+    res.redirect('/')
+})
 
-// app.get('/manager-dashboard', async (req, res) => {
-//     let key = req.cookies.session
-//     let valid = await authenticateUser(key)
+app.get('/dashboard', async (req, res) => {
+    // let key = req.cookies.session
+    // let valid = await authenticateUser(key)
 
-//     let flashSession = req.cookies.flash
-//     let flashValid = await authenticateUser(flashSession)
-//     let fm = undefined
-//     let flashType = undefined
+    // let flashSession = req.cookies.flash
+    // let flashValid = await authenticateUser(flashSession)
+    // let fm = undefined
+    // let flashType = undefined
 
-//     if (!valid) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Login required')
-//         res.redirect('/login')
-//         return
-//     }
+    // if (!valid) {
+    //     let flashKey = await business.saveSession({username:""})
+    //     res.cookie('flash', flashKey)
+    //     await flash.setFlash(flashKey, 'Login required')
+    //     res.redirect('/login')
+    //     return
+    // }
 
-//     let user = await business.getUser(valid.data.user)
+    // let user = await business.getUser(valid.data.user)
 
-//     if (user["account_type"] !== "manager") {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Unauthorized access!')
-//         res.redirect('/')
-//         return
-//     }
+    // if (user["account_type"] !== "manager") {
+    //     let flashKey = await business.saveSession({username:""})
+    //     res.cookie('flash', flashKey)
+    //     await flash.setFlash(flashKey, 'Unauthorized access!')
+    //     res.redirect('/')
+    //     return
+    // }
 
-//     if (flashValid) {
-//         fm = await flash.getFlash(flashSession)
-//         flashType = flashValid.flashType
-//     }
+    // if (flashValid) {
+    //     fm = await flash.getFlash(flashSession)
+    //     flashType = flashValid.flashType
+    // }
     
-//     let stations = await business.getStationFromID(Number(valid.data.id))
-//     let record = undefined
-//     let newDate = undefined
-//     if (stations) {
-//         // record = await business.getPetrolRecordsfromNumber(Number(stations.stationNumber))
-//         raw_record = await business.getLatestRecord(Number(stations.stationNumber))
-//         if(raw_record[0]){
-//             sub_record = raw_record.sort((a,b) => Date.parse(b) - Date.parse(a))
-//             record = sub_record[sub_record.length-1]
-//             let newt = String(record.Date)
-//             newDate = newt.slice(0, 25)
-//         }
-//     }
-//     res.render('managers', {
-//         user:user,
-//         manager: true,
-//         stations:stations,
-//         id:user.ID,
-//         record:record,
-//         date: newDate,
-//         mssg: fm,
-//         flashType:flashType
-//     })
-// })
+    // let stations = await business.getStationFromID(Number(valid.data.id))
+    // let record = undefined
+    // let newDate = undefined
+    // if (stations) {
+    //     // record = await business.getPetrolRecordsfromNumber(Number(stations.stationNumber))
+    //     raw_record = await business.getLatestRecord(Number(stations.stationNumber))
+    //     if(raw_record[0]){
+    //         sub_record = raw_record.sort((a,b) => Date.parse(b) - Date.parse(a))
+    //         record = sub_record[sub_record.length-1]
+    //         let newt = String(record.Date)
+    //         newDate = newt.slice(0, 25)
+    //     }
+    // }
+    res.render('dashboard', {
+        // user:user,
+        // manager: true,
+        // stations:stations,
+        // id:user.ID,
+        // record:record,
+        // date: newDate,
+        // mssg: fm,
+        // flashType:flashType
+    })
+})
 
 // app.get('/admin-dashboard', async (req, res) => {
 //     let key = req.cookies.session
@@ -596,49 +597,49 @@ app.post('/login', async (req, res) => {
 
 app.get('/add-account', async (req, res) => {
     res.render('create_account', {
-
+        layout:'../create_account'
     })
 })
 
-app.post('/admin/add-account', async(req, res)=>{
-    let key = req.cookies.session
-    let valid = await authenticateUser(key)
+app.post('/add-account', async(req, res)=>{
+    // let key = req.cookies.session
+    // let valid = await authenticateUser(key)
 
-    if (!valid) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Login required')
-        res.redirect('/login')
-        return
-    }
+    // if (!valid) {
+    //     let flashKey = await business.saveSession({username:""})
+    //     res.cookie('flash', flashKey)
+    //     await flash.setFlash(flashKey, 'Login required')
+    //     res.redirect('/login')
+    //     return
+    // }
 
-    let user = await business.getUser(valid.data.user)
+    // let user = await business.getUser(valid.data.user)
 
-    if (user["account_type"] !== "admin") {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Unauthorized access!')
-        res.redirect('/')
-        return
-    }
-    let CSRF = req.body.token
-    if (valid.csrfToken != CSRF){
-        res.status(419)
-        res.send("CSRF token is not matched")
-        return
-    }
+    // if (user["account_type"] !== "admin") {
+    //     let flashKey = await business.saveSession({username:""})
+    //     res.cookie('flash', flashKey)
+    //     await flash.setFlash(flashKey, 'Unauthorized access!')
+    //     res.redirect('/')
+    //     return
+    // }
+    // let CSRF = req.body.token
+    // if (valid.csrfToken != CSRF){
+    //     res.status(419)
+    //     res.send("CSRF token is not matched")
+    //     return
+    // }
     let new_name = req.body.name
     let new_password = req.body.password
     let new_phone_number = String(req.body.phone_number)
-    let new_account_type = req.body.account_type
+    let new_email = String(req.body.email)
     let new_ID = await business.generateID()
-    let new_account = {name: new_name, password: new_password, phone_number: new_phone_number, ID: Number(new_ID), account_type: new_account_type, image: ""}
+    let new_account = {name: new_name, password: new_password, phone_number: new_phone_number, ID: Number(new_ID), email: new_email, image: ""}
     
     await business.addAccount(new_account)
     
-    let flashKey = await business.saveSession({username:""})
-    res.cookie('flash', flashKey)
-    await flash.setFlash(flashKey, 'New Account Added', "success")
+    // let flashKey = await business.saveSession({username:""})
+    // res.cookie('flash', flashKey)
+    // await flash.setFlash(flashKey, 'New Account Added', "success")
     res.redirect('/')
 })
 
