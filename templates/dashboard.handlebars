@@ -100,11 +100,41 @@
                                     gauge.draw();
                                 });
                             </script>
+
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <!-- Power Usage Graph -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Power Usage Monitoring</strong></h5>
+                        <div class="card-body">
+                            <div id="powerUsageGraph" style="width: 100%; height: 300px;">
+                                <canvas id="powerUsageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-md-4">
+                    <!-- Power Usage Status Overview -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Power Usage Overview</strong></h5>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Power Usage:</strong> <span class="badge bg-info">{{currentPowerUsage}} kW</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Power Capacity:</strong> <span class="badge bg-warning">{{powerCapacity}} kW</span></p>
+                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Fuel Stations Info -->
             <div class="row g-4">
                 {{#each stations}}
@@ -152,6 +182,29 @@
                     y: {
                         beginAtZero: true,
                         suggestedMax: 40
+                    }
+                }
+            }
+        });
+        var ctxPower = document.getElementById('powerUsageChart').getContext('2d');
+        var powerUsageChart = new Chart(ctxPower, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:00'],
+                datasets: [{
+                    label: 'Power Usage (kW)',
+                    data: [150, 200, 180, 220, 250, 230, 240, 225, 210],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 500
                     }
                 }
             }

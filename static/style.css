@@ -8126,6 +8126,10 @@ html:not([dir=rtl]) .header-nav {
   box-shadow: none;
   transition: margin-left 0.15s, margin-right 0.15s, box-shadow 0.075s, transform 0.15s, width 0.15s, z-index 0s ease 0.15s;
 }
+/* .sidebar.active {
+  display: block;
+} */
+
 html:not([dir=rtl]) .sidebar {
   border-right: var(--cui-sidebar-border-width) solid var(--cui-sidebar-border-color);
 }
