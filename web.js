@@ -617,34 +617,11 @@ app.get('/', async (req, res) => {
 //     })
 // })
 
-// app.get('/admin/add-account', async (req, res) => {
-//     let key = req.cookies.session
-//     let valid = await authenticateUser(key) 
+app.get('/add-account', async (req, res) => {
+    res.render('create_account', {
 
-//     if (!valid) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Login required')
-//         res.redirect('/login')
-//         return
-//     }
-
-//     let user = await business.getUser(valid.data.user)
-
-//     if (user["account_type"] !== "admin") {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Unauthorized access!')
-//         res.redirect('/')
-//         return
-//     }
-//     let CSRF = await business.generateToken(key)
-//     res.render('create_account', {
-//         user:user,
-//         admin:true,
-//         csrfToken:CSRF
-//     })
-// })
+    })
+})
 
 // app.post('/admin/add-account', async(req, res)=>{
 //     let key = req.cookies.session
