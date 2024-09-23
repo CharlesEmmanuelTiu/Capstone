@@ -26,21 +26,22 @@
                                 <label for="floatingInputGrid">Phone Number</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row g-3" style="margin-bottom:30px">
-                        <h3>Account Type</h3>
-                        <div class="col-md-6">
-                            <input type="radio" name="account_type" value="admin" required> Admin &nbsp;
-                            <input type="radio" name="account_type" value="manager" required> Manager
+                        <div class="col-md-4">
                         </div>
-                    </div>
-
-                    <div class="row g-3" style="margin-top:15px">
-                        <input type="hidden" name="token" value="{{csrfToken}}">
-                        <div class="col-md-3">
-                            <a href="/admin/manage-accounts" class="btn btn-light">Go Back</a>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingInputGrid" name="email" required>
+                                <label for="floatingInputGrid">Email</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                            <a href="/" class="btn btn-light">Go Back</a>
                             <input type="submit" class="btn btn-primary" tabindex="-1" role="button">
+                            </div>
+                        </div>
                         </div>
                     </div>
                  </form>

@@ -3,20 +3,14 @@ const crypto = require('crypto')
 
 let client
 let db
-let accounts
-let stations
-let sessions
-let records
+let users
 
 async function connectDatabase() {
     if (!client) {
-        client = new mongodb.MongoClient('mongodb+srv://charlestiu:security_breach_28@cluster0.6knro65.mongodb.net/')
+        client = new mongodb.MongoClient('mongodb+srv://charlestiu:DirtInYourEye_28@cluster0.n2c2j.mongodb.net/')
         await client.connect()
-        db = client.db('Project')
-        accounts = db.collection('Accounts')
-        stations = db.collection('Petrol_Stations')
-        sessions = db.collection('Sessions')
-        records = db.collection('Petrol_Records')
+        db = client.db('Capstone')
+        users = db.collection('Users')
     }
 }
 
