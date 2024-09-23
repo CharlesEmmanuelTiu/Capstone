@@ -75,7 +75,7 @@ app.get('/', async (req, res) => {
     //     flashType = flashValid.flashType
     // }
 
-    res.render('dashboard', {
+    res.render('login', {
 
     })
 })
