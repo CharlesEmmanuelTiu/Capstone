@@ -37,7 +37,7 @@ async function authenticateUser(key) {
         return false
     }
 
-    return false
+    return true
 }
 
 app.get('/', async (req, res) => {
@@ -56,10 +56,11 @@ app.get('/', async (req, res) => {
         res.redirect('/login')
         return
     }
+    else{
+        res.render('dashboard', {
 
-    res.render('dashboard', {
-
-    })
+        })
+    }
 })
 
 
@@ -105,33 +106,23 @@ app.post('/login', async (req, res) => {
         return
     }
     
-    // let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
-    // res.cookie('session', key)
-    
-    // if (result["account_type"] === "manager") {
-    //     res.redirect('/manager-dashboard')
-    // }
-    // else if (result["account_type"] === "admin") {
-    //     res.redirect('/admin-dashboard')
-    // }
-    // else {
-    //     res.status(404).render('404_page', {})
-    // }
-    res.redirect('/dashboard')
+    let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
+    res.cookie('session', key)
+    res.redirect('/')
 })
 
 app.get('/logout', async (req, res) => {
-    // let key = req.cookies.session 
-    // let flashSession = req.cookies.flash
-    // if (key) {
-    //     await business.deleteSession(key)
-    //     res.clearCookie('session')
-    // }
+    let key = req.cookies.session 
+    let flashSession = req.cookies.flash
+    if (key) {
+        await business.deleteSession(key)
+        res.clearCookie('session')
+    }
 
-    // if (flashSession) {
-    //     await business.deleteSession(flashSession)
-    //     res.clearCookie('flash')
-    // }
+    if (flashSession) {
+        await business.deleteSession(flashSession)
+        res.clearCookie('flash')
+    }
 
     res.redirect('/')
 })
@@ -595,13 +586,24 @@ app.get('/dashboard', async (req, res) => {
 //     })
 // })
 
-app.get('/add-account', async (req, res) => {
+app.get('/admin/add-account', async (req, res) => {
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let user = await business.getUser(valid.data.user)
+
+    if (user["account_type"] !== "admin") {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Unauthorized access!')
+        res.redirect('/')
+        return
+    }
     res.render('create_account', {
         layout:'../create_account'
     })
 })
 
-app.post('/add-account', async(req, res)=>{
+app.post('/admin/add-account', async(req, res)=>{
     // let key = req.cookies.session
     // let valid = await authenticateUser(key)
 
