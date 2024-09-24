@@ -64,10 +64,12 @@
             <svg class="nav-icon">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-truck"></use>
             </svg>  Settings</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/add-account">
+        {{#if user}}
+        <li class="nav-item"><a class="nav-link" href="/add-account">
             <svg class="nav-icon">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-truck"></use>
             </svg>Add User</a></li>
+        {{/if}}
         {{!-- {{/if}} --}}
 
         {{!-- {{#if admin}}

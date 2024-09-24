@@ -37,7 +37,7 @@ async function authenticateUser(key) {
         return false
     }
 
-    return true
+    return sd
 }
 
 app.get('/', async (req, res) => {
@@ -57,10 +57,18 @@ app.get('/', async (req, res) => {
         return
     }
     else{
-        // let user = await business.getUser(valid.data.user)
-        // console.log(user)
-        res.render('dashboard', {
-        })
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            res.render('dashboard', {
+            user:user
+            })
+        }
+        else{
+            res.render('dashboard', {
+            })
+        }
+
+        
     }
 })
 
@@ -106,7 +114,6 @@ app.post('/login', async (req, res) => {
         res.redirect('/login')
         return
     }
-    
     let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
     res.cookie('session', key)
     res.redirect('/')
@@ -587,7 +594,7 @@ app.get('/dashboard', async (req, res) => {
 //     })
 // })
 
-app.get('/admin/add-account', async (req, res) => {
+app.get('/add-account', async (req, res) => {
     let key = req.cookies.session
     let valid = await authenticateUser(key)
     let user = await business.getUser(valid.data.user)
