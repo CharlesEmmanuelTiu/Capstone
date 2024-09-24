@@ -57,8 +57,9 @@ app.get('/', async (req, res) => {
         return
     }
     else{
+        // let user = await business.getUser(valid.data.user)
+        // console.log(user)
         res.render('dashboard', {
-
         })
     }
 })
