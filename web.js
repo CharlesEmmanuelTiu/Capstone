@@ -1446,3 +1446,7 @@ app.use((req, res)=>{
 app.listen("8000", () => {
     console.log("Application running on http://127.0.0.1:8000")
 })
+
+app.route("5000", () => {
+    console.log("Deep Learning")
+})
