@@ -39,34 +39,34 @@
     <link href="/style.css" rel="stylesheet">
   </head>
   <body>
-    {{!-- {{#unless public}}
+    {{#unless public}}
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">
         <svg class="sidebar-brand-full" width="118" height="46" alt="CoreUI Logo">
            
         </svg>
         <svg class="sidebar-brand-narrow" width="46" height="46" alt="CoreUI Logo">
-           
+
         </svg>
       </div>
       <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
-        {{#if manager}}
-        <li class="nav-title">Data Entry</li>
+        {{!-- {{#if manager}} --}}
+        <li class="nav-title">ThermoGuard</li>
         <li class="nav-item"><a class="nav-link" href="/manager/sales">
             <svg class="nav-icon">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-dollar"></use>
-            </svg> Sales</a></li>
+            </svg> About</a></li>
         <li class="nav-item"><a class="nav-link" href="/manager/fuel-levels">
             <svg class="nav-icon">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-drop"></use>
-            </svg> Fuel Levels</a></li>
+            </svg> Account</a></li>
         <li class="nav-item"><a class="nav-link" href="/manager/fuel-delivery">
             <svg class="nav-icon">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-truck"></use>
-            </svg> Fuel Delivery</a></li>
-        {{/if}}
+            </svg>  Settings</a></li>
+        {{!-- {{/if}} --}}
 
-        {{#if admin}}
+        {{!-- {{#if admin}}
         <li class="nav-title">Manage</li>
         <li class="nav-item"><a class="nav-link" href="/admin/manage-accounts">
             <svg class="nav-icon">
@@ -76,19 +76,20 @@
             <svg class="nav-icon">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-chart-line"></use>
             </svg>Petrol Station</a></li>
-        {{/if}}
+        {{/if}} --}}
       </ul> 
     </div>
-    {{/unless}} --}}
+    {{/unless}}
 
     <div class="wrapper d-flex flex-column min-vh-100 bg-light">
       <header class="header header-sticky mb-4">
         <div class="container-fluid">
           {{#unless public}}
-          {{!-- <button class="header-toggler px-md-0 me-md-3" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+          <button class="header-toggler px-md-0 me-md-3" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+          {{!-- <button class="header-toggler px-md-0 me-md-3" type="button" id="sidebarToggle"></button>   --}}
             <svg class="icon icon-lg">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-menu"></use>
-            </svg> --}}
+            </svg>
           </button><a class="header-brand d-md-none" href="#">
             <svg width="118" height="46" alt="CoreUI Logo">
               <use xlink:href="/assets/brand/coreui.svg#full"></use>
@@ -186,6 +187,19 @@
     <script src="/vendors/@coreui/utils/js/coreui-utils.js"></script>
     {{!-- <script src="/js/main.js"></script> --}}
     <script>
+    </script>
+    {{!-- <script>
+      // JavaScript to handle the sidebar toggle
+      document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+      });
+    </script> --}}
+    <script>
+      // JavaScript to toggle sidebar
+      document.getElementById('sidebarToggle').addEventListener('click', function() {
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+      });
     </script>
   </body>
 </html>
