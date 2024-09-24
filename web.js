@@ -607,7 +607,7 @@ app.get('/add-account', async (req, res) => {
         return
     }
     res.render('create_account', {
-        layout:'../create_account'
+        user:user
     })
 })
 
@@ -1247,126 +1247,126 @@ app.post('/admin/add-account', async(req, res)=>{
 //     })
 // })
 
-// app.get('/settings', async (req, res) => {
-//     let key = req.cookies.session
-//     let valid = await authenticateUser(key)
+app.get('/settings', async (req, res) => {
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
 
-//     let flashSession = req.cookies.flash
-//     let flashValid = await authenticateUser(flashSession)
-//     let fm = undefined
-//     let flashType = undefined
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
 
-//     let isAdmin = false
-//     let isManager = false
+    let isAdmin = false
+    let isManager = false
 
-//     if (!valid) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Login required')
-//         res.redirect('/login')
-//         return
-//     }
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
     
-//     let user = await business.getUser(valid.data.user)
+    let user = await business.getUser(valid.data.user)
 
-//     if (user['account_type'] === "manager") {
-//         isManager = true
-//     }
-//     else if (user['account_type'] === "admin") {
-//         isAdmin = true
-//     }
+    if (user['account_type'] === "manager") {
+        isManager = true
+    }
+    else if (user['account_type'] === "admin") {
+        isAdmin = true
+    }
 
-//     if (flashValid) {
-//         fm = await flash.getFlash(flashSession)
-//         flashType = flashValid.flashType
-//     }
+    if (flashValid) {
+        fm = await flash.getFlash(flashSession)
+        flashType = flashValid.flashType
+    }
 
-//     let token = await business.generateToken(key)
-//     res.render('settings', {
-//         user:user,
-//         manager:isManager,
-//         admin:isAdmin,
-//         mssg:fm,
-//         flashType:flashType,
-//         csrfToken:token
-//     })
-// })
+    let token = await business.generateToken(key)
+    res.render('settings', {
+        user:user,
+        manager:isManager,
+        admin:isAdmin,
+        mssg:fm,
+        flashType:flashType,
+        csrfToken:token
+    })
+})
 
-// app.post('/settings', async (req, res) => {
-//     let key = req.cookies.session
-//     let valid = await authenticateUser(key)
+app.post('/settings', async (req, res) => {
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
 
-//     if (!valid) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Login required')
-//         res.redirect('/login')
-//         return
-//     }
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
     
-//     let token = req.body.token
-//     if (valid.csrfToken != token) {
-//         res.status(419)
-//         res.send("CSRF token mismatch")
-//         return
-//     }
+    let token = req.body.token
+    if (valid.csrfToken != token) {
+        res.status(419)
+        res.send("CSRF token mismatch")
+        return
+    }
 
-//     let user = await business.getUser(valid.data.user)
-//     let username = req.body.uname
-//     let oldPass = req.body['o_psswd']
-//     let newPass = req.body['n_psswd']
-//     let conPass = req.body['c_psswd']
-//     let phone = req.body.phone
+    let user = await business.getUser(valid.data.user)
+    let username = req.body.uname
+    let oldPass = req.body['o_psswd']
+    let newPass = req.body['n_psswd']
+    let conPass = req.body['c_psswd']
+    let phone = req.body.phone
 
-//     let match = await business.validateCredentials(user.name, oldPass)
-//     if (!match) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, "Current password does not match the database.", "danger")
-//         res.redirect("/settings")
-//         return
-//     }
+    let match = await business.validateCredentials(user.name, oldPass)
+    if (!match) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, "Current password does not match the database.", "danger")
+        res.redirect("/settings")
+        return
+    }
 
-//     if (newPass !== conPass) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, "Passwords do not match!", "danger")
-//         res.redirect("/settings")
-//         return    
-//     }
+    if (newPass !== conPass) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, "Passwords do not match!", "danger")
+        res.redirect("/settings")
+        return    
+    }
 
-//     let p = undefined
-//     if (newPass) {
-//         let hash = crypto.createHash('sha512')
-//         hash.update(newPass)
-//         p = hash.digest('hex')
-//     }
+    let p = undefined
+    if (newPass) {
+        let hash = crypto.createHash('sha512')
+        hash.update(newPass)
+        p = hash.digest('hex')
+    }
 
-//     let update = {
-//         name:username || user.name,
-//         password:p || user.password,
-//         phone_number:phone || user['phone_number']
-//     }
+    let update = {
+        name:username || user.name,
+        password:p || user.password,
+        phone_number:phone || user['phone_number']
+    }
     
-//     let result = await business.updateUser(user, valid, update)
-//     if (result) {
-//         await business.cancelToken(key)
-//         await business.deleteSession(key)
-//         res.clearCookie('session')
+    let result = await business.updateUser(user, valid, update)
+    if (result) {
+        await business.cancelToken(key)
+        await business.deleteSession(key)
+        res.clearCookie('session')
 
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, "Password changed. Login again", "info")
-//         res.redirect('/login')
-//         return
-//     }
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, "Password changed. Login again", "info")
+        res.redirect('/login')
+        return
+    }
 
-//     await business.cancelToken(key)
-//     let flashKey = await business.saveSession({username:""})
-//     res.cookie('flash', flashKey)
-//     await flash.setFlash(flashKey, "Profile Updated", "success")
-//     res.redirect('/profile')
-// })
+    await business.cancelToken(key)
+    let flashKey = await business.saveSession({username:""})
+    res.cookie('flash', flashKey)
+    await flash.setFlash(flashKey, "Profile Updated", "success")
+    res.redirect('/profile')
+})
 
 // app.use(fileUpload())
 // app.post('/uploadFile', async(req, res)=>{
