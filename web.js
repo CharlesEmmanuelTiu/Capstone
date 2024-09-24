@@ -633,7 +633,7 @@ app.post('/add-account', async(req, res)=>{
     let new_phone_number = String(req.body.phone_number)
     let new_email = String(req.body.email)
     let new_ID = await business.generateID()
-    let new_account = {name: new_name, password: new_password, phone_number: new_phone_number, ID: Number(new_ID), email: new_email, image: ""}
+    let new_account = {name: new_name, password: new_password, phone_number: new_phone_number, ID: Number(new_ID), email: new_email, account_type: "user", image: ""}
     
     await business.addAccount(new_account)
     
