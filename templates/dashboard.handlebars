@@ -88,31 +88,64 @@
                                         return gauge;
                                     }
 
-                                    // Create a gauge
-                                    var gauge = drawLinearGauge(70);  // Initial value
-
-                                    // Configure the thermometer settings
+                                    var gauge = drawLinearGauge(70);
                                     var thermometer = gauge.thermometer(0);
                                     thermometer.name('Thermometer').fill('#64b5f6').stroke('#64b5f6');
-
-                                    // Set the container for the thermometer and render it
                                     gauge.container('thermometerContainer');
                                     gauge.draw();
 
-                                    // Function to update the thermometer with a new value
+                                    var gauge2 = drawLinearGauge(70);
+                                    var humidity = gauge2.thermometer(0);
+                                    humidity.name('Humidity').fill('#64b5f6').stroke('#64b5f6');
+                                    gauge2.container('humidityContainer');
+                                    gauge2.draw();
+
                                     function updateTemperature() {
-                                        // Generate a random temperature between 70 and 75 degrees
                                         var newTemperature = Math.random() * (75 - 70) + 70;
+                                        var newHumidity = Math.random() * (75 - 70) + 70;
 
-                                        // Update the gauge data with the new temperature
                                         gauge.data([newTemperature]);
+                                        gauge2.data([newHumidity]);
                                     }
-
-                                    // Set an interval to update the temperature every 5 seconds (5000 milliseconds)
-                                    setInterval(updateTemperature, 5000);
+                                    setInterval(updateTemperature, 3000);
                                 });
                             </script>
 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <!-- Humidity Graph -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Humidity Monitoring</strong></h5>
+                        <div class="card-body">
+                            <div id="humGraph" style="width: 100%; height: 300px;">
+                                <!-- Insert your humidity graph here using a charting library like Chart.js -->
+                                <canvas id="humidityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- System Status Overview -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>System Status</strong></h5>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Temp:</strong> <span class="badge bg-info">{{currentTemp}}°C</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Alert Level:</strong> <span class="badge bg-warning">Moderate</span></p>
+                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
+                            </div>
+
+                            <!-- Container for Thermometer Gauge -->
+                            <div id="humidityContainer" style="width: 100%; height: 220px;"></div>
                         </div>
                     </div>
                 </div>
