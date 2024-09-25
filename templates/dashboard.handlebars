@@ -76,7 +76,7 @@
 
                                         // Set scale settings
                                         var scale = gauge.scale();
-                                        scale.minimum(-25).maximum(50).ticks({ interval: 5 });
+                                        scale.minimum(65).maximum(80).ticks({ interval: 1 });
 
                                         // Set axis and axis settings
                                         var axis = gauge.axis();
@@ -88,16 +88,28 @@
                                         return gauge;
                                     }
 
-                                    // Create a gauge and set value
-                                    var gauge = drawLinearGauge(25); // You can dynamically set the value here
+                                    // Create a gauge
+                                    var gauge = drawLinearGauge(70);  // Initial value
 
                                     // Configure the thermometer settings
                                     var thermometer = gauge.thermometer(0);
                                     thermometer.name('Thermometer').fill('#64b5f6').stroke('#64b5f6');
 
                                     // Set the container for the thermometer and render it
-                                    gauge.container('thermometerContainer'); // Correct container ID
+                                    gauge.container('thermometerContainer');
                                     gauge.draw();
+
+                                    // Function to update the thermometer with a new value
+                                    function updateTemperature() {
+                                        // Generate a random temperature between 70 and 75 degrees
+                                        var newTemperature = Math.random() * (75 - 70) + 70;
+
+                                        // Update the gauge data with the new temperature
+                                        gauge.data([newTemperature]);
+                                    }
+
+                                    // Set an interval to update the temperature every 5 seconds (5000 milliseconds)
+                                    setInterval(updateTemperature, 5000);
                                 });
                             </script>
 
