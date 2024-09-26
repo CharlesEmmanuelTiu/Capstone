@@ -1394,35 +1394,35 @@ app.post('/settings', async (req, res) => {
     res.redirect('/profile')
 })
 
-// app.use(fileUpload())
-// app.post('/uploadFile', async(req, res)=>{
-//     let key = req.cookies.session
-//     let valid = await authenticateUser(key)
+app.use(fileUpload())
+app.post('/uploadFile', async(req, res)=>{
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
 
-//     if (!valid) {
-//         let flashKey = await business.saveSession({username:""})
-//         res.cookie('flash', flashKey)
-//         await flash.setFlash(flashKey, 'Login required')
-//         res.redirect('/login')
-//         return
-//     }
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
     
-//     let token = req.body.token
-//     if (valid.csrfToken != token) {
-//         res.status(419)
-//         res.send("CSRF token mismatch")
-//         return
-//     }
-//     let userdetails = await business.getUser(valid.data.user)
-//     let theFile = req.files.submission
-//     let fname = String(theFile.name)
-//     await theFile.mv(`${__dirname}/uploads/`)
-//     await business.updateProfilePic(fname, userdetails.ID)
-//     let flashKey = await business.saveSession({username:""})
-//     res.cookie('flash', flashKey)
-//     await flash.setFlash(flashKey, 'Profile photo updated', "success")
-//     res.redirect('/profile')
-// })
+    let token = req.body.token
+    if (valid.csrfToken != token) {
+        res.status(419)
+        res.send("CSRF token mismatch")
+        return
+    }
+    let userdetails = await business.getUser(valid.data.user)
+    let theFile = req.files.submission
+    let fname = String(theFile.name)
+    await theFile.mv(`${__dirname}/uploads/`)
+    await business.updateProfilePic(fname, userdetails.ID)
+    let flashKey = await business.saveSession({username:""})
+    res.cookie('flash', flashKey)
+    await flash.setFlash(flashKey, 'Profile photo updated', "success")
+    res.redirect('/profile')
+})
 
 app.use((req, res)=>{
     res.status(404)

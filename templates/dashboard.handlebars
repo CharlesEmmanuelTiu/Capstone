@@ -93,7 +93,7 @@
                                     humidity.name('Humidity').fill('#F59705').stroke('#F59705');
                                     gauge2.container('humidityContainer');
                                     gauge2.draw();
-
+                                    
                                     function updateTemperature() {
                                         var newTemperature = Math.random() * (73 - 70) + 70;
                                         var newHumidity = Math.random() * (73 - 70) + 70;
@@ -101,7 +101,7 @@
                                         gauge.data([newTemperature]);
                                         gauge2.data([newHumidity]);
                                     }
-                                    setInterval(updateTemperature, 3000);
+                                    setInterval(updateTemperature, 2000);
                                 });
                             </script>
 
