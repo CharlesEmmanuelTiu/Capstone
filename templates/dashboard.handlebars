@@ -1,4 +1,294 @@
+<head>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-linear-gauge.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-table.min.js"></script>
+    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+</head>
+
 <body>
+    <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            <!-- Alerts and role-based messages -->
+            {{#if mssg}}
+            <div class="alert alert-{{flashType}}" role="alert">
+                {{mssg}}
+            </div>
+            {{/if}}
+
+            {{#if admin}}
+            <div class="alert alert-warning" role="alert">
+                You are logged in as an <strong>admin</strong>. Remember to <a href="/logout" class="alert-link">log out</a>.
+            </div>
+            {{/if}}
+
+            {{#if manager}}
+            <div class="alert alert-warning" role="alert">
+                You are logged in as a <strong>manager</strong>. Remember to <a href="/logout" class="alert-link">log out</a>.
+            </div>
+            {{/if}}
+
+            <h1 class="display-1">ThermoGuard Dashboard</h1>
+
+            <!-- System Overview Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <!-- Temperature Graph -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Temperature Monitoring</strong></h5>
+                        <div class="card-body">
+                            <div id="tempGraph" style="width: 100%; height: 300px;">
+                                <!-- Insert your temperature graph here using a charting library like Chart.js -->
+                                <canvas id="temperatureChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- System Status Overview -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>System Status</strong></h5>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Temp:</strong> <span class="badge bg-info">{{currentTemp}}°C</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Alert Level:</strong> <span class="badge bg-warning">Moderate</span></p>
+                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
+                            </div>
+
+                            <!-- Container for Thermometer Gauge -->
+                            <div id="thermometerContainer" style="height: 195px;"></div>
+
+                            <script>
+                                anychart.onDocumentReady(function () {
+                                    // Create and return a simple linear gauge
+                                    function drawLinearGauge(value) {
+                                        var gauge = anychart.gauges.linear();
+                                        gauge.data([value]).padding(10, 0, 30, 0);
+                                        gauge.tooltip().useHtml(true).format(function () {
+                                            return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
+                                        });
+
+                                        // Set scale settings
+                                        var scale = gauge.scale();
+                                        scale.minimum(65).maximum(80).ticks({ interval: 1 });
+
+                                        // Set axis and axis settings
+                                        var axis = gauge.axis();
+                                        axis.scale(scale).width('0.5%').offset('-1%');
+
+                                        // Set text formatter for axis labels
+                                        axis.labels().useHtml(true).format('{%Value}°C');
+
+                                        return gauge;
+                                    }
+
+                                    var gauge = drawLinearGauge(70);
+                                    var thermometer = gauge.thermometer(0);
+                                    thermometer.name('Thermometer').fill('#64b5f6').stroke('#64b5f6');
+                                    gauge.container('thermometerContainer');
+                                    gauge.draw();
+
+                                    var gauge2 = drawLinearGauge(70);
+                                    var humidity = gauge2.thermometer(0);
+                                    humidity.name('Humidity').fill('#F59705').stroke('#F59705');
+                                    gauge2.container('humidityContainer');
+                                    gauge2.draw();
+
+                                    function updateTemperature() {
+                                        var newTemperature = Math.random() * (73 - 70) + 70;
+                                        var newHumidity = Math.random() * (73 - 70) + 70;
+
+                                        gauge.data([newTemperature]);
+                                        gauge2.data([newHumidity]);
+                                    }
+                                    setInterval(updateTemperature, 3000);
+                                });
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <!-- Humidity Graph -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Humidity Monitoring</strong></h5>
+                        <div class="card-body">
+                            <div id="humGraph" style="width: 100%; height: 300px;">
+                                <!-- Insert your humidity graph here using a charting library like Chart.js -->
+                                <canvas id="humidityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- System Status Overview -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>System Status</strong></h5>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Temp:</strong> <span class="badge bg-info">{{currentTemp}}°C</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Alert Level:</strong> <span class="badge bg-warning">Moderate</span></p>
+                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
+                            </div>
+
+                            <!-- Container for Thermometer Gauge -->
+                            <div id="humidityContainer" style="height: 195px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <!-- Power Usage Graph -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Power Usage Monitoring</strong></h5>
+                        <div class="card-body">
+                            <div id="powerUsageGraph" style="width: 100%; height: 300px;">
+                                <canvas id="powerUsageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- Power Usage Status Overview -->
+                    <div class="card">
+                        <h5 class="card-header"><strong>Power Usage Overview</strong></h5>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Power Usage:</strong> <span class="badge bg-info">{{currentPowerUsage}} kW</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Power Capacity:</strong> <span class="badge bg-warning">{{powerCapacity}} kW</span></p>
+                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fuel Stations Info -->
+            <div class="row g-4">
+                {{#each stations}}
+                <div class="col-4">
+                    <div class="card">
+                        <h5 class="card-header"><strong>{{this.stationName}}</strong></h5>
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.location}} Fuel Prices</h5>
+
+                            {{#each this.fuelGrades}}
+                            <p class="card-text">
+                                <strong>{{@key}}</strong>: QAR {{this.price}}/litre
+                                {{#if (checkLevel this.fuelAmount this.fuelThreshold)}}
+                                <span class="badge text-bg-warning">Running Low</span>
+                                {{/if}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts for Temperature Graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('temperatureChart').getContext('2d');
+        var temperatureChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:00'],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [22, 23, 21, 24, 26, 25, 23, 22, 25],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 40
+                    }
+                }
+            }
+        });
+        var ctxHumidity = document.getElementById('humidityChart').getContext('2d');
+        var humidityChart = new Chart(ctxHumidity, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:00'],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [22, 23, 21, 24, 26, 25, 23, 22, 25],
+                    borderColor: 'rgba(245, 151, 5, 1)',
+                    backgroundColor: 'rgba(245, 151, 5, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 40
+                    }
+                }
+            }
+        });
+        var ctxPower = document.getElementById('powerUsageChart').getContext('2d');
+        var powerUsageChart = new Chart(ctxPower, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:00'],
+                datasets: [{
+                    label: 'Power Usage (kW)',
+                    data: [150, 200, 180, 220, 250, 230, 240, 225, 210],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 500
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+
+
+
+
+
+
+
+{{!-- <body>
     <div class="body flex-grow-1 px-3">
         <div class="container-lg">
             {{#if mssg}}
@@ -18,7 +308,7 @@
             {{/if}}
             
 
-            <h1 class="display-1">Petrol Stations</h1>
+            <h1 class="display-1">ThermoGuard Dashboard</h1>
             <p class="lead">All petrol stations across Qatar and their information can be found here.</p>
 
             <div class="row g-4">
@@ -44,4 +334,4 @@
             </div>
         </div>
     </div>
-</body>
+</body> --}}
