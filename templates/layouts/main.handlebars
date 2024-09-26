@@ -52,18 +52,16 @@
       <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
         {{!-- {{#if manager}} --}}
         <li class="nav-title">ThermoGuard</li>
-        <li class="nav-item"><a class="nav-link" href="/manager/sales">
+        <li class="nav-item"><a class="nav-link" href="/settings">
             <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-dollar"></use>
-            </svg> About</a></li>
-        <li class="nav-item"><a class="nav-link" href="/manager/fuel-levels">
-            <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-drop"></use>
-            </svg> Account</a></li>
-        <li class="nav-item"><a class="nav-link" href="/manager/fuel-delivery">
-            <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-truck"></use>
+              <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-settings"></use>
             </svg>  Settings</a></li>
+        {{#if admin}}
+        <li class="nav-item"><a class="nav-link" href="/add-account">
+            <svg class="nav-icon">
+              <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-user"></use>
+            </svg>Add User</a></li>
+        {{/if}}
         {{!-- {{/if}} --}}
 
         {{!-- {{#if admin}}
@@ -97,13 +95,6 @@
           {{/unless}}
           <ul class="header-nav d-none d-md-flex">
             <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            {{#if manager}}
-              <li class="nav-item"><a class="nav-link" href="/manager-dashboard">Manager Dashboard</a></li>
-            {{/if}}
-
-            {{#if admin}}
-              <li class="nav-item"><a class="nav-link" href="/admin-dashboard">Admin Dashboard</a></li>
-            {{/if}}
             
             {{#if public}}
               <li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
@@ -130,14 +121,14 @@
 
           {{#unless public}}
           <ul class="header-nav ms-3">
-            <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown"><a class="nav-link py-0" href="/profile" role="button" aria-haspopup="true" aria-expanded="false">
               {{#if user.image}}
                 <div class="avatar avatar-md"><img class="avatar-img" src="/assets/img/avatars/{{user.image}}" alt="user@email.com"></div>
               {{else}}
                 <div class="avatar avatar-md"><img class="avatar-img" src="/assets/img/avatars/default.png" alt="user@email.com"></div>
               {{/if}}
               </a>
-              <div class="dropdown-menu dropdown-menu-end pt-0">
+              {{!-- <div class="dropdown-menu dropdown-menu-end pt-0">
                 <div class="dropdown-header bg-light py-2">
                   <div class="fw-semibold">Profile Management</div>
                 </div><a class="dropdown-item" href="/profile">
@@ -151,7 +142,7 @@
                   <svg class="icon me-2">
                     <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-account-logout"></use>
                   </svg> Logout</a>
-              </div>
+              </div> --}}
             </li>
           </ul>
           {{/unless}}
