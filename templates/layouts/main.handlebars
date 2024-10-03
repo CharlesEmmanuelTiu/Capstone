@@ -40,7 +40,7 @@
   </head>
   <body>
     {{#unless public}}
-    <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+    {{!-- <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">
         <svg class="sidebar-brand-full" width="118" height="46" alt="CoreUI Logo">
            
@@ -52,7 +52,7 @@
       <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
         {{!-- {{#if manager}} --}}
         <li class="nav-title">ThermoGuard</li>
-        <li class="nav-item"><a class="nav-link" href="/settings">
+        {{!-- <li class="nav-item"><a class="nav-link" href="/settings">
             <svg class="nav-icon">
               <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-settings"></use>
             </svg>  Settings</a></li>
@@ -61,7 +61,7 @@
             <svg class="nav-icon">
               <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-user"></use>
             </svg>Add User</a></li>
-        {{/if}}
+        {{/if}} --}}
         {{!-- {{/if}} --}}
 
         {{!-- {{#if admin}}
@@ -76,7 +76,7 @@
             </svg>Petrol Station</a></li>
         {{/if}} --}}
       </ul> 
-    </div>
+    </div> --}}
     {{/unless}}
 
     <div class="wrapper d-flex flex-column min-vh-100 bg-light">
@@ -101,6 +101,10 @@
             {{else}}
               <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
             {{/if}}
+              <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
+              {{#if admin}}
+              <li class="nav-item"><a class="nav-link" href="/add-account">Add User</a></li>
+              {{/if}}
           </ul>
           <ul class="header-nav ms-auto">
             {{#unless public}}
