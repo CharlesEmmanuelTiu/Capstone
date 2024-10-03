@@ -41,91 +41,91 @@ async function authenticateUser(key) {
 }
 
 app.get('/', async (req, res) => {
-    let key = req.cookies.session
-    let valid = await authenticateUser(key)
+    // let key = req.cookies.session
+    // let valid = await authenticateUser(key)
 
-    let flashSession = req.cookies.flash
-    let flashValid = await authenticateUser(flashSession)
-    let fm = undefined
-    let flashType = undefined
+    // let flashSession = req.cookies.flash
+    // let flashValid = await authenticateUser(flashSession)
+    // let fm = undefined
+    // let flashType = undefined
 
-    if (!valid) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Login required')
-        res.redirect('/login')
-        return
-    }
-    else{
+    // if (!valid) {
+    //     let flashKey = await business.saveSession({username:""})
+    //     res.cookie('flash', flashKey)
+    //     await flash.setFlash(flashKey, 'Login required')
+    //     res.redirect('/login')
+    //     return
+    // }
+    // else{
         res.render('dashboard', {
 
         })
-    }
+    // }
 })
 
 
-app.get('/login', async (req, res) => {
-    let key = req.cookies.session
-    let valid = await authenticateUser(key)
+// app.get('/login', async (req, res) => {
+//     let key = req.cookies.session
+//     let valid = await authenticateUser(key)
 
-    let flashSession = req.cookies.flash
-    let flashValid = await authenticateUser(flashSession)
+//     let flashSession = req.cookies.flash
+//     let flashValid = await authenticateUser(flashSession)
 
-    let fm = undefined
-    let flashType = undefined
+//     let fm = undefined
+//     let flashType = undefined
 
-    if (valid) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Already logged in', "info")
-        res.redirect('/dashboard')
-    }
+//     if (valid) {
+//         let flashKey = await business.saveSession({username:""})
+//         res.cookie('flash', flashKey)
+//         await flash.setFlash(flashKey, 'Already logged in', "info")
+//         res.redirect('/dashboard')
+//     }
 
-    if (flashValid) {
-        fm = await flash.getFlash(flashSession)
-        flashType=flashValid.flashType
-    }
+//     if (flashValid) {
+//         fm = await flash.getFlash(flashSession)
+//         flashType=flashValid.flashType
+//     }
 
-    res.render("login", {
-        layout:'../login',
-        mssg:fm,
-        flashType:flashType
-    })
-})
+//     res.render("login", {
+//         layout:'../login',
+//         mssg:fm,
+//         flashType:flashType
+//     })
+// })
 
-app.post('/login', async (req, res) => {
-    let username = req.body.uname
-    let password = req.body.psw
-    let result = await business.validateCredentials(username, password)
+// app.post('/login', async (req, res) => {
+//     let username = req.body.uname
+//     let password = req.body.psw
+//     let result = await business.validateCredentials(username, password)
     
-    if (!result) {
-        // let flashKey = await business.saveSession({username:""})
-        // res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Invalid Credentials')
-        res.redirect('/login')
-        return
-    }
+//     if (!result) {
+//         // let flashKey = await business.saveSession({username:""})
+//         // res.cookie('flash', flashKey)
+//         await flash.setFlash(flashKey, 'Invalid Credentials')
+//         res.redirect('/login')
+//         return
+//     }
     
-    let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
-    res.cookie('session', key)
-    res.redirect('/')
-})
+//     let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
+//     res.cookie('session', key)
+//     res.redirect('/')
+// })
 
-app.get('/logout', async (req, res) => {
-    let key = req.cookies.session 
-    let flashSession = req.cookies.flash
-    if (key) {
-        await business.deleteSession(key)
-        res.clearCookie('session')
-    }
+// app.get('/logout', async (req, res) => {
+//     let key = req.cookies.session 
+//     let flashSession = req.cookies.flash
+//     if (key) {
+//         await business.deleteSession(key)
+//         res.clearCookie('session')
+//     }
 
-    if (flashSession) {
-        await business.deleteSession(flashSession)
-        res.clearCookie('flash')
-    }
+//     if (flashSession) {
+//         await business.deleteSession(flashSession)
+//         res.clearCookie('flash')
+//     }
 
-    res.redirect('/')
-})
+//     res.redirect('/')
+// })
 
 app.get('/dashboard', async (req, res) => {
     // let key = req.cookies.session
