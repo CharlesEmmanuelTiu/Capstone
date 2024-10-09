@@ -4,7 +4,7 @@ import csv
 def receive_cpu_temperature_and_power():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    server_address = ('192.168.1.5', 5005)  # Replace with the actual server's IP address
+    server_address = ('127.0.0.1', 5005)  # Replace with the actual server's IP address
 
     # Send a message to the server to start receiving data
     try:
