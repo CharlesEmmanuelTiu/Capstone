@@ -950,12 +950,12 @@ html:not([dir=rtl]) .offset-11 {
 
 .g-4,
 .gx-4 {
-  --cui-gutter-x: 1.5rem;
+  --cui-gutter-x: 0.5rem;
 }
 
 .g-4,
 .gy-4 {
-  --cui-gutter-y: 1.5rem;
+  --cui-gutter-y: 0.5rem;
 }
 
 .g-5,
@@ -1239,7 +1239,7 @@ html:not([dir=rtl]) .offset-11 {
   }
   .col-md-8 {
     flex: 0 0 auto;
-    width: 66.66666667%;
+    width: 100%;
   }
   .col-md-9 {
     flex: 0 0 auto;
@@ -4877,6 +4877,13 @@ html:not([dir=rtl]) .navbar-nav {
   border: var(--cui-card-border-width) solid var(--cui-card-border-color);
   border-radius: var(--cui-card-border-radius);
 }
+.sub-card{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .card > hr {
   margin-right: 0;
   margin-left: 0;
@@ -5367,8 +5374,8 @@ html:not([dir=rtl]) .page-item:last-child .page-link {
 
 .alert {
   --cui-alert-bg: transparent;
-  --cui-alert-padding-x: 1rem;
-  --cui-alert-padding-y: 1rem;
+  --cui-alert-padding-x: 0.5rem;
+  --cui-alert-padding-y: 0.5rem;
   --cui-alert-margin-bottom: 1rem;
   --cui-alert-color: inherit;
   --cui-alert-border-color: transparent;
@@ -10240,7 +10247,7 @@ html:not([dir=rtl]) .me-auto {
 }
 
 .mb-4 {
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
 .mb-5 {
@@ -11617,6 +11624,16 @@ html:not([dir=rtl]) .rounded-start {
   }
   .d-md-flex {
     display: flex !important;
+  }
+  .d-md-something{
+    display: flex !important;
+    flex-direction: row;
+    height: 100%;
+    margin: 0 auto;
+    width: 90%;
+    justify-content: space-evenly; 
+    align-items: center;
+    list-style: none;
   }
   .d-md-inline-flex {
     display: inline-flex !important;

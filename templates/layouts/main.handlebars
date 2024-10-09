@@ -85,27 +85,27 @@
           {{#unless public}}
           <button class="header-toggler px-md-0 me-md-3" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
           {{!-- <button class="header-toggler px-md-0 me-md-3" type="button" id="sidebarToggle"></button>   --}}
-            <svg class="icon icon-lg">
+            {{!-- <svg class="icon icon-lg">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-menu"></use>
-            </svg>
+            </svg> --}}
           </button><a class="header-brand d-md-none" href="#">
             <svg width="118" height="46" alt="CoreUI Logo">
               <use xlink:href="/assets/brand/coreui.svg#full"></use>
             </svg></a>
           {{/unless}}
-          <ul class="header-nav d-none d-md-flex">
-            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            
+          <ul class="d-md-something">
+          {{!-- <ul class="header-nav d-none d-md-something"></ul> --}}
+            {{!-- <h1 class="display-1">ThermoGuard Dashboard</h1> --}}
+            <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+            {{#if admin}}
+            <li class="nav-item"><a class="nav-link" href="/add-account">Add User</a></li>
+            {{/if}}
+              <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
             {{#if public}}
               <li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
             {{else}}
               <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
             {{/if}}
-              <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
-              {{#if admin}}
-              <li class="nav-item"><a class="nav-link" href="/add-account">Add User</a></li>
-              {{/if}}
-              <h1 class="display-1">ThermoGuard Dashboard</h1>
           </ul>
           <ul class="header-nav ms-auto">
             {{#unless public}}
