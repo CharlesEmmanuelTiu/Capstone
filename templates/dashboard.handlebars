@@ -46,27 +46,31 @@
                     <div class="card">
                         <div class="sub-card">
                             <div class="card-body">
-                            <div id="tempGraph" style="width: 100%; height: 250px;">
+                            <div id="tempGraph" style="width: 100%; height: 260px;">
                                 <!-- Insert your temperature graph here using a charting library like Chart.js -->
                                 <canvas id="temperatureChart"></canvas>
                             </div>
                             </div>
                             <div class="card-body">
+                            <div id="humidChart" style="width: 100%; height: 250px;">
+                                <canvas id="humidityContainer"></canvas>
+                            </div>
+                            </div>
+                            <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Current Temp:</strong> <span class="badge bg-info">{{currentTemp}}°C</span></p>
-                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
+                                <p class="card-text"><strong>Current Temp:</strong> <span id="currentTemperature" class="badge bg-info">°C</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p class="card-text"><strong>Alert Level:</strong> <span class="badge bg-warning">Moderate</span></p>
                                 <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
                             </div>
-                            <div id="thermometerContainer" style="height: 60%;"></div>
+                            <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-            <div class="row g-4 mb-4">
+            {{!-- <div class="row g-4 mb-4">
                 <div class="col-md-4">
                     <!-- System Status Overview -->
                     <div class="card">
@@ -86,11 +90,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <!-- Scripts for Gathering data -->
                             <script>
+                                document.getElementById("currentStatus").style.backgroundColor = "green"
                                 anychart.onDocumentReady(function () {
                                     // Create and return a simple linear gauge
                                     function drawLinearGauge(value) {
@@ -102,7 +107,7 @@
 
                                         // Set scale settings
                                         var scale = gauge.scale();
-                                        scale.minimum(65).maximum(80).ticks({ interval: 1 });
+                                        scale.minimum(10).maximum(50).ticks({ interval: 5 });
 
                                         // Set axis and axis settings
                                         var axis = gauge.axis();
@@ -119,25 +124,33 @@
                                     thermometer.name('Thermometer').fill('#64b5f6').stroke('#64b5f6');
                                     gauge.container('thermometerContainer');
                                     gauge.draw();
-
-                                    var gauge2 = drawLinearGauge(70);
-                                    var humidity = gauge2.thermometer(0);
-                                    humidity.name('Humidity').fill('#F59705').stroke('#F59705');
-                                    gauge2.container('humidityContainer');
-                                    gauge2.draw();
                                     
-                                    function updateTemperature() {
-                                        var newTemperature = Math.random() * (73 - 70) + 70;
-                                        var newHumidity = Math.random() * (73 - 70) + 70;
-
-                                        gauge.data([newTemperature]);
-                                        gauge2.data([newHumidity]);
+                                    function updateData() {
+                                        var newTemperature = Math.random() * (30 - 18) + 18;
+                                        var newHumidityGauge = Math.random() * (35 - 29) + 29;
+                                        HumidityGauge.set(newHumidityGauge.toFixed(2))
+                                        gauge.data([newTemperature.toFixed(2)]);
+                                        document.getElementById('currentTemperature').textContent = newTemperature.toFixed(2) + ' °C';
+                                        if (newTemperature > 35){
+                                            document.getElementById("currentStatus").innerHTML = "Danger";
+                                            document.getElementById("currentStatus").style.backgroundColor = "red";
+                                        }
+                                        else if(newTemperature > 27){
+                                            document.getElementById("currentStatus").innerHTML = "Risk";
+                                            document.getElementById("currentStatus").style.backgroundColor = "orange";
+                                        }
+                                        else{
+                                            document.getElementById("currentStatus").innerHTML = "Optimal";
+                                            document.getElementById("currentStatus").style.backgroundColor = "green";
+                                        }
                                     }
-                                    setInterval(updateTemperature, 2000);
+                                    setInterval(updateData, 2000);
                                 });
                             </script>
     <!-- Scripts for Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
     <script>
         var ctx = document.getElementById('temperatureChart').getContext('2d');
         var temperatureChart = new Chart(ctx, {
@@ -231,16 +244,43 @@
                 }
             }
         });
+
+        var opts = {
+            angle: 0, // The span of the gauge (0-1, where 0 is 180deg, 1 is 360deg)
+            lineWidth: 0.2, // The thickness of the gauge
+            radiusScale: 1, // Relative radius
+            pointer: {
+                length: 0.6, // Relative to gauge radius
+                strokeWidth: 0.04, // Thickness of the pointer
+                color: '#000000' // Color of the pointer
+            },
+            limitMax: false, // False = infinite max value
+            limitMin: false, // False = infinite min value
+            colorStart: '#6FADCF', // Colors
+            colorStop: '#8FC0DA',
+            strokeColor: '#E0E0E0', // Background color
+            generateGradient: true
+        };
+        var target = document.getElementById('humidityContainer'); // Your canvas element
+        var HumidityGauge = new Gauge(target).setOptions(opts); // Create gauge
+        HumidityGauge.maxValue = 100; // Set max gauge value
+        HumidityGauge.setMinValue(0);  // Minimum value
+        HumidityGauge.animationSpeed = 32; // Set animation speed
+        HumidityGauge.set(70); // Initial value
+
+        function addLabel(value) {
+            var ctx = target.getContext('2d'); // Get the canvas context
+            ctx.font = "20px Arial"; // Set font size and style
+            ctx.textAlign = "center"; // Center the text
+            ctx.fillStyle = "#000000"; // Text color
+            ctx.clearRect(0, 120, 300, 50); // Clear any previous text (adjust based on canvas size)
+            ctx.fillText(value + "% Humidity", target.width / 2, 150); // Draw the text (adjust Y position)
+        }
+
+        // Initial label
+        addLabel(70);
     </script>
 </body>
-
-
-
-
-
-
-
-
 {{!-- <body>
     <div class="body flex-grow-1 px-3">
         <div class="container-lg">
