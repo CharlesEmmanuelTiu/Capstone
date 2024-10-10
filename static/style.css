@@ -522,13 +522,15 @@ progress {
 }
 
 .display-1 {
-  font-size: calc(1.625rem + 4.5vw);
+  font-size: 20%;
+  /* font-size: calc(1.625rem + 4.5vw); */
   font-weight: 500;
   line-height: 1.2;
 }
-@media (min-width: 1000px) {
+@media (min-width: 500px) {
   .display-1 {
-    font-size: 3rem;
+    font-size: 50%;
+    /* font-size: 1rem; */
   }
 }
 
