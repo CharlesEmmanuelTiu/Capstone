@@ -41,9 +41,8 @@ async function authenticateUser(key) {
 }
 
 app.get('/', async (req, res) => {
-    let key = req.cookies.session
-    let valid = await authenticateUser(key)
-
+    // let key = req.cookies.session
+    // let valid = await authenticateUser(key)
     let flashSession = req.cookies.flash
     let flashValid = await authenticateUser(flashSession)
     let fm = undefined
@@ -72,40 +71,39 @@ app.get('/', async (req, res) => {
 })
 
 
-app.get('/login', async (req, res) => {
-    let key = req.cookies.session
-    let valid = await authenticateUser(key)
+// app.get('/login', async (req, res) => {
+//     let key = req.cookies.session
+//     let valid = await authenticateUser(key)
 
-    let flashSession = req.cookies.flash
-    let flashValid = await authenticateUser(flashSession)
+//     let flashSession = req.cookies.flash
+//     let flashValid = await authenticateUser(flashSession)
 
-    let fm = undefined
-    let flashType = undefined
+//     let fm = undefined
+//     let flashType = undefined
 
-    if (valid) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Already logged in', "info")
-        res.redirect('/dashboard')
-    }
+//     if (valid) {
+//         let flashKey = await business.saveSession({username:""})
+//         res.cookie('flash', flashKey)
+//         await flash.setFlash(flashKey, 'Already logged in', "info")
+//         res.redirect('/dashboard')
+//     }
 
-    if (flashValid) {
-        fm = await flash.getFlash(flashSession)
-        flashType=flashValid.flashType
-    }
+//     if (flashValid) {
+//         fm = await flash.getFlash(flashSession)
+//         flashType=flashValid.flashType
+//     }
 
-    res.render("login", {
-        layout:'../login',
-        mssg:fm,
-        flashType:flashType
-    })
-})
+//     res.render("login", {
+//         layout:'../login',
+//         mssg:fm,
+//         flashType:flashType
+//     })
+// })
 
-app.post('/login', async (req, res) => {
-    let username = req.body.uname
-    let password = req.body.psw
-    let result = await business.validateCredentials(username, password)
-    
+// app.post('/login', async (req, res) => {
+//     let username = req.body.uname
+//     let password = req.body.psw
+//     let result = await business.validateCredentials(username, password)
     if (!result) {
         let flashKey = await business.saveSession({username:""})
         res.cookie('flash', flashKey)
@@ -118,21 +116,21 @@ app.post('/login', async (req, res) => {
     res.redirect('/')
 })
 
-app.get('/logout', async (req, res) => {
-    let key = req.cookies.session 
-    let flashSession = req.cookies.flash
-    if (key) {
-        await business.deleteSession(key)
-        res.clearCookie('session')
-    }
+// app.get('/logout', async (req, res) => {
+//     let key = req.cookies.session 
+//     let flashSession = req.cookies.flash
+//     if (key) {
+//         await business.deleteSession(key)
+//         res.clearCookie('session')
+//     }
 
-    if (flashSession) {
-        await business.deleteSession(flashSession)
-        res.clearCookie('flash')
-    }
+//     if (flashSession) {
+//         await business.deleteSession(flashSession)
+//         res.clearCookie('flash')
+//     }
 
-    res.redirect('/')
-})
+//     res.redirect('/')
+// })
 
 // app.get('/dashboard', async (req, res) => {
 //     // let key = req.cookies.session
@@ -190,6 +188,31 @@ app.get('/logout', async (req, res) => {
 //         // flashType:flashType
 //     })
 // })
+
+let sensors = [
+    { id: 1, name: 'Temperature Sensor', status: 'Active' },
+    { id: 2, name: 'Humidity Sensor', status: 'Active' },
+    { id: 3, name: 'Pressure Sensor', status: 'Active' },
+  ];
+app.get('/sensors', async (req, res)=>{
+    
+      res.render('sensors', {
+        sensors: sensors
+      })
+})
+
+// app.put('/sensors/:id/toggle', (req, res) => {
+//     const sensorId = parseInt(req.params.id, 10);
+//     const sensor = sensors.find((sensor) => sensor.id === sensorId);
+  
+//     if (sensor) {
+//       sensor.status = !sensor.status;
+//       res.json(sensor);
+//     } else {
+//       res.status(404).send({ message: 'Sensor not found' });
+//     }
+//   });
+  
 
 // app.get('/admin-dashboard', async (req, res) => {
 //     let key = req.cookies.session
