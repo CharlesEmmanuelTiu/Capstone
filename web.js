@@ -71,6 +71,12 @@ app.get('/', async (req, res) => {
     }
 })
 
+let sensors = [
+    { id: 1, name: 'Temperature Sensor', status: 'Active' },
+    { id: 2, name: 'Humidity Sensor', status: 'Active' },
+    { id: 3, name: 'Pressure Sensor', status: 'Active' },
+  ];
+
 app.get('/infrastructure', async (req, res) => {
     let key = req.cookies.session
     let valid = await authenticateUser(key)
@@ -97,7 +103,8 @@ app.get('/infrastructure', async (req, res) => {
 
         res.render('sensors', {
             user:user,
-            admin:isAdmin
+            admin:isAdmin,
+            sensors:sensors
             })
     }
 })
