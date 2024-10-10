@@ -227,18 +227,6 @@ app.get('/infrastructure', async (req, res) => {
 //     })
 // })
 
-let sensors = [
-    { id: 1, name: 'Temperature Sensor', status: 'Active' },
-    { id: 2, name: 'Humidity Sensor', status: 'Active' },
-    { id: 3, name: 'Pressure Sensor', status: 'Active' },
-  ];
-app.get('/sensors', async (req, res)=>{
-    
-      res.render('sensors', {
-        sensors: sensors
-      })
-})
-
 // app.put('/sensors/:id/toggle', (req, res) => {
 //     const sensorId = parseInt(req.params.id, 10);
 //     const sensor = sensors.find((sensor) => sensor.id === sensorId);
