@@ -104,17 +104,17 @@ app.get('/', async (req, res) => {
 //     let username = req.body.uname
 //     let password = req.body.psw
 //     let result = await business.validateCredentials(username, password)
-    if (!result) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Invalid Credentials')
-        res.redirect('/login')
-        return
-    }
-    let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
-    res.cookie('session', key)
-    res.redirect('/')
-})
+//     if (!result) {
+//         let flashKey = await business.saveSession({username:""})
+//         res.cookie('flash', flashKey)
+//         await flash.setFlash(flashKey, 'Invalid Credentials')
+//         res.redirect('/login')
+//         return
+//     }
+//     let key = await business.saveSession({user:username, type:result["account_type"], id:result.ID})
+//     res.cookie('session', key)
+//     res.redirect('/')
+// })
 
 // app.get('/logout', async (req, res) => {
 //     let key = req.cookies.session 
