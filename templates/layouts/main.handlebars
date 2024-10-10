@@ -96,7 +96,16 @@
           <ul class="d-md-something">
           {{!-- <ul class="header-nav d-none d-md-something"></ul> --}}
             {{!-- <h1 class="display-1">ThermoGuard Dashboard</h1> --}}
-            <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+            <div class="menu_one">
+            <li class="nav-item"><a class="nav-link" href="/">Dashboard</a>
+            <ul class="dropdown-menu">
+                    <li><a href="#">Data Center 1</a></li>
+                    <li><a href="#">Data Center 2</a></li>
+                    <li><a href="#">Data Center 3</a></li>
+                    {{!-- <% dataCenters.forEach(function(dc) { %>
+                        <li><a href="#"> <%= dc.name %> </a></li>
+                    <% }); %> --}}
+            </ul></li></div>
             {{#if admin}}
             <li class="nav-item"><a class="nav-link" href="/add-account">Add User</a></li>
             {{/if}}

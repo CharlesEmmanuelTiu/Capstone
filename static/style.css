@@ -4109,6 +4109,7 @@ html:not([dir=rtl]) .dropstart .dropdown-toggle:empty::after {
   color: var(--cui-dropdown-link-color);
   text-align: inherit;
   text-decoration: none;
+  list-style: none;
   white-space: nowrap;
   background-color: transparent;
   border: 0;
@@ -14178,4 +14179,59 @@ html:not([dir=rtl]) .wrapper {
 
 .gauge .dxg-value-indicator .dxg-spindle-hole {
   fill: #26323a;
+}
+
+.dropdown-menu {
+  text-decoration: "none";
+  display: none;
+  position: absolute;
+  top: 100%;
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: lightsteelblue;
+  list-style: none;
+  width: 200px;
+  height: 200px;
+  justify-content: space-evenly;
+  align-items: center;  
+}
+
+/* Ensure the dropdown is visible when hovering over .menu_one or the dropdown itself */
+.menu_one:hover .dropdown-menu, 
+.menu_one .dropdown-menu:hover {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styling for the menu */
+.menu_one {
+  list-style: none;
+  position: relative; /* Allows the dropdown to be positioned correctly */
+}
+
+.nav-link {
+  text-decoration: none;
+  color: black;
+  padding: 10px;
+  display: inline-block;
+}
+
+.dropdown-menu li {
+  margin: 0; /* Spacing between items */
+  width: 100%; /* Ensure the links take full width */
+  text-align: center; /* Center align the text */
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  color: black;
+  padding: 10px;
+  display: block; /* Make links block level to fill the space */
+  width: 100%; /* Make sure links take up full width */
+}
+
+/* Optional: Style for hovered links */
+.dropdown-menu a:hover {
+  background-color: lightgray;
+  border-radius: 3px;
 }

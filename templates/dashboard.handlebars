@@ -62,7 +62,7 @@
                                 <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Alert Level:</strong> <span class="badge bg-warning">Moderate</span></p>
+                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge bg-warning">0</span></p>
                                 <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
                             </div>
                             <div id="thermometerContainer" style="height: 70%;"></div>
@@ -126,8 +126,8 @@
                                     gauge.draw();
                                     
                                     function updateData() {
-                                        var newTemperature = Math.random() * (30 - 18) + 18;
-                                        var newHumidityGauge = Math.random() * (35 - 29) + 29;
+                                        var newTemperature = Math.random() * (40 - 18) + 18;
+                                        var newHumidityGauge = Math.random() * (40 - 29) + 29;
                                         HumidityGauge.set(newHumidityGauge.toFixed(2))
                                         gauge.data([newTemperature.toFixed(2)]);
                                         document.getElementById('currentTemperature').textContent = newTemperature.toFixed(2) + ' °C';
