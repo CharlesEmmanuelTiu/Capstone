@@ -522,13 +522,15 @@ progress {
 }
 
 .display-1 {
-  font-size: calc(1.625rem + 4.5vw);
+  font-size: 20%;
+  /* font-size: calc(1.625rem + 4.5vw); */
   font-weight: 500;
   line-height: 1.2;
 }
-@media (min-width: 1000px) {
+@media (min-width: 500px) {
   .display-1 {
-    font-size: 3rem;
+    font-size: 50%;
+    /* font-size: 1rem; */
   }
 }
 
@@ -950,12 +952,12 @@ html:not([dir=rtl]) .offset-11 {
 
 .g-4,
 .gx-4 {
-  --cui-gutter-x: 1.5rem;
+  --cui-gutter-x: 0.5rem;
 }
 
 .g-4,
 .gy-4 {
-  --cui-gutter-y: 1.5rem;
+  --cui-gutter-y: 0.5rem;
 }
 
 .g-5,
@@ -1239,7 +1241,7 @@ html:not([dir=rtl]) .offset-11 {
   }
   .col-md-8 {
     flex: 0 0 auto;
-    width: 66.66666667%;
+    width: 100%;
   }
   .col-md-9 {
     flex: 0 0 auto;
@@ -4109,6 +4111,7 @@ html:not([dir=rtl]) .dropstart .dropdown-toggle:empty::after {
   color: var(--cui-dropdown-link-color);
   text-align: inherit;
   text-decoration: none;
+  list-style: none;
   white-space: nowrap;
   background-color: transparent;
   border: 0;
@@ -4877,6 +4880,13 @@ html:not([dir=rtl]) .navbar-nav {
   border: var(--cui-card-border-width) solid var(--cui-card-border-color);
   border-radius: var(--cui-card-border-radius);
 }
+.sub-card{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .card > hr {
   margin-right: 0;
   margin-left: 0;
@@ -5367,8 +5377,8 @@ html:not([dir=rtl]) .page-item:last-child .page-link {
 
 .alert {
   --cui-alert-bg: transparent;
-  --cui-alert-padding-x: 1rem;
-  --cui-alert-padding-y: 1rem;
+  --cui-alert-padding-x: 0.5rem;
+  --cui-alert-padding-y: 0.5rem;
   --cui-alert-margin-bottom: 1rem;
   --cui-alert-color: inherit;
   --cui-alert-border-color: transparent;
@@ -10240,7 +10250,7 @@ html:not([dir=rtl]) .me-auto {
 }
 
 .mb-4 {
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
 .mb-5 {
@@ -11617,6 +11627,16 @@ html:not([dir=rtl]) .rounded-start {
   }
   .d-md-flex {
     display: flex !important;
+  }
+  .d-md-something{
+    display: flex !important;
+    flex-direction: row;
+    height: 100%;
+    margin: 0 auto;
+    width: 90%;
+    justify-content: space-evenly; 
+    align-items: center;
+    list-style: none;
   }
   .d-md-inline-flex {
     display: inline-flex !important;
@@ -14080,3 +14100,140 @@ html:not([dir=rtl]) .wrapper {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+/* CHECK THIS OUT BOII */
+
+.gradient-mask {
+  visibility: hidden;
+}
+
+.gauge-container {
+  padding: 20px;
+  margin-top: 80px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.gauge {
+  height: 220px;
+  width: 300px;
+}
+
+.gauge .dxg-range.dxg-background-range {
+  fill: url(#gradientGauge);
+}
+
+.gauge .dxg-line {
+  -webkit-transform: scaleX(1.04) scaleY(1.03) translate(-4px, -4px);
+          transform: scaleX(1.04) scaleY(1.03) translate(-4px, -4px);
+}
+
+.gauge .dxg-line path:first-child,
+.gauge .dxg-line path:last-child {
+  display: none;
+}
+
+.gauge .dxg-line path:nth-child(2),
+.gauge .dxg-line path:nth-child(6) {
+  stroke: #ed811c;
+}
+
+.gauge .dxg-line path:nth-child(3),
+.gauge .dxg-line path:nth-child(5) {
+  stroke: #a7db29;
+}
+
+.gauge .dxg-line path:nth-child(4) {
+  stroke: #25cd6b;
+}
+
+.gauge .dxg-elements text:first-child {
+  -webkit-transform: translate(19px, 13px);
+          transform: translate(19px, 13px);
+}
+
+.gauge .dxg-elements text:last-child {
+  -webkit-transform: translate(-27px, 14px);
+          transform: translate(-27px, 14px);
+}
+
+.gauge .dxg-value-indicator path {
+  -webkit-transform: scale(1.2) translate(0, -5px);
+          transform: scale(1.2) translate(0, -5px);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.gauge .dxg-value-indicator .dxg-title {
+  text-transform: uppercase;
+}
+
+.gauge .dxg-value-indicator .dxg-title text:first-child {
+  -webkit-transform: translateY(5px);
+          transform: translateY(5px);
+}
+
+.gauge .dxg-value-indicator .dxg-spindle-border:nth-child(4),
+.gauge .dxg-value-indicator .dxg-spindle-hole:nth-child(5) {
+  -webkit-transform: translate(0, -109px);
+          transform: translate(0, -109px);
+}
+
+.gauge .dxg-value-indicator .dxg-spindle-hole {
+  fill: #26323a;
+}
+
+.dropdown-menu {
+  text-decoration: "none";
+  display: none;
+  position: absolute;
+  top: 100%;
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: lightsteelblue;
+  list-style: none;
+  width: 200px;
+  height: 200px;
+  justify-content: space-evenly;
+  align-items: center;  
+}
+
+/* Ensure the dropdown is visible when hovering over .menu_one or the dropdown itself */
+.menu_one:hover .dropdown-menu, 
+.menu_one .dropdown-menu:hover {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styling for the menu */
+.menu_one {
+  list-style: none;
+  position: relative; /* Allows the dropdown to be positioned correctly */
+}
+
+.nav-link {
+  text-decoration: none;
+  color: black;
+  padding: 10px;
+  display: inline-block;
+}
+
+.dropdown-menu li {
+  margin: 0; /* Spacing between items */
+  width: 100%; /* Ensure the links take full width */
+  text-align: center; /* Center align the text */
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  color: black;
+  padding: 10px;
+  display: block; /* Make links block level to fill the space */
+  width: 100%; /* Make sure links take up full width */
+}
+
+/* Optional: Style for hovered links */
+.dropdown-menu a:hover {
+  background-color: lightgray;
+  border-radius: 3px;
+}

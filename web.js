@@ -43,7 +43,6 @@ async function authenticateUser(key) {
 app.get('/', async (req, res) => {
     let key = req.cookies.session
     let valid = await authenticateUser(key)
-
     let flashSession = req.cookies.flash
     let flashValid = await authenticateUser(flashSession)
     let fm = undefined
@@ -67,6 +66,44 @@ app.get('/', async (req, res) => {
         res.render('dashboard', {
             user:user,
             admin:isAdmin
+            })
+    }
+})
+
+let sensors = [
+    { id: 1, name: 'Temperature Sensor', status: 'Active' },
+    { id: 2, name: 'Humidity Sensor', status: 'Active' },
+    { id: 3, name: 'Pressure Sensor', status: 'Active' },
+  ];
+
+app.get('/infrastructure', async (req, res) => {
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
+
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+
+        res.render('sensors', {
+            user:user,
+            admin:isAdmin,
+            sensors:sensors
             })
     }
 })
@@ -105,7 +142,6 @@ app.post('/login', async (req, res) => {
     let username = req.body.uname
     let password = req.body.psw
     let result = await business.validateCredentials(username, password)
-    
     if (!result) {
         let flashKey = await business.saveSession({username:""})
         res.cookie('flash', flashKey)
@@ -191,6 +227,19 @@ app.get('/logout', async (req, res) => {
 
 //     })
 // })
+
+// app.put('/sensors/:id/toggle', (req, res) => {
+//     const sensorId = parseInt(req.params.id, 10);
+//     const sensor = sensors.find((sensor) => sensor.id === sensorId);
+  
+//     if (sensor) {
+//       sensor.status = !sensor.status;
+//       res.json(sensor);
+//     } else {
+//       res.status(404).send({ message: 'Sensor not found' });
+//     }
+//   });
+  
 
 // app.get('/admin-dashboard', async (req, res) => {
 //     let key = req.cookies.session
