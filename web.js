@@ -188,6 +188,7 @@ app.get('/logout', async (req, res) => {
 //         // date: newDate,
 //         // mssg: fm,
 //         // flashType:flashType
+
 //     })
 // })
 
@@ -593,7 +594,6 @@ app.get('/logout', async (req, res) => {
 //     })
 // })
 
-
 // app.get('/admin/add-station', async(req, res)=>{
 //     let key = req.cookies.session
 //     let valid = await authenticateUser(key) 
@@ -949,7 +949,7 @@ app.get('/logout', async (req, res) => {
 //         res.redirect('/')
 //         return
 //     }
-    
+
 //     if (flashValid) {
 //         fm = await flash.getFlash(flashSession)
 //         flashType = flashValid.flashType
@@ -1374,55 +1374,55 @@ app.post('/settings', async (req, res) => {
         email:email || user.email
     }
     
-    let result = await business.updateUser(user, valid, update)
-    if (result) {
-        await business.cancelToken(key)
-        await business.deleteSession(key)
-        res.clearCookie('session')
+//     let result = await business.updateUser(user, valid, update)
+//     if (result) {
+//         await business.cancelToken(key)
+//         await business.deleteSession(key)
+//         res.clearCookie('session')
 
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, "Password changed. Login again", "info")
-        res.redirect('/login')
-        return
-    }
+//         let flashKey = await business.saveSession({username:""})
+//         res.cookie('flash', flashKey)
+//         await flash.setFlash(flashKey, "Password changed. Login again", "info")
+//         res.redirect('/login')
+//         return
+//     }
 
-    await business.cancelToken(key)
-    let flashKey = await business.saveSession({username:""})
-    res.cookie('flash', flashKey)
-    await flash.setFlash(flashKey, "Profile Updated", "success")
-    res.redirect('/profile')
-})
+//     await business.cancelToken(key)
+//     let flashKey = await business.saveSession({username:""})
+//     res.cookie('flash', flashKey)
+//     await flash.setFlash(flashKey, "Profile Updated", "success")
+//     res.redirect('/profile')
+// })
 
-app.use(fileUpload())
-app.post('/uploadFile', async(req, res)=>{
-    let key = req.cookies.session
-    let valid = await authenticateUser(key)
+// app.use(fileUpload())
+// app.post('/uploadFile', async(req, res)=>{
+//     let key = req.cookies.session
+//     let valid = await authenticateUser(key)
 
-    if (!valid) {
-        let flashKey = await business.saveSession({username:""})
-        res.cookie('flash', flashKey)
-        await flash.setFlash(flashKey, 'Login required')
-        res.redirect('/login')
-        return
-    }
+//     if (!valid) {
+//         let flashKey = await business.saveSession({username:""})
+//         res.cookie('flash', flashKey)
+//         await flash.setFlash(flashKey, 'Login required')
+//         res.redirect('/login')
+//         return
+//     }
     
-    let token = req.body.token
-    if (valid.csrfToken != token) {
-        res.status(419)
-        res.send("CSRF token mismatch")
-        return
-    }
-    let userdetails = await business.getUser(valid.data.user)
-    let theFile = req.files.submission
-    let fname = String(theFile.name)
-    await theFile.mv(`${__dirname}/uploads/`)
-    await business.updateProfilePic(fname, userdetails.ID)
-    let flashKey = await business.saveSession({username:""})
-    res.cookie('flash', flashKey)
-    await flash.setFlash(flashKey, 'Profile photo updated', "success")
-    res.redirect('/profile')
-})
+//     let token = req.body.token
+//     if (valid.csrfToken != token) {
+//         res.status(419)
+//         res.send("CSRF token mismatch")
+//         return
+//     }
+//     let userdetails = await business.getUser(valid.data.user)
+//     let theFile = req.files.submission
+//     let fname = String(theFile.name)
+//     await theFile.mv(`${__dirname}/uploads/`)
+//     await business.updateProfilePic(fname, userdetails.ID)
+//     let flashKey = await business.saveSession({username:""})
+//     res.cookie('flash', flashKey)
+//     await flash.setFlash(flashKey, 'Profile photo updated', "success")
+//     res.redirect('/profile')
+// })
 
 app.use((req, res)=>{
     res.status(404)
@@ -1437,3 +1437,4 @@ app.use((req, res)=>{
 app.listen("8000", () => {
     console.log("Application running on http://127.0.0.1:8000")
 })
+
