@@ -3,26 +3,22 @@ const crypto = require('crypto')
 
 let client
 let db
-let accounts
-let stations
+let users
 let sessions
-let records
 
 async function connectDatabase() {
     if (!client) {
-        client = new mongodb.MongoClient('mongodb+srv://charlestiu:security_breach_28@cluster0.6knro65.mongodb.net/')
+        client = new mongodb.MongoClient('mongodb+srv://charlestiu:DirtInYourEye_28@cluster0.n2c2j.mongodb.net/')
         await client.connect()
-        db = client.db('Project')
-        accounts = db.collection('Accounts')
-        stations = db.collection('Petrol_Stations')
+        db = client.db('Capstone')
         sessions = db.collection('Sessions')
-        records = db.collection('Petrol_Records')
+        users = db.collection('Users')
     }
 }
 
 async function validateCredentials(username, password) {
     await connectDatabase()
-    let user = await accounts.find({name:username}).toArray()
+    let user = await users.find({name:username}).toArray()
     user = user[0]
 
     let hash = crypto.createHash('sha512')
@@ -37,24 +33,24 @@ async function validateCredentials(username, password) {
 
 async function getAccounts(){
     await connectDatabase()
-    return await accounts.find().toArray()
+    return await users.find().toArray()
 }
 
 async function getUserFromID(id){
     await connectDatabase()
-    let AccountDetails = await accounts.find({ID:id}).toArray()
+    let AccountDetails = await users.find({ID:id}).toArray()
     return AccountDetails[0]
 }
 
 async function getAccountDetails(name) {
     await connectDatabase()
-    let AccountDetails = await accounts.find({name:name}).toArray()
+    let AccountDetails = await users.find({name:name}).toArray()
     return AccountDetails[0]
 }
 
 async function updateAssignedStation(ID, stationName){
     await connectDatabase()
-    await accounts.updateOne({ID:ID}, {$set: {assigned_station: stationName}})
+    await users.updateOne({ID:ID}, {$set: {assigned_station: stationName}})
 }
 
 async function assignManager(ID, current_stationNumber){
@@ -89,7 +85,7 @@ async function getStationFromID(ID) {
 }
 async function unassignManagerStation(ID){
     await connectDatabase()
-    await accounts.updateOne({ID:ID}, {$set: {assigned_station:""}})
+    await users.updateOne({ID:ID}, {$set: {assigned_station:""}})
     await stations.updateOne({managerID:ID}, {$unset: {managerID:""}})
 }
 
@@ -184,12 +180,12 @@ async function deleteRecords(station_number){
 }
 async function removeUser(accountID){
     await connectDatabase()
-    await accounts.deleteOne({ID: accountID})
+    await users.deleteOne({ID: accountID})
 }
 
 async function updateUser(user) {
     await connectDatabase()
-    await accounts.replaceOne({ID:user.ID}, user)
+    await users.replaceOne({ID:user.ID}, user)
 }
 
 async function addAccount(account) {
@@ -199,12 +195,12 @@ async function addAccount(account) {
     let p = hash.digest('hex')
 
     account.password = p
-    await accounts.insertOne(account)
+    await users.insertOne(account)
 }
 
 async function getAccountHighestID(){
     await connectDatabase()
-    return await accounts.find().sort({ID:-1}).limit(1).toArray() // for MAX
+    return await users.find().sort({ID:-1}).limit(1).toArray() // for MAX
 }
 
 async function getHighestStationNumber(){
@@ -214,7 +210,7 @@ async function getHighestStationNumber(){
 
 async function updateProfilePic(fname, id){
     await connectDatabase()
-    await accounts.updateOne({ID:id}, {$set: {image:fname}})
+    await users.updateOne({ID:id}, {$set: {image:fname}})
 }
 
 module.exports = {
