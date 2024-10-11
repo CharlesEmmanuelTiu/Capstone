@@ -1422,7 +1422,8 @@ app.post('/settings', async (req, res) => {
         phone_number:phone || user['phone_number'],
         email:email || user.email
     }
-    
+})
+
 //     let result = await business.updateUser(user, valid, update)
 //     if (result) {
 //         await business.cancelToken(key)
@@ -1486,4 +1487,3 @@ app.use((req, res)=>{
 app.listen("8000", () => {
     console.log("Application running on http://127.0.0.1:8000")
 })
-
