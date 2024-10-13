@@ -258,23 +258,23 @@
             limitMin: false, // False = infinite min value
             colorStart: '#6FADCF', // Colors
             colorStop: '#8FC0DA',
-            strokeColor: '#E0E0E0', // Background color
+            strokeColor: '#E0E0E0', 
             generateGradient: true
         };
-        var target = document.getElementById('humidityContainer'); // Your canvas element
-        var HumidityGauge = new Gauge(target).setOptions(opts); // Create gauge
-        HumidityGauge.maxValue = 100; // Set max gauge value
-        HumidityGauge.setMinValue(0);  // Minimum value
-        HumidityGauge.animationSpeed = 32; // Set animation speed
-        HumidityGauge.set(70); // Initial value
+        var target = document.getElementById('humidityContainer'); 
+        var HumidityGauge = new Gauge(target).setOptions(opts); 
+        HumidityGauge.maxValue = 100; 
+        HumidityGauge.setMinValue(0);  
+        HumidityGauge.animationSpeed = 32; 
+        HumidityGauge.set(70); 
 
         function addLabel(value) {
-            var ctx = target.getContext('2d'); // Get the canvas context
-            ctx.font = "20px Arial"; // Set font size and style
-            ctx.textAlign = "center"; // Center the text
-            ctx.fillStyle = "#000000"; // Text color
-            ctx.clearRect(0, 120, 300, 50); // Clear any previous text (adjust based on canvas size)
-            ctx.fillText(value + "% Humidity", target.width / 2, 150); // Draw the text (adjust Y position)
+            var ctx = target.getContext('2d'); 
+            ctx.font = "20px Arial"; 
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#000000";
+            ctx.clearRect(0, 120, 300, 50);
+            ctx.fillText(value + "% Humidity", target.width / 2, 150);
         }
 
         // Initial label
