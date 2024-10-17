@@ -14219,20 +14219,20 @@ html:not([dir=rtl]) .wrapper {
 }
 
 .dropdown-menu li {
-  margin: 0; /* Spacing between items */
-  width: 100%; /* Ensure the links take full width */
-  text-align: center; /* Center align the text */
+  margin: 0;
+  width: 100%;
+  text-align: center;
 }
 
 .dropdown-menu a {
   text-decoration: none;
   color: black;
   padding: 10px;
-  display: block; /* Make links block level to fill the space */
-  width: 100%; /* Make sure links take up full width */
+  display: block;
+  width: 100%;
 }
 
-/* Optional: Style for hovered links */
+
 .dropdown-menu a:hover {
   background-color: lightgray;
   border-radius: 3px;
