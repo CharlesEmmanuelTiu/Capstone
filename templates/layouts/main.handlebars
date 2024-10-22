@@ -39,8 +39,7 @@
     <link href="/style.css" rel="stylesheet">
   </head>
   <body>
-    {{#unless public}}
-    {{!-- <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+    <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">
         <svg class="sidebar-brand-full" width="118" height="46" alt="CoreUI Logo">
            
@@ -50,34 +49,19 @@
         </svg>
       </div>
       <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
-        {{!-- {{#if manager}} --}}
-        {{!-- <li class="nav-title">ThermoGuard</li> --}}
-        {{!-- <li class="nav-item"><a class="nav-link" href="/settings">
+        <li class="nav-title">ThermoGuard</li>
+        <li class="nav-item"><a class="nav-link" href="/data_reports">
             <svg class="nav-icon">
-              <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-settings"></use>
-            </svg>  Settings</a></li>
+              <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
+            </svg>Data Reports</a></li>
         {{#if admin}}
         <li class="nav-item"><a class="nav-link" href="/add-account">
             <svg class="nav-icon">
               <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-user"></use>
             </svg>Add User</a></li>
-        {{/if}} --}}
-        {{!-- {{/if}} --}}
-
-        {{!-- {{#if admin}}
-        <li class="nav-title">Manage</li>
-        <li class="nav-item"><a class="nav-link" href="/admin/manage-accounts">
-            <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-people"></use>
-            </svg>User Accounts</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/manage-stations">
-            <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-chart-line"></use>
-            </svg>Petrol Station</a></li>
-        {{/if}} --}}
-      {{!-- </ul> 
-    </div> --}}
-    {{/unless}}
+        {{/if}}
+      </ul> 
+    </div>
 
     <div class="wrapper d-flex flex-column min-vh-100 bg-light">
       <header class="header header-sticky mb-4">
@@ -92,6 +76,7 @@
             <svg width="118" height="46" alt="CoreUI Logo">
               <use xlink:href="/assets/brand/coreui.svg#full"></use>
             </svg></a>
+
           {{/unless}}
           <ul class="d-md-something">
           {{!-- <ul class="header-nav d-none d-md-something"></ul> --}}
@@ -102,14 +87,15 @@
                     <li><a href="#">Data Center 1</a></li>
                     <li><a href="#">Data Center 2</a></li>
                     <li><a href="#">Data Center 3</a></li>
-                    {{!-- <% dataCenters.forEach(function(dc) { %>
-                        <li><a href="#"> <%= dc.name %> </a></li>
-                    <% }); %> --}}
             </ul></li></div>
-            {{#if admin}}
-            <li class="nav-item"><a class="nav-link" href="/add-account">Add User</a></li>
-            {{/if}}
               <li class="nav-item"><a class="nav-link" href="/infrastructure">Infrastructure</a></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
               <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
               <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
           </ul>
@@ -187,15 +173,15 @@
     <script src="/vendors/chart.js/js/chart.min.js"></script>
     <script src="/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
     <script src="/vendors/@coreui/utils/js/coreui-utils.js"></script>
-    {{!-- <script src="/js/main.js"></script> --}}
+    <script src="/js/main.js"></script>
     <script>
     </script>
-    {{!-- <script>
+    <script>
       // JavaScript to handle the sidebar toggle
       document.getElementById('sidebarToggle').addEventListener('click', function() {
         document.querySelector('.sidebar').classList.toggle('active');
       });
-    </script> --}}
+    </script>
     <script>
       // JavaScript to toggle sidebar
       document.getElementById('sidebarToggle').addEventListener('click', function() {
