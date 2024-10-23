@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThermoGuard Data Center</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        .tooltip {
+            position: absolute;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 5px;
+            pointer-events: none;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="tooltip" class="tooltip"></div>
+    
+    <!-- Import Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- 3D Data Center Script -->
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Light
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+
+        // Hover interaction
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const tooltip = document.getElementById('tooltip');
+
+        // Create racks (as simple boxes for now, replace with your 3D models)
+        const racks = [];
+        const rackGeometry = new THREE.BoxGeometry(1, 2, 1);
+        const rackMaterial = new THREE.MeshStandardMaterial({ color: 0x666666 });
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                const rack = new THREE.Mesh(rackGeometry, rackMaterial);
+                rack.position.set(i * 3, 0, j * 3);
+                rack.userData = {
+                    name: `Rack ${i}-${j}`,
+                    status: Math.random() > 0.5 ? 'OK' : 'Warning', // Replace with actual status
+                    temperature: `${(30 + Math.random() * 10).toFixed(1)} °C`
+                };
+                scene.add(rack);
+                racks.push(rack);
+            }
+        }
+
+        camera.position.z = 10;
+
+        // Hover detection
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(racks);
+
+            if (intersects.length > 0) {
+                const rack = intersects[0].object;
+                const { name, status, temperature } = rack.userData;
+                tooltip.style.display = 'block';
+                tooltip.style.left = event.clientX + 10 + 'px';
+                tooltip.style.top = event.clientY + 10 + 'px';
+                tooltip.innerHTML = `<strong>${name}</strong><br>Status: ${status}<br>Temp: ${temperature}`;
+            } else {
+                tooltip.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
