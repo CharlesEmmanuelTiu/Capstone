@@ -715,7 +715,8 @@ html:not([dir=rtl]) .list-inline-item:not(:last-child) {
   --cui-gutter-x: 1.5rem;
   --cui-gutter-y: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
   margin-top: calc(-1 * var(--cui-gutter-y));
   margin-right: calc(-0.5 * var(--cui-gutter-x));
   margin-left: calc(-0.5 * var(--cui-gutter-x));
@@ -4851,6 +4852,16 @@ html:not([dir=rtl]) .navbar-nav {
   --cui-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.6%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
+.card1 {
+  width: 45%;
+  height: 10%;
+}
+
+.card2 {
+  width: 30%;
+  height: 10%;
+}
+
 .card {
   --cui-card-spacer-y: 1rem;
   --cui-card-spacer-x: 1rem;
@@ -4870,8 +4881,6 @@ html:not([dir=rtl]) .navbar-nav {
   --cui-card-img-overlay-padding: 1rem;
   --cui-card-group-margin: 0.75rem;
   position: relative;
-  display: flex;
-  flex-direction: column;
   min-width: 0;
   height: var(--cui-card-height);
   word-wrap: break-word;
@@ -4910,9 +4919,13 @@ html:not([dir=rtl]) .navbar-nav {
   border-top: 0;
 }
 
-.card-body {
-  flex: 1 1 auto;
+.card-bodying {
   padding: var(--cui-card-spacer-y) var(--cui-card-spacer-x);
+  color: var(--cui-card-color);
+
+}
+
+.card-body {
   color: var(--cui-card-color);
 }
 
@@ -4937,7 +4950,7 @@ html:not([dir=rtl]) .card-link + .card-link {
 }
 
 .card-header {
-  padding: var(--cui-card-cap-padding-y) var(--cui-card-cap-padding-x);
+  align-items: center;
   margin-bottom: 0;
   color: var(--cui-card-cap-color);
   background-color: var(--cui-card-cap-bg);
@@ -4945,6 +4958,10 @@ html:not([dir=rtl]) .card-link + .card-link {
 }
 .card-header:first-child {
   border-radius: var(--cui-card-inner-border-radius) var(--cui-card-inner-border-radius) 0 0;
+}
+
+h4{
+  font-size: 15px;;
 }
 
 .card-footer {
@@ -14236,4 +14253,29 @@ html:not([dir=rtl]) .wrapper {
 .dropdown-menu a:hover {
   background-color: lightgray;
   border-radius: 3px;
+}
+
+.table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2; /* Light gray background for header cells */
+}
+
+/* Add a border to the table rows */
+tr {
+  border: 1px solid black; /* Border for each row */
+}
+
+.icon-small {
+  width: 45px; /* Set the desired width */
+  height: 40px; /* Set the desired height */
 }

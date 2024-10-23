@@ -27,36 +27,86 @@
             <!-- System Overview Row -->
             <div class="row g-4 mb-4">
                     <!-- Power Usage Bar Chart -->
-                    <div class="card">
-                        <div class="sub-card">
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Power Usage</h4>
+                            </div>
                             <div class="card-body">
-                                <div id="powerGraph" style="width:100%; height: 300px;">
+                                <div id="powerGraph" style="width:100%; height:250px;">
                                     <canvas id="powerUsageChart"></canvas>
                                 </div>
                             </div>
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Humidity</h4>
+                            </div>
                                 <div class="card-body">
-                                <div id="humGraph" style="width: 100%; height: 300px;">
+                                    <center>
+                                <div id="humGraph" style="width:100%; height:250px;">
                                     <canvas id="humidityChart"></canvas>
                                 </div>
+                                </center>
                             </div>
-                        </div>
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Alerts</h4>
+                            </div>
+                                <div class="card-bodying">
+                                    <center>
+                                <table>
+                                    <tr>
+                                        <th>Alert</th>
+                                        <th>Source</th>
+                                        <th>Occured</th>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="../static/assets/img/temp.png" class="icon-small"></td>
+                                        <td>Over There</td>
+                                        <td>Lately</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="../static/assets/img/fan.png" class="icon-small"></td>
+                                        <td>My fans</td>
+                                        <td>are early</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="../static/assets/img/hack.png" class="icon-small"></td>
+                                        <td>Some dude</td>
+                                        <td>is sus</td>
+                                    </tr>
+                                </table></center>
+                            </div>
                     </div>
             </div>
                 <div class="row g-4 mb-4">
-                    <div class="card">
-                        <div class="sub-card">
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Temperature</h4>
+                            </div>
                             <div class="card-body">
                             <div id="tempGraph" style="width: 100%; height: 260px;">
                                 <!-- Insert your temperature graph here using a charting library like Chart.js -->
                                 <canvas id="temperatureChart"></canvas>
                             </div>
                             </div>
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Humidity Gauge</h4>
+                            </div>
                             <div class="card-body">
                             <div id="humidChart" style="width: 100%; height: 250px;">
                                 <canvas id="humidityContainer"></canvas>
                             </div>
                             </div>
-                            <div class="card-body">
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Temperature</h4>
+                            </div>
+                            <div class="card-bodying">
                             <div class="d-flex justify-content-between">
                                 <p class="card-text"><strong>Current Temp:</strong> <span id="currentTemperature" class="badge bg-info">°C</span></p>
                                 <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
@@ -67,7 +117,6 @@
                             </div>
                             <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
-                        </div>
                     </div>
                 </div>
             {{!-- <div class="row g-4 mb-4">
@@ -179,10 +228,10 @@
         var humidityChart = new Chart(ctxHumidity, {
             type: 'pie',
             data: {
-                labels: ['Server Rooms', 'Cooling Areas', 'Storage Rooms', 'Networking Equipment Rooms', 'Electrical Rooms'],
+                labels: ['Server Rooms', 'Cooling Areas', 'Networking Equipment Rooms', 'Electrical Rooms'],
                 datasets: [{
                     label: 'Humidity (°C)',
-                    data: [40, 30, 15, 10, 5],
+                    data: [40, 30, 15, 10],
                     backgroundColor: [
                         'rgb(171, 0, 8)',
                         'rgb(0, 33, 255)',
