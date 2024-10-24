@@ -4862,6 +4862,11 @@ html:not([dir=rtl]) .navbar-nav {
   height: 10%;
 }
 
+.card3 {
+  width: 90%;
+  height: 90%;
+}
+
 .card {
   --cui-card-spacer-y: 1rem;
   --cui-card-spacer-x: 1rem;

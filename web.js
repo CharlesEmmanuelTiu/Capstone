@@ -218,7 +218,7 @@ app.get('/infrastructure', async (req, res) => {
 
         }
 
-        res.render('sensors', {
+        res.render('infrastructure', {
             user:user,
             admin:isAdmin,
             sensors:sensors
