@@ -75,10 +75,30 @@ let sensors = [
     { id: 2, name: 'Humidity Sensor', status: 'Active' },
     { id: 3, name: 'Pressure Sensor', status: 'Active' },
   ];
-app.get('/tradtional_dc', async (req, res) =>{
+
+app.get('/traditional_dc', async (req, res) =>{
     res.render('traditional_dc', {
-        user:user,
-        admin:isAdmin,
+        
+
+        })
+})
+app.get('/cctv', async (req, res) =>{
+    res.render('cctv', {
+        
+
+        })
+})
+
+app.get('/proactive', async (req, res) =>{
+    res.render('proactive', {
+        
+
+        })
+})
+
+app.get('/alerts', async (req, res) =>{
+    res.render('alerts', {
+        
 
         })
 })

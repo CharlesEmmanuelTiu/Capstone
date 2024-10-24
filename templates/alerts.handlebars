@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{!-- <title>Alerts</title> --}}
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin: 20px auto;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+            background-color: lavender;
+        }
+        th {
+            background-color: lightsteelblue;
+        }
+        .icon {
+            width: 504px;
+            height: 504px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .alert-list {
+            display: none;
+            margin-top: 10px;
+            margin-left: 30px;
+            border-left: 2px solid #ddd;
+            padding-left: 10px;
+        }
+        .alert-item {
+            padding: 5px 0;
+        }
+        .category-row {
+            cursor: pointer;
+        }
+        .arrow {
+            display: inline-block;
+            margin-left: 5px;
+            transition: transform 0.2s ease;
+        }
+        .collapsed {
+            transform: rotate(90deg); /* Rotate arrow when collapsed */
+        }
+        .normal {
+            transform: rotate(20deg); /* Rotate arrow when collapsed */
+        }
+    </style>
+</head>
+<body>
+
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Alert Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="category-row" onclick="toggleAlerts('cooling-alerts', this)">
+                <td>
+                    <img src="https://cdn-icons-png.flaticon.com/512/5993/5993272.png" alt="Cooling Alert" class="icon">Cooling Alert
+                    <span class="arrow">&#9654;</span> <!-- Right arrow -->
+                </td>
+                <td style="color: red;">Urgent</td>
+            </tr>
+            <tr class="alert-list" id="cooling-alerts">
+                <td colspan="2">
+                    <div class="alert-item">High temperature detected in cooling unit.</div>
+                    <div class="alert-item">Cooling unit maintenance overdue.</div>
+                </td>
+            </tr>
+            <tr class="category-row" onclick="toggleAlerts('power-alerts', this)">
+                <td>
+                    <img src="https://cdn-icons-png.flaticon.com/128/2183/2183468.png" alt="Power Alert" class="icon">Power Alert
+                    <span class="arrow">&#9654;</span> <!-- Right arrow -->
+                </td>
+                <td style="color: orange;">Warning</td>
+            </tr>
+            <tr class="alert-list" id="power-alerts">
+                <td colspan="2">
+                    <div class="alert-item">Power fluctuation detected at 3:45 PM.</div>
+                    <div class="alert-item">Backup generator activated.</div>
+                </td>
+            </tr>
+            <tr class="category-row" onclick="toggleAlerts('intruder-alerts', this)">
+                <td>
+                    <img src="https://cdn-icons-png.flaticon.com/128/2602/2602046.png" alt="Intruder Alert" class="icon">Intruder Alert
+                    <span class="arrow">&#9654;</span> <!-- Right arrow -->
+                </td>
+                <td style="color: red;">Critical</td>
+            </tr>
+            <tr class="alert-list" id="intruder-alerts">
+                <td colspan="2">
+                    <div class="alert-item">Unauthorized access detected at 5:30 AM.</div>
+                </td>
+            </tr>
+            <tr class="category-row" onclick="toggleAlerts('maintenance-alerts', this)">
+                <td>
+                    <img src="https://cdn-icons-png.flaticon.com/128/17933/17933964.png" alt="Maintenance Alert" class="icon">Maintenance Alert
+                    <span class="arrow">&#9654;</span> <!-- Right arrow -->
+                </td>
+                <td style="color: darkblue;">Info</td>
+            </tr>
+            <tr class="alert-list" id="maintenance-alerts">
+                <td colspan="2">
+                    <div class="alert-item">Routine maintenance scheduled for next week.</div>
+                </td>
+            </tr>
+            <tr class="category-row" onclick="toggleAlerts('network-alerts', this)">
+                <td>
+                    <img src="https://cdn-icons-png.flaticon.com/128/3598/3598209.png" alt="Network Alert" class="icon">Network Alert
+                    <span class="arrow">&#9654;</span> <!-- Right arrow -->
+                </td>
+                <td style="color: orange;">Warning</td>
+            </tr>
+            <tr class="alert-list" id="network-alerts">
+                <td colspan="2">
+                    <div class="alert-item">Network connectivity issues reported.</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        function toggleAlerts(alertId, rowElement) {
+            const alertList = document.getElementById(alertId);
+            const arrow = rowElement.querySelector('.arrow');
+            if (alertList.style.display === 'none' || alertList.style.display === '') {
+                alertList.style.display = 'table-row';
+                arrow.classList.add('collapsed'); // Remove collapsed class
+            } else {
+                alertList.style.display = 'none';
+                arrow.classList.remove('collapsed'); // Add collapsed class
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts Page</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            
+        }
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin: 20px auto;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Alerts Dashboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Alert Type</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><img src="cooling-icon.png" alt="Cooling Alert" class="icon">Cooling Alert</td>
+                <td>Temperature exceeds safe limits in cooling unit.</td>
+                <td style="color: red;">Urgent</td>
+            </tr>
+            <tr>
+                <td><img src="power-icon.png" alt="Power Alert" class="icon">Power Alert</td>
+                <td>Power supply fluctuation detected.</td>
+                <td style="color: orange;">Warning</td>
+            </tr>
+            <tr>
+                <td><img src="intruder-icon.png" alt="Intruder Alert" class="icon">Intruder Alert</td>
+                <td>Unauthorized access detected in restricted area.</td>
+                <td style="color: red;">Critical</td>
+            </tr>
+            <tr>
+                <td><img src="maintenance-icon.png" alt="Maintenance Alert" class="icon">Maintenance Alert</td>
+                <td>Routine maintenance required for cooling system.</td>
+                <td style="color: yellow;">Info</td>
+            </tr>
+            <tr>
+                <td><img src="network-icon.png" alt="Network Alert" class="icon">Network Alert</td>
+                <td>Network connectivity issues detected.</td>
+                <td style="color: orange;">Warning</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html> --}}

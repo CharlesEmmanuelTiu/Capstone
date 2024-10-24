@@ -14,7 +14,7 @@
     <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
     <meta name="author" content="Łukasz Holeczek">
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>Petrol Station Management Dashboard</title>
+    <title>ThermoGuard Management Dashboard</title>
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/assets/favicon/apple-icon-72x72.png">
@@ -99,8 +99,8 @@
             <div class="menu_one">
             <li class="nav-item"><a class="nav-link" href="/">Dashboard</a>
             <ul class="dropdown-menu">
-                    <li><a href="traditional_dc">Data Center 1 (Traditional)</a></li>
-                    <li><a href="#">Data Center 2 (Portable)</a></li>
+                    <li><a href="/traditional_dc">Data Center 1 (Traditional)</a></li>
+                    <li><a href="/">Data Center 2 (Portable)</a></li>
                     <li><a href="#">Data Center 3 (Traditional)</a></li>
                     {{!-- <% dataCenters.forEach(function(dc) { %>
                         <li><a href="#"> <%= dc.name %> </a></li>
@@ -111,6 +111,8 @@
             {{/if}}
               <li class="nav-item"><a class="nav-link" href="/infrastructure">Infrastructure</a></li>
               <li class="nav-item"><a class="nav-link" href="/cctv">CCTV</a></li>
+              <li class="nav-item"><a class="nav-link" href="/alerts">Alerts</a></li>
+              <li class="nav-item"><a class="nav-link" href="/proactive">Proactive</a></li>
               <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
               <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
           </ul>
