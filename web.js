@@ -76,6 +76,32 @@ let sensors = [
     { id: 3, name: 'Pressure Sensor', status: 'Active' },
   ];
 
+app.get('/traditional_dc', async (req, res) =>{
+    res.render('traditional_dc', {
+        
+
+        })
+})
+app.get('/cctv', async (req, res) =>{
+    res.render('cctv', {
+        
+
+        })
+})
+
+app.get('/proactive', async (req, res) =>{
+    res.render('proactive', {
+        
+
+        })
+})
+
+app.get('/alerts', async (req, res) =>{
+    res.render('alerts', {
+        
+
+        })
+})
 app.get('/infrastructure', async (req, res) => {
     let key = req.cookies.session
     let valid = await authenticateUser(key)
