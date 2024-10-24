@@ -77,30 +77,122 @@ let sensors = [
   ];
 
 app.get('/traditional_dc', async (req, res) =>{
-    res.render('traditional_dc', {
-        
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
 
-        })
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+
+        res.render('traditional_dc', {
+            user:user,
+            admin:isAdmin
+            })
+    }
 })
 app.get('/cctv', async (req, res) =>{
-    res.render('cctv', {
-        
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
 
-        })
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+
+        res.render('cctv', {
+            user:user,
+            admin:isAdmin
+            })
+    }
 })
 
 app.get('/proactive', async (req, res) =>{
-    res.render('proactive', {
-        
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
 
-        })
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+
+        res.render('proactive', {
+            user:user,
+            admin:isAdmin
+            })
+    }
 })
 
 app.get('/alerts', async (req, res) =>{
-    res.render('alerts', {
-        
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
 
-        })
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+
+        res.render('alerts', {
+            user:user,
+            admin:isAdmin
+            })
+    }
 })
 app.get('/infrastructure', async (req, res) => {
     let key = req.cookies.session
