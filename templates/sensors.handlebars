@@ -120,51 +120,18 @@
   </style>
 </head>
 <body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-8 offset-md-2">
         <div class="card">
           <div class="card-header">
-            <h3>Sensors Control</h3>
+            <h3>Data Center 3D Model</h3>
           </div>
-          <div class="card-body">
-            <table class="table table-hover" id="sensorsTable">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="sensorsBody">
-                {{#each sensors}}
-                  <tr>
-                    <td>
-                      <img src="https://w7.pngwing.com/pngs/688/48/png-transparent-electricity-meter-computer-icons-others-text-rectangle-electrical-wires-cable.png" alt="{{this.name}} icon" style="width: 100px; height: 50px;">
-                    </td>
-                    <td>{{this.id}}</td>
-                    <td><a href="/admin/view-statistics/{{this.id}}" style="color: #007bff;">{{this.name}}</a></td>
-                    <td>{{this.status}}</td>
-                    <td>
-                      <label class="switch">
-                        <input type="checkbox" {{#if this.status}}checked{{/if}} data-sensor-id="{{this.id}}">
-                        <span class="slider"></span>
-                      </label>
-                    </td>
-                    <td>
-                      <form action="/admin/delete-sensor" method="post">
-                        <input type="hidden" name="token" value="{{../csrfToken}}">
-                        <a class="btn btn-warning btn-sm" href="/admin/edit-sensor?sensor={{this.id}}">Edit Sensor</a>
-                        <input type="hidden" name="sensorId" value="{{this.id}}">
-                        <input type="submit" class="btn btn-danger btn-sm" tabindex="-1" role="button" value="Remove Sensor">
-                      </form>
-                    </td>
-                  </tr>
-                {{/each}}
-              </tbody>
-            </table>
+          <div class="card-body" id="3d-container" style="height: 500px;">
+            <!-- The Three.js renderer will be inserted here -->
           </div>
         </div>
       </div>
@@ -172,291 +139,75 @@
   </div>
 
   <script>
-    // Function to load sensors from the backend server
-    function loadSensors() {
-      fetch('http://localhost:5000/sensors')
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          // Get the CSRF token if needed
-          const csrfToken = 'your_csrf_token_here'; // Replace with actual CSRF token
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
 
-          // Create a context for Handlebars
-          const context = {
-            sensors: data,
-            csrfToken: csrfToken
-          };
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const container = document.getElementById('3d-container'); // Select the div for 3D rendering
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    container.appendChild(renderer.domElement); // Append renderer to the card-body
 
-          // Render the Handlebars template
-          const templateSource = document.getElementById('sensors-template').innerHTML;
-          const template = Handlebars.compile(templateSource);
-          const html = template(context);
-          
-          // Insert the rendered HTML into the table body
-          document.getElementById('sensorsBody').innerHTML = html;
+    // Create a simple rack model (box)
+    const geometry = new THREE.BoxGeometry(1, 2, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const rack = new THREE.Mesh(geometry, material);
+    scene.add(rack);
 
-          // Attach event listeners to toggle switches
-          document.querySelectorAll('input[type="checkbox"]').forEach(function(toggle) {
-            toggle.addEventListener('change', function() {
-              const sensorId = this.getAttribute('data-sensor-id');
-              const newStatus = this.checked ? "on" : "off";
-              // Update the sensor status on the server
-              updateSensorStatus(sensorId, newStatus);
-            });
-          });
-        })
-        .catch(function(error) {
-          console.error('Error fetching sensors:', error);
-        });
-    }
+    // Add some lighting (optional, for better visualization)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
 
-    // Function to update sensor status
-    function updateSensorStatus(sensorId, newStatus) {
-      fetch(`http://localhost:5000/update-sensor-status`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': 'your_csrf_token_here' // Replace with actual CSRF token
-        },
-        body: JSON.stringify({ sensorId: sensorId, status: newStatus })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Sensor status updated:', data);
-      })
-      .catch(error => {
-        console.error('Error updating sensor status:', error);
-      });
-    }
+    const pointLight = new THREE.PointLight(0xffffff, 0.8);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
 
-    // Load sensors when the page is ready
-    window.onload = loadSensors;
+    // OrbitControls for rotating and zooming the model
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; // Smooth movement
+    controls.dampingFactor = 0.05;
+
+    // Animate the scene
+    const animate = function () {
+      requestAnimationFrame(animate);
+
+      // Required if controls.enableDamping is true
+      controls.update();
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Handle window resizing
+    window.addEventListener('resize', () => {
+      const width = container.offsetWidth;
+      const height = container.offsetHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    });
   </script>
 
-  <!-- Handlebars template for rendering sensors -->
-  <script id="sensors-template" type="text/x-handlebars-template">
-    {{#each sensors}}
-      <tr>
-        <td><i class="{{this.icon}}"></i></td>
-        <td>{{this.id}}</td>
-        <td><a href="/admin/view-statistics/{{this.id}}">{{this.name}}</a></td>
-        <td>
-          <label class="switch">
-            <input type="checkbox" {{#if this.status}}checked{{/if}} data-sensor-id="{{this.id}}">
-            <span class="slider"></span>
-          </label>
-        </td>
-        <td>
-          <form action="/admin/delete-sensor" method="post">
-            <input type="hidden" name="token" value="{{../csrfToken}}">
-            <a class="btn btn-warning btn-sm" href="/admin/edit-sensor?sensor={{this.id}}">Edit Sensor</a>
-            <input type="hidden" name="sensorId" value="{{this.id}}">
-            <input type="submit" class="btn btn-danger btn-sm" tabindex="-1" role="button" value="Remove Sensor">
-          </form>
-        </td>
-      </tr>
-    {{/each}}
+  <script>
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    // Event listener for mouse move
+    window.addEventListener('mousemove', (event) => {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      const intersects = raycaster.intersectObjects(scene.children);
+
+      if (intersects.length > 0) {
+        // Change color or show component details on hover
+        intersects[0].object.material.color.set(0xff0000); // Example: change color to red
+      }
+    });
   </script>
 </body>
+
 </html>
-
-
-
-
-
-{{!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sensors Control</title>
-  <link href="https://unpkg.com/@coreui/coreui@4.2.4/dist/css/coreui.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
-</head>
-<body>
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <div class="card">
-          <div class="card-header">
-            <h3>Sensors Control</h3>
-          </div>
-          <div class="card-body">
-            <table class="table table-hover" id="sensorsTable">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="sensorsBody">
-                {{#each sensors}}
-                  <tr>
-                    <td><img src="https://w7.pngwing.com/pngs/688/48/png-transparent-electricity-meter-computer-icons-others-text-rectangle-electrical-wires-cable.png" alt="{{this.name}} icon" style="width: 120px; height: 70px;"></td>
-                    
-                    <td>{{this.id}}</td>
-                    <td><a href="/admin/view-statistics/{{this.id}}">{{this.name}}</a></td>
-                    <td>{{this.status}}</td>
-                    <td>
-                      <form action="/admin/delete-sensor" method="post">
-                        <input type="hidden" name="token" value="{{../csrfToken}}">
-                        <a class="btn btn-warning btn-sm" href="/admin/edit-sensor?sensor={{this.id}}">Edit Sensor</a> &nbsp; &nbsp;
-                        <input type="hidden" name="sensorId" value="{{this.id}}">
-                        <input type="submit" class="btn btn-danger btn-sm" tabindex="-1" role="button" value="Remove Sensor">
-                      </form>
-                    </td>
-                  </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Function to load sensors from the backend server
-    function loadSensors() {
-      fetch('http://localhost:5000/sensors')
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          // Get the CSRF token if needed
-          const csrfToken = 'your_csrf_token_here'; // Replace with actual CSRF token
-
-          // Create a context for Handlebars
-          const context = {
-            sensors: data,
-            csrfToken: csrfToken
-          };
-
-          // Render the Handlebars template
-          const templateSource = document.getElementById('sensors-template').innerHTML;
-          const template = Handlebars.compile(templateSource);
-          const html = template(context);
-          
-          // Insert the rendered HTML into the table body
-          document.getElementById('sensorsBody').innerHTML = html;
-        })
-        .catch(function(error) {
-          console.error('Error fetching sensors:', error);
-        });
-    }
-
-    // Load sensors when the page is ready
-    window.onload = loadSensors;
-  </script>
-
-  <!-- Handlebars template for rendering sensors -->
-  <script id="sensors-template" type="text/x-handlebars-template">
-    {{#each sensors}}
-      <tr>
-        <td><i class="{{this.icon}}"></i></td> <!-- Add icon for each sensor -->
-        <td>{{this.id}}</td>
-        <td><a href="/admin/view-statistics/{{this.id}}">{{this.name}}</a></td>
-        <td>{{this.status}}</td>
-        <td>
-          <form action="/admin/delete-sensor" method="post">
-            <input type="hidden" name="token" value="{{../csrfToken}}">
-            <a class="btn btn-warning btn-sm" href="/admin/edit-sensor?sensor={{this.id}}">Edit Sensor</a> &nbsp; &nbsp;
-            <input type="hidden" name="sensorId" value="{{this.id}}">
-            <input type="submit" class="btn btn-danger btn-sm" tabindex="-1" role="button" value="Remove Sensor">
-          </form>
-        </td>
-      </tr>
-    {{/each}}
-  </script>
-</body>
-</html> --}}
-
-
-
-
-{{!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Center Sensors</title>
-  <!-- CoreUI CSS -->
-  <link href="https://unpkg.com/@coreui/coreui@4.2.4/dist/css/coreui.min.css" rel="stylesheet" />
-</head>
-<body>
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <div class="card">
-          <div class="card-header">
-            <h3>Sensors Control</h3>
-          </div>
-          <div class="card-body">
-            <table class="table table-hover" id="sensorsTable">
-              <thead>
-                <tr>
-                  <th>Sensor</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="sensorsBody">
-                <!-- Dynamic content will be inserted here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CoreUI and Bootstrap JS -->
-  <script src="https://unpkg.com/@coreui/coreui@4.2.4/dist/js/coreui.bundle.min.js"></script>
-  <script>
-    // Fetch all sensors from the API and populate the table
-    async function loadSensors() {
-      const response = await fetch('http://localhost:5000/sensors');
-      const sensors = await response.json();
-      console.log(1)
-      const sensorsBody = document.getElementById('sensorsBody');
-
-      // Use Array.map to create HTML string and set innerHTML
-        sensorsBody.innerHTML = sensors
-        .map(function(sensor) {
-            return `
-            <tr>
-                <td>${sensor.name}</td>
-                <td>${sensor.status ? 'On' : 'Off'}</td>
-                <td>
-                <button class="btn btn-sm btn-${sensor.status ? 'danger' : 'success'}" onclick="toggleSensor(${sensor.id})">
-                    ${sensor.status ? 'Turn Off' : 'Turn On'}
-                </button>
-                </td>
-            </tr>
-            `;
-        })
-        .join(''); // Join the array of strings to get a single HTML string
-
-    }
-
-    // Toggle the status of a sensor
-    async function toggleSensor(id) {
-      const response = await fetch(`http://localhost:5000/sensors/${id}/toggle`, {
-        method: 'PUT',
-      });
-      const updatedSensor = await response.json();
-
-      // Reload sensors after updating
-      loadSensors();
-    }
-
-    // Load sensors when the page is ready
-    window.onload = loadSensors;
-  </script>
-</body>
-</html> --}}
