@@ -27,36 +27,86 @@
             <!-- System Overview Row -->
             <div class="row g-4 mb-4">
                     <!-- Power Usage Bar Chart -->
-                    <div class="card">
-                        <div class="sub-card">
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Power Usage</h4>
+                            </div>
                             <div class="card-body">
-                                <div id="powerGraph" style="width:100%; height: 300px;">
+                                <div id="powerGraph" style="width:100%; height:250px;">
                                     <canvas id="powerUsageChart"></canvas>
                                 </div>
                             </div>
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Humidity</h4>
+                            </div>
                                 <div class="card-body">
-                                <div id="humGraph" style="width: 100%; height: 300px;">
+                                    <center>
+                                <div id="humGraph" style="width:100%; height:250px;">
                                     <canvas id="humidityChart"></canvas>
                                 </div>
+                                </center>
                             </div>
-                        </div>
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Alerts</h4>
+                            </div>
+                                <div class="card-bodying">
+                                    <center>
+                                <table>
+                                    <tr>
+                                        <th>Alert</th>
+                                        <th>Source</th>
+                                        <th>Occured</th>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="../static/assets/img/temp.png" class="icon-small"></td>
+                                        <td>Over There</td>
+                                        <td>Lately</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="../static/assets/img/fan.png" class="icon-small"></td>
+                                        <td>My fans</td>
+                                        <td>are early</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="../static/assets/img/hack.png" class="icon-small"></td>
+                                        <td>Some dude</td>
+                                        <td>is sus</td>
+                                    </tr>
+                                </table></center>
+                            </div>
                     </div>
             </div>
                 <div class="row g-4 mb-4">
-                    <div class="card">
-                        <div class="sub-card">
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Temperature</h4>
+                            </div>
                             <div class="card-body">
                             <div id="tempGraph" style="width: 100%; height: 260px;">
                                 <!-- Insert your temperature graph here using a charting library like Chart.js -->
                                 <canvas id="temperatureChart"></canvas>
                             </div>
                             </div>
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Humidity Gauge</h4>
+                            </div>
                             <div class="card-body">
                             <div id="humidChart" style="width: 100%; height: 250px;">
                                 <canvas id="humidityContainer"></canvas>
                             </div>
                             </div>
-                            <div class="card-body">
+                    </div>
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Temperature</h4>
+                            </div>
+                            <div class="card-bodying">
                             <div class="d-flex justify-content-between">
                                 <p class="card-text"><strong>Current Temp:</strong> <span id="currentTemperature" class="badge bg-info">°C</span></p>
                                 <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
@@ -67,7 +117,6 @@
                             </div>
                             <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
-                        </div>
                     </div>
                 </div>
             {{!-- <div class="row g-4 mb-4">
@@ -179,23 +228,23 @@
         var humidityChart = new Chart(ctxHumidity, {
             type: 'pie',
             data: {
-                labels: ['Server Rooms', 'Cooling Areas', 'Storage Rooms', 'Networking Equipment Rooms', 'Electrical Rooms'],
+                labels: ['Server Rooms', 'Cooling Areas', 'Networking Equipment Rooms', 'Electrical Rooms'],
                 datasets: [{
                     label: 'Humidity (°C)',
-                    data: [40, 30, 15, 10, 5],
+                    data: [40, 30, 15, 10],
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)'
+                        'rgb(171, 0, 8)',
+                        'rgb(0, 33, 255)',
+                        'rgb(230, 205, 0)',
+                        'rgb(4, 133, 0)',
+                        'rgb(178, 0, 171)'
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)'
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)'
                     ],
                     borderWidth: 1
                 }]
@@ -205,7 +254,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        suggestedMax: 40
+                        suggestedMax: 10
                     }
                 }
             }
@@ -219,23 +268,24 @@
                     label: 'Power Usage (kW)',
                     data: [500, 300, 100, 200, 150],
                     backgroundColor: [
-                        'rgba(75, 192, 192, 0.5)',
-                        'rgba(54, 162, 235, 0.5)',
-                        'rgba(255, 206, 86, 0.5)',
-                        'rgba(153, 102, 255, 0.5)',
-                        'rgba(255, 99, 132, 0.5)'
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 206, 86)',
+                        'rgb(153, 102, 255)',
+                        'rgb(255, 99, 132)'
                     ],
                     borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 99, 132, 1)'
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)',
+                        'rgb(0, 0, 0)'
                     ],
                     borderWidth: 1
                 }]
             },
             options: {
+                indexAxis: 'y',
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -258,23 +308,23 @@
             limitMin: false, // False = infinite min value
             colorStart: '#6FADCF', // Colors
             colorStop: '#8FC0DA',
-            strokeColor: '#E0E0E0', // Background color
+            strokeColor: '#E0E0E0', 
             generateGradient: true
         };
-        var target = document.getElementById('humidityContainer'); // Your canvas element
-        var HumidityGauge = new Gauge(target).setOptions(opts); // Create gauge
-        HumidityGauge.maxValue = 100; // Set max gauge value
-        HumidityGauge.setMinValue(0);  // Minimum value
-        HumidityGauge.animationSpeed = 32; // Set animation speed
-        HumidityGauge.set(70); // Initial value
+        var target = document.getElementById('humidityContainer'); 
+        var HumidityGauge = new Gauge(target).setOptions(opts); 
+        HumidityGauge.maxValue = 100; 
+        HumidityGauge.setMinValue(0);  
+        HumidityGauge.animationSpeed = 32; 
+        HumidityGauge.set(70); 
 
         function addLabel(value) {
-            var ctx = target.getContext('2d'); // Get the canvas context
-            ctx.font = "20px Arial"; // Set font size and style
-            ctx.textAlign = "center"; // Center the text
-            ctx.fillStyle = "#000000"; // Text color
-            ctx.clearRect(0, 120, 300, 50); // Clear any previous text (adjust based on canvas size)
-            ctx.fillText(value + "% Humidity", target.width / 2, 150); // Draw the text (adjust Y position)
+            var ctx = target.getContext('2d'); 
+            ctx.font = "20px Arial"; 
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#000000";
+            ctx.clearRect(0, 120, 300, 50);
+            ctx.fillText(value + "% Humidity", target.width / 2, 150);
         }
 
         // Initial label

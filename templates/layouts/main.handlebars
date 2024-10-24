@@ -14,7 +14,7 @@
     <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
     <meta name="author" content="Łukasz Holeczek">
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>ThermoGuard Management Dashboard</title>
+    <title>Petrol Station Management Dashboard</title>
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/assets/favicon/apple-icon-72x72.png">
@@ -39,59 +39,39 @@
     <link href="/style.css" rel="stylesheet">
   </head>
   <body>
-    {{#unless public}}
-    {{!-- <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+    <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">
-        <svg class="sidebar-brand-full" width="118" height="46" alt="CoreUI Logo">
-           
-        </svg>
-        <svg class="sidebar-brand-narrow" width="46" height="50" alt="CoreUI Logo">
-
-        </svg>
+        <img src="../../static/assets/img/logo.png" width="46" height="50">
       </div>
       <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
-        {{!-- {{#if manager}} --}}
-        {{!-- <li class="nav-title">ThermoGuard</li> --}}
-        {{!-- <li class="nav-item"><a class="nav-link" href="/settings">
+        <li class="nav-title">ThermoGuard</li>
+        <li class="nav-item"><a class="nav-link" href="/data_reports">
             <svg class="nav-icon">
-              <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-settings"></use>
-            </svg>  Settings</a></li>
+              <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
+            </svg>Data Reports</a></li>
         {{#if admin}}
         <li class="nav-item"><a class="nav-link" href="/add-account">
             <svg class="nav-icon">
               <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-user"></use>
             </svg>Add User</a></li>
-        {{/if}} --}}
-        {{!-- {{/if}} --}}
-
-        {{!-- {{#if admin}}
-        <li class="nav-title">Manage</li>
-        <li class="nav-item"><a class="nav-link" href="/admin/manage-accounts">
-            <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-people"></use>
-            </svg>User Accounts</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/manage-stations">
-            <svg class="nav-icon">
-              <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-chart-line"></use>
-            </svg>Petrol Station</a></li>
-        {{/if}} --}}
-      {{!-- </ul> 
-    </div> --}}
-    {{/unless}}
+        {{/if}}
+      </ul> 
+    </div>
 
     <div class="wrapper d-flex flex-column min-vh-100 bg-light">
       <header class="header header-sticky mb-4">
         <div class="container-fluid">
           {{#unless public}}
           <button class="header-toggler px-md-0 me-md-3" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
-          {{!-- <button class="header-toggler px-md-0 me-md-3" type="button" id="sidebarToggle"></button>   --}}
-            {{!-- <svg class="icon icon-lg">
+            <svg class="icon icon-lg">
               <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-menu"></use>
-            </svg> --}}
-          </button><a class="header-brand d-md-none" href="#">
+            </svg>
+          </button>
+          <a class="header-brand d-md-none" href="#">
             <svg width="118" height="46" alt="CoreUI Logo">
               <use xlink:href="/assets/brand/coreui.svg#full"></use>
             </svg></a>
+
           {{/unless}}
           <ul class="d-md-something">
           {{!-- <ul class="header-nav d-none d-md-something"></ul> --}}
@@ -99,20 +79,18 @@
             <div class="menu_one">
             <li class="nav-item"><a class="nav-link" href="/">Dashboard</a>
             <ul class="dropdown-menu">
-                    <li><a href="/traditional_dc">Data Center 1 (Traditional)</a></li>
-                    <li><a href="/">Data Center 2 (Portable)</a></li>
-                    <li><a href="#">Data Center 3 (Traditional)</a></li>
-                    {{!-- <% dataCenters.forEach(function(dc) { %>
-                        <li><a href="#"> <%= dc.name %> </a></li>
-                    <% }); %> --}}
+                    <li><a href="#">Data Center 1</a></li>
+                    <li><a href="#">Data Center 2</a></li>
+                    <li><a href="#">Data Center 3</a></li>
             </ul></li></div>
-            {{#if admin}}
-            <li class="nav-item"><a class="nav-link" href="/add-account">Add User</a></li>
-            {{/if}}
               <li class="nav-item"><a class="nav-link" href="/infrastructure">Infrastructure</a></li>
-              <li class="nav-item"><a class="nav-link" href="/cctv">CCTV</a></li>
-              <li class="nav-item"><a class="nav-link" href="/alerts">Alerts</a></li>
-              <li class="nav-item"><a class="nav-link" href="/proactive">Proactive</a></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
+              <li class="nav-item"></li>
               <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
               <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
           </ul>
@@ -190,15 +168,15 @@
     <script src="/vendors/chart.js/js/chart.min.js"></script>
     <script src="/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
     <script src="/vendors/@coreui/utils/js/coreui-utils.js"></script>
-    {{!-- <script src="/js/main.js"></script> --}}
+    <script src="/js/main.js"></script>
     <script>
     </script>
-    {{!-- <script>
+    <script>
       // JavaScript to handle the sidebar toggle
       document.getElementById('sidebarToggle').addEventListener('click', function() {
         document.querySelector('.sidebar').classList.toggle('active');
       });
-    </script> --}}
+    </script>
     <script>
       // JavaScript to toggle sidebar
       document.getElementById('sidebarToggle').addEventListener('click', function() {
