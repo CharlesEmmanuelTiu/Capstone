@@ -4955,12 +4955,12 @@ html:not([dir=rtl]) .card-link + .card-link {
 }
 
 .card-header {
-  align-items: center;
   margin-bottom: 0;
   color: var(--cui-card-cap-color);
   background-color: var(--cui-card-cap-bg);
   border-bottom: var(--cui-card-border-width) solid var(--cui-card-border-color);
 }
+
 .card-header:first-child {
   border-radius: var(--cui-card-inner-border-radius) var(--cui-card-inner-border-radius) 0 0;
 }

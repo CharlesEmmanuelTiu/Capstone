@@ -221,6 +221,37 @@ app.get('/infrastructure', async (req, res) => {
         res.render('infrastructure', {
             user:user,
             admin:isAdmin,
+            })
+    }
+})
+
+app.get('/cooling_system', async (req, res) => {
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
+
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+
+        res.render('cooling_system', {
+            user:user,
+            admin:isAdmin,
             sensors:sensors
             })
     }
