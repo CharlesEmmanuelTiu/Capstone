@@ -34,25 +34,40 @@ camera.position.z = 5;
 const container = document.getElementById('3d-container'); // Ensure this div exists in your HTML
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.offsetWidth, container.offsetHeight);
-renderer.setClearColor(0x000000, 1); // Set background color to black
+renderer.setClearColor(0x909090, 1); // Set background color to black
 container.appendChild(renderer.domElement);
 
 // Create the rack (outer frame)
-const rackGeometry = new THREE.BoxGeometry(1, 3, 1);
+const rackGeometry = new THREE.BoxGeometry(7, 3, 1);
 const rackMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // Dark color for the frame
 const rack = new THREE.Mesh(rackGeometry, rackMaterial);
 scene.add(rack);
 
 // Create multiple server units (smaller boxes) and add them inside the rack
-const serverGeometry = new THREE.BoxGeometry(0.9, 0.3, 0.95);
+const serverGeometry = new THREE.BoxGeometry(0.9, 0.3, 1.05);
 const serverMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 }); // Gray color for the servers
 const serverUnits = [];
 
-for (let i = -1; i <= 1; i += 0.5) {
-  const serverUnit = new THREE.Mesh(serverGeometry, serverMaterial.clone()); // Clone material for each unit
-  serverUnit.position.y = i;
+count = -3
+height = -1
+limit = 1
+const serverUnit = new THREE.Mesh(serverGeometry, serverMaterial.clone()); // Clone material for each unit
+  serverUnit.position.y = 1;
+  serverUnit.position.x = -3;
   scene.add(serverUnit);
   serverUnits.push(serverUnit);
+for (let i = -1; i <= 15; i += 0.5) {
+  if (limit%5==0){
+    count += 1
+    height = -1
+  }
+  const serverUnit = new THREE.Mesh(serverGeometry, serverMaterial.clone()); // Clone material for each unit
+  serverUnit.position.y = height;
+  serverUnit.position.x = count;
+  scene.add(serverUnit);
+  serverUnits.push(serverUnit);
+  height += 0.5
+  limit += 1
 }
 
 // Add LEDs (small colored circles) to each server for indicators
