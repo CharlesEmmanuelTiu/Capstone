@@ -4862,6 +4862,11 @@ html:not([dir=rtl]) .navbar-nav {
   height: 10%;
 }
 
+.card3 {
+  width: 90%;
+  height: 90%;
+}
+
 .card {
   --cui-card-spacer-y: 1rem;
   --cui-card-spacer-x: 1rem;
@@ -14278,4 +14283,15 @@ tr {
 .icon-small {
   width: 45px; /* Set the desired width */
   height: 40px; /* Set the desired height */
+
+}
+
+.alert-links {
+  color: black;
+  text-decoration: none;
+}
+
+.alert-links:hover {
+  color: rgba(0, 0, 0, 0.5)
+
 }
