@@ -14283,6 +14283,7 @@ tr {
 .icon-small {
   width: 45px; /* Set the desired width */
   height: 40px; /* Set the desired height */
+
 }
 
 .alert-links {
@@ -14292,4 +14293,5 @@ tr {
 
 .alert-links:hover {
   color: rgba(0, 0, 0, 0.5)
+
 }
