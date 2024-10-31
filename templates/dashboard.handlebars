@@ -172,7 +172,7 @@
 
                                     var gauge = drawLinearGauge(70);
                                     var thermometer = gauge.thermometer(0);
-                                    thermometer.name('Thermometer').fill('#64b5f6').stroke('#64b5f6');
+                                    thermometer.name('Thermometer').fill('green').stroke('green');
                                     gauge.container('thermometerContainer');
                                     gauge.draw();
                                     
@@ -191,12 +191,15 @@
                                         if (temperature > 35) {
                                             document.getElementById("currentStatus").innerHTML = "Danger";
                                             document.getElementById("currentStatus").style.backgroundColor = "red";
+                                            thermometer.name('Thermometer').fill('red').stroke('red')
                                         } else if (temperature > 27) {
                                             document.getElementById("currentStatus").innerHTML = "Risk";
                                             document.getElementById("currentStatus").style.backgroundColor = "orange";
+                                            thermometer.name('Thermometer').fill('orange').stroke('orange')
                                         } else {
                                             document.getElementById("currentStatus").innerHTML = "Optimal";
                                             document.getElementById("currentStatus").style.backgroundColor = "green";
+                                            thermometer.name('Thermometer').fill('green').stroke('green')
                                         }
 
                                         } catch (error) {
@@ -249,22 +252,15 @@
                         'rgb(153, 102, 255)',
                         'rgb(255, 99, 132)'
                     ],
-                    borderColor: [
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0
                 }]
             },
             
             options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        suggestedMax: 10
+                plugins: {
+                    legend: {
+                        display:   
+                    false // Hide the default legend
                     }
                 }
             }
@@ -339,6 +335,35 @@
 
         // Initial label
         addLabel(70);
+    </script>
+    <script>
+                // Add labels and lines manually
+        var ctx = myChart.ctx;
+        var chartWidth = myChart.width;
+        var chartHeight = myChart.height;
+        var centerX = chartWidth / 2;
+        var centerY = chartHeight / 2;
+
+        var labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
+        var angles = myChart.data.datasets[0].angles; // Get angles of each slice
+
+        for (var i = 0; i < labels.length; i++) {
+            var angle = angles[i] / 2; // Calculate angle to the center of the slice
+            var x = centerX + Math.cos(angle) * chartWidth / 2;
+            var y = centerY + Math.sin(angle) * chartHeight / 2;
+
+            // Draw label text
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText(labels[i], x, y);
+
+            // Draw line to the slice
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x, y);
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+        }
     </script>
 </body>
 {{!-- <body>
