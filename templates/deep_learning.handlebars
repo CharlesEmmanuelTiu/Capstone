@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Temperature Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #alert {
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #temperatureChart {
+            width: 50%;
+            height: 450px;
+            margin: 20px auto;
+        }
+        #log {
+            
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+            background-color: #f9f9f9;
+        }
+        p{
+            margin-top: 2%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p>Temperature Prediction: <span id="temperature">Loading...</span>°C</p>
+        {{!-- <div id="alert"></div> --}}
+    </div>
+
+    <canvas id="predictionChart"></canvas>
+    <div id="log"></div>
+
+   <script>
+        // Fetch predicted data from the Flask API
+        async function fetchPredictedData() {
+            try {
+                const response = await fetch('http://localhost:5000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ /* Insert data here for testing */ })
+                });
+                const data = await response.json();
+                const predictions = data.predictions;
+
+                // Update the chart with new data
+                updateChart(predictions);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Create and update the line chart
+        const ctx = document.getElementById('predictionChart').getContext('2d');
+        const predictionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(10).fill(""),  // Placeholder labels
+                datasets: [
+                    {
+                        label: 'Temperature',
+                        data: [],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'Humidity',
+                        data: [],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        fill: false,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: 'Time' } },
+                    y: { title: { display: true, text: 'Values' } }
+                }
+            }
+        });
+
+        // Function to update chart data
+        function updateChart(predictions) {
+            const tempData = predictions.map(pred => pred[0]); // Assuming temperature is the first value
+            const humidityData = predictions.map(pred => pred[1]); // Assuming humidity is the second value
+
+            predictionChart.data.labels = Array(predictions.length).fill("");
+            predictionChart.data.datasets[0].data = tempData;
+            predictionChart.data.datasets[1].data = humidityData;
+            predictionChart.update();
+        }
+
+        // Fetch data every 10 seconds
+        setInterval(fetchPredictedData, 10000);
+    </script>
+</body>
+</html>
+
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Temperature Monitor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            
+        }
+        #alert {
+            color: red;
+            font-weight: bold;
+        }
+        #temperatureChart {
+            width: 50%;
+            height: 450px;
+            margin-top: 20px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Center Temperature Monitor</h1>
+    <div>
+        <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+        <p id="alert"></p>
+    </div>
+
+    <canvas id="temperatureChart"></canvas>
+
+    <script>
+        const ALERT_THRESHOLD = 5.0; // Temperature fluctuation threshold
+        let previousTemp = null;
+        let temperatureData = []; // Array to hold temperature readings
+        let timeLabels = []; // Array to hold time labels for the chart
+
+        // Set up Chart.js
+        const ctx = document.getElementById('temperatureChart').getContext('2d');
+        const temperatureChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: temperatureData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    }
+                }
+            }
+        });
+
+        function getTemperature() {
+            // Simulate temperature reading (random between 20°C and 30°C)
+            return (Math.random() * 10 + 20).toFixed(2);
+        }
+
+        function sendAlert(message) {
+            const alertDiv = document.getElementById("alert");
+            alertDiv.innerText = message; // Display alert message on the page
+            alertDiv.style.display = "block"; // Show the alert
+            setTimeout(() => { alertDiv.style.display = "none"; }, 5000); // Hide after 5 seconds
+            console.log(message); // Log the message in the console
+        }
+
+        function monitorTemperature() {
+            setInterval(() => {
+                const currentTemp = getTemperature();
+                document.getElementById("temperature").innerText = currentTemp;
+
+                // Add current temperature and time to the chart data
+                const currentTime = new Date().toLocaleTimeString();
+                temperatureData.push(currentTemp);
+                timeLabels.push(currentTime);
+                
+                // Update the chart with new data
+                temperatureChart.update();
+
+                if (previousTemp !== null) {
+                    // Check for significant fluctuations
+                    if (Math.abs(currentTemp - previousTemp) > ALERT_THRESHOLD) {
+                        const alertMessage = `Temperature fluctuation detected! Previous: ${previousTemp}°C, Current: ${currentTemp}°C`;
+                        sendAlert(alertMessage);
+                    }
+                }
+
+                previousTemp = currentTemp;
+            }, 3000); // Check every 3 seconds
+        }
+
+        // Start monitoring when the page loads
+        window.onload = monitorTemperature;
+    </script>
+</body>
+</html> --}}
+
+
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Temperature Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            
+            
+        }
+        #alert {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Center Temperature Monitor</h1>
+    <div>
+        <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+        <p id="alert"></p>
+    </div>
+
+    <script>
+        const ALERT_THRESHOLD = 5.0; // Temperature fluctuation threshold
+        let previousTemp = null;
+
+        function getTemperature() {
+            // Simulate temperature reading (random between 20°C and 30°C)
+            return (Math.random() * 10 + 20).toFixed(2);
+        }
+
+        function sendAlert(message) {
+            const alertDiv = document.getElementById("alert");
+            alertDiv.innerText = message; // Display alert message on the page
+            alertDiv.style.display = "block"; // Show the alert
+            setTimeout(() => { alertDiv.style.display = "none"; }, 5000); // Hide after 5 seconds
+            console.log(message); // Log the message in the console
+        }
+
+        function monitorTemperature() {
+            setInterval(() => {
+                const currentTemp = getTemperature();
+                document.getElementById("temperature").innerText = currentTemp;
+
+                if (previousTemp !== null) {
+                    // Check for significant fluctuations
+                    if (Math.abs(currentTemp - previousTemp) > ALERT_THRESHOLD) {
+                        const alertMessage = `Temperature fluctuation detected! Previous: ${previousTemp}°C, Current: ${currentTemp}°C`;
+                        sendAlert(alertMessage);
+                    }
+                }
+
+                previousTemp = currentTemp;
+            }, 3000); // Check every 3 seconds
+        }
+
+        // Start monitoring when the page loads
+        window.onload = monitorTemperature;
+    </script>
+</body>
+</html> --}}
