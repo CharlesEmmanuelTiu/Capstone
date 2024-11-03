@@ -13,7 +13,7 @@ df = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
 
 # Scale the data
 scaler = MinMaxScaler()
-data = scaler.fit_transform(df[['CPU Package Temperature (°C)', 'CPU Power Consumption (W)', 'Humidity (%)']])
+data = scaler.fit_transform(df[['CPU Package Temperature (C)', 'CPU Power Consumption (W)', 'Humidity (%)']])
 
 # Create sequences for LSTM
 def create_sequences(data, seq_length):
