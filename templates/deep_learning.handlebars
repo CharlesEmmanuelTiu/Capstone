@@ -35,76 +35,72 @@
 </head>
 <body>
     <div>
-        <p>Temperature Prediction: <span id="temperature">Loading...</span>°C</p>
+        <p>Temperature Prediction:</p>
         {{!-- <div id="alert"></div> --}}
     </div>
 
     <canvas id="predictionChart"></canvas>
     <div id="log"></div>
 
-   <script>
-        // Fetch predicted data from the Flask API
-        async function fetchPredictedData() {
-            try {
-                const response = await fetch('http://localhost:5000/predict', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-                const data = await response.json();
-                const predictions = data.predictions;
-                console.log(predictions)
-                // Update the chart with new data
+<script>
+    // Fetch predicted data from the Flask API
+    async function fetchPredictedData() {
+        try {
+            const response = await fetch('http://localhost:5000/predict', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await response.json();
+            const predictions = data.predictions;
+            console.log(predictions);  // Log predictions to verify structure
+            
+            // Update the chart with new data if predictions are valid
+            if (predictions && predictions.length > 0) {
                 updateChart(predictions);
-            } catch (error) {
-                console.error("Error fetching data:", error);
             }
+        } catch (error) {
+            console.error("Error fetching data:", error);
         }
+    }
 
-        // Create and update the line chart
-        const ctx = document.getElementById('predictionChart').getContext('2d');
-        const predictionChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array(10).fill(""),  // Placeholder labels
-                datasets: [
-                    {
-                        label: 'Temperature',
-                        data: [],
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        fill: false,
-                    },
-                    {
-                        label: 'Humidity',
-                        data: [],
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        fill: false,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { title: { display: true, text: 'Time' } },
-                    y: { title: { display: true, text: 'Values' } }
+    // Create and update the line chart
+    const ctx = document.getElementById('predictionChart').getContext('2d');
+    const predictionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],  // Dynamic labels
+            datasets: [
+                {
+                    label: 'Temperature',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    fill: false,
                 }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Time' } },
+                y: { title: { display: true, text: 'Temperature (°C)' } }
             }
-        });
-
-        // Function to update chart data
-        function updateChart(predictions) {
-            const tempData = predictions.map(pred => pred[0]); // Assuming temperature is the first value
-            const humidityData = predictions.map(pred => pred[1]); // Assuming humidity is the second value
-
-            predictionChart.data.labels = Array(predictions.length).fill("");
-            predictionChart.data.datasets[0].data = tempData;
-            predictionChart.data.datasets[1].data = humidityData;
-            predictionChart.update();
         }
+    });
 
-        // Fetch data every 5 seconds
-        fetchPredictedData()
-//        setInterval(fetchPredictedData, 1000);
-    </script>
+    // Function to update chart data
+    function updateChart(predictions) {
+        // Update labels and temperature data dynamically
+        predictionChart.data.labels = Array(predictions.length).fill("");
+        predictionChart.data.datasets[0].data = predictions;
+        predictionChart.update();
+    }
+
+    // Fetch data every second
+    fetchPredictedData();
+</script>
+
+
+
 </body>
 </html>
 
