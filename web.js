@@ -95,6 +95,18 @@ app.get('/proactive', async (req, res) =>{
 
         })
 })
+app.get('/actions', async (req, res) =>{
+    res.render('actions', {
+        
+
+        })
+})
+app.get('/cooling_system', async (req, res) =>{
+    res.render('cooling_system', {
+        
+
+        })
+})
 
 app.get('/alerts', async (req, res) =>{
     res.render('alerts', {

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooling System Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: white;
+      width: 700px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      font-size: 1.2em;
+      color: #333;
+      margin-top: 0;
+      text-align: center;
+    }
+    .section {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+    .section label {
+      width: 150px;
+      font-weight: bold;
+    }
+    .section input, .section select, .section button {
+      width: 150px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+    .fan-controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+    .fan-status, .fan-control {
+      display: inline-block;
+      width: 30%;
+      text-align: center;
+    }
+    .fan-image {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .fan-image img {
+      width: 100px;
+      height: auto;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .footer-buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Cooling System Settings</h2>
+  
+  <!-- Box Level and Status Section -->
+  <div class="section">
+    <label for="boxLevel">Box level:</label>
+    <input type="text" id="boxLevel" value="01" readonly>
+  </div>
+  <div class="section">
+    <label for="status">Status:</label>
+    <input type="text" id="status" value="Connected" readonly>
+  </div>
+  <div class="section">
+    <label for="name">Name:</label>
+    <input type="text" id="name" value="Level1" readonly>
+  </div>
+  <div class="section">
+    <label for="location">Location:</label>
+    <input type="text" id="location" value="Rack_001" readonly>
+  </div>
+
+  <!-- Fan Unit Section -->
+  <div class="section">
+    <label for="fanUnit">Fan unit:</label>
+    <select id="fanUnit">
+      <option>01 - RF-1.3 1U Fan Tray</option>
+      <option>02 - RF-2.0 2U Fan Tray</option>
+    </select>
+  </div>
+  <div class="section">
+    <label for="unitSwitch">Unit switch:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="unitCFM">Unit CFM:</label>
+    <button>Normal</button>
+    <button>High</button>
+    <button>Max</button>
+  </div>
+
+  <!-- Fan Controls Section -->
+  <div class="fan-controls">
+    <div class="fan-status">
+      <p>Fan 01</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 02</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 03</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+  </div>
+
+  <!-- Fan Image -->
+  <div class="fan-image">
+    <img src="fan_image_placeholder.png" alt="Fan Diagram">
+    <p>Front</p>
+  </div>
+
+  <!-- Temperature and Auto Data Refresh Section -->
+  <div class="section">
+    <label for="tempSensor">Temp. Sensor (°C):</label>
+    <input type="text" id="tempSensor" value="26.8" readonly>
+  </div>
+  <div class="section">
+    <label>Auto data refresh:</label>
+    <input type="checkbox" checked>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="footer-buttons">
+    <button>Apply</button>
+    <button>Cancel</button>
+    <button>Exit</button>
+  </div>
+</div>
+
+</body>
+</html>
