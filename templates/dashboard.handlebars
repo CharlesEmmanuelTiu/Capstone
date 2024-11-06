@@ -212,6 +212,9 @@
     <!-- Scripts for Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
 
     <script>
         var ctx = document.getElementById('temperatureChart').getContext('2d');
@@ -241,7 +244,9 @@
         var humidityChart = new Chart(ctxHumidity, {
             type: 'pie',
             data: {
-                labels: ['Server Rooms', 'Cooling Areas', 'Networking Equipment Rooms', 'Electrical Rooms'],
+                responsive: false,
+                maintainAspectRatio: false,
+                labels: ['Server Rooms', 'Cooling Areas', 'Networking Rooms', 'Electrical Rooms'],
                 datasets: [{
                     label: 'Humidity (°C)',
                     data: [40, 30, 15, 10],
@@ -249,21 +254,40 @@
                         'rgb(75, 192, 192)',
                         'rgb(54, 162, 235)',
                         'rgb(255, 206, 86)',
-                        'rgb(153, 102, 255)',
-                        'rgb(255, 99, 132)'
+                        'rgb(153, 102, 255)'
                     ],
                     borderWidth: 0
                 }]
             },
-            
             options: {
                 plugins: {
                     legend: {
-                        display:   
-                    false // Hide the default legend
+                        display: false  // Hide the default legend
+                    },
+                    datalabels: {
+                        color: '#000',
+                        formatter: (value, context) => {
+                            const label = context.chart.data.labels[context.dataIndex];
+                            return label + '\n' + value + '%';
+                        },
+                        offset: 20,
+                        font: {
+                            size: 12
+                        },
+                        padding: {
+                            top: 2,
+                            bottom: 2,
+                            left: 4,
+                            right: 4
+                        },
+                        borderRadius: 3,
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        borderColor: 'rgba(0, 0, 0, 0.1)',
+                        borderWidth: 1,
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]  // Add the datalabels plugin
         });
         var ctxPower = document.getElementById('powerUsageChart').getContext('2d');
         var powerUsageChart = new Chart(ctxPower, {
