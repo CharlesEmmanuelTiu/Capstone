@@ -14212,7 +14212,7 @@ html:not([dir=rtl]) .wrapper {
   top: 100%;
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  background-color: lightsteelblue;
+  background-color: #3c4b64;
   list-style: none;
   width: 200px;
   height: 200px;
@@ -14248,7 +14248,7 @@ html:not([dir=rtl]) .wrapper {
 
 .dropdown-menu a {
   text-decoration: none;
-  color: black;
+  color: rgba(255, 255, 255, 0.6);;
   padding: 10px;
   display: block;
   width: 100%;
@@ -14256,7 +14256,7 @@ html:not([dir=rtl]) .wrapper {
 
 
 .dropdown-menu a:hover {
-  background-color: lightgray;
+  color: rgba(0, 0, 0, 0.6);
   border-radius: 3px;
 }
 

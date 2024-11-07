@@ -85,12 +85,11 @@
                 <div class="row g-4 mb-4">
                     <div class="card card2">
                             <div class="card-header">
-                                <h4>Temperature</h4>
+                                <h4>3D Model</h4>
                             </div>
                             <div class="card-body">
                             <div id="tempGraph" style="width: 100%; height: 260px;">
-                                <!-- Insert your temperature graph here using a charting library like Chart.js -->
-                                <canvas id="temperatureChart"></canvas>
+                                <div class="card-body" id="3d-container" style="height: 100%;"></div>
                             </div>
                             </div>
                     </div>
@@ -217,29 +216,6 @@
 
 
     <script>
-        var ctx = document.getElementById('temperatureChart').getContext('2d');
-        var temperatureChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:00'],
-                datasets: [{
-                    label: 'Temperature (°C)',
-                    data: [22, 23, 21, 24, 26, 25, 23, 22, 25],
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                    fill: true,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        suggestedMax: 40
-                    }
-                }
-            }
-        });
         var ctxHumidity = document.getElementById('humidityChart').getContext('2d');
         var humidityChart = new Chart(ctxHumidity, {
             type: 'pie',
@@ -389,51 +365,205 @@
             ctx.stroke();
         }
     </script>
-</body>
-{{!-- <body>
-    <div class="body flex-grow-1 px-3">
-        <div class="container-lg">
-            {{#if mssg}}
-                <div class="alert alert-{{flashType}}" role="alert">
-            {{mssg}}
-            </div>
-            {{/if}}
-            {{#if admin}}
-            <div class="alert alert-warning" role="alert">
-                You are logged in as an <strong>admin</strong>. Remember to <a href="/logout" class="alert-link">log out</a>.
-            </div>
-            {{/if}}
-            {{#if manager}}
-            <div class="alert alert-warning" role="alert">
-                You are logged in as a <strong>manager</strong>. Remember to <a href="/logout" class="alert-link">log out</a>.
-            </div>
-            {{/if}}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script>
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    const container = document.getElementById('3d-container'); // Ensure this div exists in your HTML
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    renderer.setClearColor(0x909090, 1); // Set background color
+    container.appendChild(renderer.domElement);
+
+    // Create the rack (outer frame)
+    const rackGeometry = new THREE.BoxGeometry(7, 5, 1);
+    const rackMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // Dark color for the frame
+    const rack = new THREE.Mesh(rackGeometry, rackMaterial);
+    scene.add(rack);
+
+    // Create multiple server units (smaller boxes) and add them inside the rack
+    const serverGeometry = new THREE.BoxGeometry(0.9, 0.3, 1.05);
+    const serverMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 }); // Gray color for the servers
+    const serverUnits = [];
+
+    // Frame material for individual rack columns
+    const columnFrameMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+    // Frame dimensions for each column
+    const columnFrameThickness = 0.05;
+    const columnHeight = 5;
+
+    // Function to create a frame around a rack column
+    function createColumnFrame(xPosition) {
+        // Vertical bars for each rack column
+        const verticalBarGeometry = new THREE.BoxGeometry(columnFrameThickness, columnHeight, columnFrameThickness);
+        const leftVerticalBar = new THREE.Mesh(verticalBarGeometry, columnFrameMaterial);
+        leftVerticalBar.position.set(xPosition - 0.5, 0, 0.5); // Adjust x-position to the left of the column
+        scene.add(leftVerticalBar);
+
+        const rightVerticalBar = new THREE.Mesh(verticalBarGeometry, columnFrameMaterial);
+        rightVerticalBar.position.set(xPosition + 0.5, 0, 0.5); // Adjust x-position to the right of the column
+        scene.add(rightVerticalBar);
+
+        // Horizontal bars for top and bottom of each rack column
+        const horizontalBarGeometry = new THREE.BoxGeometry(1, columnFrameThickness, columnFrameThickness);
+        const topBar = new THREE.Mesh(horizontalBarGeometry, columnFrameMaterial);
+        topBar.position.set(xPosition, 2.5, 0.5);
+        scene.add(topBar);
+
+        const bottomBar = new THREE.Mesh(horizontalBarGeometry, columnFrameMaterial);
+        bottomBar.position.set(xPosition, -2.5, 0.5);
+        scene.add(bottomBar);
+    }
+
+    // Create frames for each column by specifying x positions
+    const columnXPositions = [-3, -2, -1, 0, 1, 2, 3]; // Adjust these positions to align with your rack columns
+    columnXPositions.forEach(xPosition => {
+        createColumnFrame(xPosition);
+    });
+
+    let columnCount = -3; // Start x-position for columns
+    let rowHeight = 2.2; // Start y-position from top and move downwards
+
+    // Adjust this loop structure to fill all slots, including the top corners
+    for (let col = 0; col < 7; col++) { // Loop over 7 columns
+        for (let row = 0; row < 10; row++) { // Set the number of servers in each column
+            const serverUnit = new THREE.Mesh(serverGeometry, serverMaterial.clone());
             
+            // Set position
+            serverUnit.position.y = rowHeight - row * 0.5; // Move down each row
+            serverUnit.position.x = columnCount + col * 1; // Move right each column
+            
+            scene.add(serverUnit);
+            serverUnits.push(serverUnit);
+        }
+    }
 
-            <h1 class="display-1">ThermoGuard Dashboard</h1>
-            <p class="lead">All petrol stations across Qatar and their information can be found here.</p>
 
-            <div class="row g-4">
-                {{#each stations}}
-                <div class="col-4">
-                    <div class="card">
-                        <h5 class="card-header"><strong>{{this.stationName}}</strong></h5>
-                        <div class="card-body">
-                            <h5 class="card-title">{{this.location}} fuel prices</h5>
+    // Add LEDs (small colored circles) to each server for indicators
+    const ledGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+    const ledMaterialGreen = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const ledMaterialRed = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
-                            {{#each this.fuelGrades}}
-                            <p class="card-text">
-                                <strong>{{@key}}</strong> QAR {{this.price}}/litre
-                                {{#if (checkLevel this.fuelAmount this.fuelThreshold)}}
-                                    <span class="badge text-bg-warning">running low</span>
-                                {{/if}}
-                            </p>
-                            {{/each}}
-                        </div>
-                    </div>
-                </div>
-                {{/each}}
-            </div>
-        </div>
-    </div>
-</body> --}}
+    serverUnits.forEach((unit, index) => {
+        const rndInt = Math.floor(Math.random() * 10) + 1
+        const led = new THREE.Mesh(ledGeometry, rndInt >= 3 ? ledMaterialGreen : ledMaterialRed);
+        led.position.set(unit.position.x + 0.4, unit.position.y, unit.position.z + 0.5);
+        scene.add(led);
+    });
+
+    // Add lighting (optional for better visualization)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.8);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+
+    // OrbitControls for rotating and zooming the model
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Animate the scene
+    const animate = function () {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    };
+    animate();
+
+    // Handle window resizing
+    window.addEventListener('resize', () => {
+        const width = container.offsetWidth;
+        const height = container.offsetHeight;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    });
+
+    // Hover effect with raycaster to highlight servers
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    window.addEventListener('mousemove', (event) => {
+        const { x, y } = getMousePosition(event);
+        mouse.x = x;
+        mouse.y = y;
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(serverUnits);
+        serverUnits.forEach((unit) => unit.material.color.set(0x555555)); // Reset color
+        if (intersects.length > 0) {
+            intersects[0].object.material.color.set(0xaaaaaa); // Highlight server on hover
+        }
+
+        if (infoBox.style.display === "block") {
+            infoBox.style.left = `${event.clientX + 10}px`;
+            infoBox.style.top = `${event.clientY + 10}px`;
+        }
+    });
+
+    // Additional array to store component details for each server unit
+    const componentDetails = [
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
+        "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS", // Details for the first server
+        // Details for the second server,
+        // Add details for each server as needed
+    ];
+
+    // Create an HTML element to display component info
+    const infoBox = document.createElement("div");
+    infoBox.style.position = "absolute";
+    infoBox.style.padding = "8px";
+    infoBox.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+    infoBox.style.border = "1px solid #ccc";
+    infoBox.style.borderRadius = "5px";
+    infoBox.style.display = "none"; // Initially hidden
+    document.body.appendChild(infoBox);
+
+    // Function to handle clicks
+    window.addEventListener("click", (event) => {
+        const { x, y } = getMousePosition(event);
+        mouse.x = x;
+        mouse.y = y;
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(serverUnits);
+        if (intersects.length > 0) {
+            const clickedUnit = intersects[0].object;
+            const index = serverUnits.indexOf(clickedUnit);
+
+            if (index !== -1) {
+                // Display the component details for the clicked server
+                infoBox.innerText = `Component:\n${componentDetails[index] || ["No Details"]}`;
+                infoBox.style.left = `${event.clientX + 10}px`;
+                infoBox.style.top = `${event.clientY + 10}px`;
+                infoBox.style.display = "block";
+            }
+        } else {
+            infoBox.style.display = "none"; // Hide infoBox if no server is clicked
+        }
+    });
+
+    function getMousePosition(event) {
+    const rect = container.getBoundingClientRect(); // Container bounds
+    return {
+        x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        y: -((event.clientY - rect.top) / rect.height) * 2 + 1
+    };
+    }
+    </script>
+</body>

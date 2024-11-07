@@ -5,7 +5,6 @@
 
         <div class="row g-4">
 
-          <div class="col-10">
             <div class="card">
               <div class="card-header">
                 <strong>Account</strong>
@@ -17,36 +16,15 @@
                     </div>
                 {{/if}}
                 <form action="/settings" method="post">
-                    <div class="row g-3" style="margin-bottom:30px">
                       <h3>Change Username</h3>
-                      <div class="col-md-12">
-                        <input class="form-control" type="text" name="uname" placeholder="New Username" value={{user.name}} required>
-                      </div>
-                    </div>
-                    
-                    <div class="row g-3" style="margin-bottom:30px">
+                      <input class="form-control" type="text" name="uname" placeholder="New Username" value={{user.name}} required><br>
                       <h3>Change Password</h3>
-                      <div class="col-md-6">
-                        <input class="form-control" type="password" name="n_psswd" placeholder="New Password">
-                      </div>
-                      <div class="col-md-6">
-                        <input class="form-control" type="password" name="c_psswd" placeholder="Confirm Password">
-                      </div>
-                    </div>
-
-                    <div class="row g-3" style="margin-bottom:30px">
+                      <input class="form-control" type="password" name="n_psswd" placeholder="New Password"><br>
+                      <input class="form-control" type="password" name="c_psswd" placeholder="Confirm Password"><br>
                       <h3>Change Phone Number</h3>
-                      <div class="col-md-3">
-                        <input class="form-control" type="text" name="phone" placeholder="New Phone Number" value="{{user.phone_number}}" required>
-                      </div>
-                    </div>
-
-                    <div class="row g-3" style="margin-bottom:30px">
+                      <input class="form-control" type="text" name="phone" placeholder="New Phone Number" value="{{user.phone_number}}" required><br>
                       <h3>Change Email</h3>
-                      <div class="col-md-3">
-                        <input class="form-control" type="text" name="email" placeholder="New Email" value="{{user.email}}" required>
-                      </div>
-                    </div>
+                      <input class="form-control" type="text" name="email" placeholder="New Email" value="{{user.email}}" required><br>
 
                     <div class="row g-4" style="margin-top:15px"> 
                       <div class="col-md-3">
@@ -61,7 +39,6 @@
                 </form>
               </div>
             </div>
-          </div>
         </div>
     </div>
   </div>
