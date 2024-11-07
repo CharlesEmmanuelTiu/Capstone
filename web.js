@@ -101,6 +101,12 @@ app.get('/actions', async (req, res) =>{
 
         })
 })
+app.get('/data_reports', async (req, res) =>{
+    res.render('data_reports', {
+        
+
+        })
+})
 app.get('/cooling_system', async (req, res) =>{
     res.render('cooling_system', {
         
