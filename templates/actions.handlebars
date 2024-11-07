@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThermoGuard Actions Page</title>
+  <style>
+    /* Basic styling for layout */
+    body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
+    .container { width: 90%; max-width: 800px; margin: 40px auto; }
+    
+    /* Header styling */
+    .headergo { 
+      background-color: #0066cc; 
+      color: white; 
+      padding: 20px; 
+      text-align: center; 
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    }
+    .header h1 { margin: 0; font-size: 1.8em; }
+    .status-indicator { font-size: 1.2em; margin-top: 10px; }
+
+    /* Section styling */
+    .section { 
+      margin: 20px 0; 
+      padding: 20px; 
+      background-color: #fff; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    }
+    .section h2 { color: #333; font-size: 1.4em; margin-bottom: 15px; }
+    
+    /* Indicator and alert styling */
+    .indicator { 
+      display: flex; 
+      justify-content: space-between; 
+      padding: 10px; 
+      font-size: 1.1em;
+      border-bottom: 1px solid #f0f2f5; 
+    }
+    .indicator:last-child { border-bottom: none; }
+    .alert { color: red; font-weight: bold; }
+    
+    /* Button styling */
+    button { 
+      padding: 10px 20px; 
+      margin: 5px;
+      font-size: 1em; 
+      color: #fff; 
+      background-color: #0066cc; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover { background-color: #004a99; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header Section -->
+  <div class="headergo">
+    <h1>ThermoGuard Actions</h1>
+    <div class="status-indicator">System Status: <span id="statusText">Normal</span></div>
+    <button onclick="checkAlerts()">Check Alerts</button>
+    <button onclick="runDiagnostics()">Run Diagnostics</button>
+  </div>
+
+  <!-- Key Indicators Section -->
+  <div class="section">
+    <h2>Key Indicators</h2>
+    <div class="indicator">Temperature Anomalies: <span id="tempAnomaly">Normal</span></div>
+    <div class="indicator">Fan Speed Variability: <span id="fanSpeed">Normal</span></div>
+    <div class="indicator">Coolant Levels: <span id="coolantLevels">Normal</span></div>
+    <div class="indicator">Energy Consumption: <span id="energyConsumption">Normal</span></div>
+  </div>
+
+  <!-- Event History and Trends -->
+  <div class="section">
+    <h2>Event History & Trends</h2>
+    <div id="eventHistory">
+      <p>No recent alerts.</p>
+    </div>
+  </div>
+
+  <!-- Recommendations Section -->
+  <div class="section">
+    <h2>Recommendations for Preventive Actions</h2>
+    <ul id="recommendations">
+      <li>Monitor temperature levels regularly.</li>
+      <li>Schedule maintenance for fan inspection.</li>
+    </ul>
+  </div>
+
+  <!-- Real-Time Alerts Panel -->
+  <div class="section">
+    <h2>Alerts</h2>
+    <div id="alerts" class="alert">No active alerts.</div>
+    <button onclick="adjustAlertSettings()">Adjust Alert Settings</button>
+  </div>
+</div>
+
+<script>
+  // Sample data to simulate system status (this could be replaced by actual data from your back-end)
+  const systemStatus = {
+    temperature: "Warning",
+    fanSpeed: "Normal",
+    coolantLevels: "Low",
+    energyConsumption: "High"
+  };
+
+  // Initialize the page with system data
+  function loadSystemData() {
+    document.getElementById("tempAnomaly").textContent = systemStatus.temperature;
+    document.getElementById("fanSpeed").textContent = systemStatus.fanSpeed;
+    document.getElementById("coolantLevels").textContent = systemStatus.coolantLevels;
+    document.getElementById("energyConsumption").textContent = systemStatus.energyConsumption;
+
+    if (systemStatus.temperature === "Warning" || systemStatus.coolantLevels === "Low" || systemStatus.energyConsumption === "High") {
+      document.getElementById("statusText").textContent = "Warning";
+      document.getElementById("statusText").style.color = "red";
+      document.getElementById("alerts").textContent = "Cooling system indicators show potential issues!";
+    }
+  }
+
+  // Function to simulate checking alerts
+  function checkAlerts() {
+    alert("Checking alerts...");
+  }
+
+  // Function to simulate running diagnostics
+  function runDiagnostics() {
+    alert("Running diagnostics...");
+  }
+
+  // Function to adjust alert settings
+  function adjustAlertSettings() {
+    alert("Adjusting alert settings...");
+  }
+
+  // Load data when page loads
+  window.onload = loadSystemData;
+</script>
+
+</body>
+</html>
+
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThermoGuard Actions Page</title>
+  <style>
+    /* Basic styling for layout */
+    .container { width: 80%; margin: auto; }
+    .header { background-color: blue; color: white; padding: 20px; text-align: center; }
+    .status-indicator { font-size: 1.2em; font-weight: bold; }
+    .section { margin: 20px 0; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .indicator { display: flex; justify-content: space-between; padding: 10px; }
+    .alert, .alert-settings { color: red; font-weight: bold; }
+    button { padding: 10px 15px; font-size: 1em; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header Section -->
+  <div class="header">
+    <h1>ThermoGuard Actions</h1>
+    <div class="status-indicator">System Status: <span id="statusText">Normal</span></div>
+    <button onclick="checkAlerts()">Check Alerts</button>
+    <button onclick="runDiagnostics()">Run Diagnostics</button>
+  </div>
+
+  <!-- Key Indicators Section -->
+  <div class="section">
+    <h2>Key Indicators</h2>
+    <div class="indicator">Temperature Anomalies: <span id="tempAnomaly">Normal</span></div>
+    <div class="indicator">Fan Speed Variability: <span id="fanSpeed">Normal</span></div>
+    <div class="indicator">Coolant Levels: <span id="coolantLevels">Normal</span></div>
+    <div class="indicator">Energy Consumption: <span id="energyConsumption">Normal</span></div>
+  </div>
+
+  <!-- Event History and Trends -->
+  <div class="section">
+    <h2>Event History & Trends</h2>
+    <div id="eventHistory">
+      <p>No recent alerts.</p>
+    </div>
+  </div>
+
+  <!-- Recommendations Section -->
+  <div class="section">
+    <h2>Recommendations for Preventive Actions</h2>
+    <ul id="recommendations">
+      <li>Monitor temperature levels regularly.</li>
+      <li>Schedule maintenance for fan inspection.</li>
+    </ul>
+  </div>
+
+  <!-- Real-Time Alerts Panel -->
+  <div class="section">
+    <h2>Alerts</h2>
+    <div id="alerts" class="alert">No active alerts.</div>
+    <button onclick="adjustAlertSettings()">Adjust Alert Settings</button>
+  </div>
+</div>
+
+<script>
+  // Sample data to simulate system status (this could be replaced by actual data from your back-end)
+  const systemStatus = {
+    temperature: "Warning",
+    fanSpeed: "Normal",
+    coolantLevels: "Low",
+    energyConsumption: "High"
+  };
+
+  // Initialize the page with system data
+  function loadSystemData() {
+    document.getElementById("tempAnomaly").textContent = systemStatus.temperature;
+    document.getElementById("fanSpeed").textContent = systemStatus.fanSpeed;
+    document.getElementById("coolantLevels").textContent = systemStatus.coolantLevels;
+    document.getElementById("energyConsumption").textContent = systemStatus.energyConsumption;
+
+    if (systemStatus.temperature === "Warning" || systemStatus.coolantLevels === "Low" || systemStatus.energyConsumption === "High") {
+      document.getElementById("statusText").textContent = "Warning";
+      document.getElementById("statusText").style.color = "red";
+      document.getElementById("alerts").textContent = "Cooling system indicators show potential issues!";
+    }
+  }
+
+  // Function to simulate checking alerts
+  function checkAlerts() {
+    alert("Checking alerts...");
+  }
+
+  // Function to simulate running diagnostics
+  function runDiagnostics() {
+    alert("Running diagnostics...");
+  }
+
+  // Function to adjust alert settings
+  function adjustAlertSettings() {
+    alert("Adjusting alert settings...");
+  }
+
+  // Load data when page loads
+  window.onload = loadSystemData;
+</script>
+
+</body>
+</html> --}}

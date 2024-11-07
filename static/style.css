@@ -7879,6 +7879,7 @@ html:not([dir=rtl]) .callout {
   padding: var(--cui-header-padding-y) var(--cui-header-padding-x);
   background: var(--cui-header-bg);
   border-bottom: var(--cui-header-border);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 .header > .container,
 .header > .container-fluid,
