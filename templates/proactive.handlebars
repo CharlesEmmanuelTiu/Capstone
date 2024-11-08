@@ -3,6 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 45%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+        .log {
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chart-container">
+            <h2>Temperature Monitoring</h2>
+            <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+            <canvas id="temperatureChart"></canvas>
+            <div id="tempLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Sound Level Monitoring</h2>
+            <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
+            <canvas id="soundChart"></canvas>
+            <div id="soundLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Humidity Monitoring</h2>
+            <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
+            <canvas id="humidityChart"></canvas>
+            <div id="humidityLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Power Consumption Monitoring</h2>
+            <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
+            <canvas id="powerChart"></canvas>
+            <div id="powerLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const ALERT_THRESHOLDS = {
+            temperature: 3,
+            sound: 5,
+            humidity: 10,
+            power: 2
+        };
+
+        const createLogEntry = (logId, message) => {
+            const logDiv = document.getElementById(logId);
+            const newEntry = document.createElement("div");
+            newEntry.innerText = message;
+            logDiv.appendChild(newEntry);
+            if (logDiv.children.length > 5) {
+                logDiv.removeChild(logDiv.firstChild);
+            }
+        };
+
+        const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);
+
+        const monitorMetric = (metricId, logId, dataArr, timeArr, chart, min, max, threshold) => {
+            setInterval(() => {
+                const currentValue = parseFloat(randomDataGenerator(min, max));
+                document.getElementById(metricId).innerText = currentValue;
+
+                // Capture current time for the x-axis label
+                const currentTime = new Date().toLocaleTimeString();
+                
+                // Update data and labels
+                timeArr.push(currentTime);
+                timeArr.shift();
+                dataArr.push(currentValue);
+                dataArr.shift();
+
+                // Update the chart labels and data
+                chart.data.labels = timeArr;
+                chart.data.datasets[0].data = dataArr;
+                chart.update();
+
+                // Check for threshold breach
+                if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
+                    createLogEntry(logId, `${metricId.replace(/^\w/, (c) => c.toUpperCase())} fluctuation detected! Current: ${currentValue} at ${currentTime}`);
+                }
+            }, 3000);
+        };
+
+
+        const initChart = (ctx, label) => {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { 
+                            title: { display: true, text: 'Time' },
+                            ticks: { autoSkip: true, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Initialize charts and data arrays
+        const tempChart = initChart(document.getElementById('temperatureChart').getContext('2d'), 'Temperature (°C)');
+        const soundChart = initChart(document.getElementById('soundChart').getContext('2d'), 'Sound Level (dB)');
+        const humidityChart = initChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)');
+        const powerChart = initChart(document.getElementById('powerChart').getContext('2d'), 'Power Consumption (kW)');
+
+        // Set up data and time arrays for each metric
+        const tempData = Array(10).fill(null);
+        const tempTime = Array(10).fill("");
+        const soundData = Array(10).fill(null);
+        const soundTime = Array(10).fill("");
+        const humidityData = Array(10).fill(null);
+        const humidityTime = Array(10).fill("");
+        const powerData = Array(10).fill(null);
+        const powerTime = Array(10).fill("");
+
+        // Monitor each metric with timestamped data
+        monitorMetric("temperature", "tempLog", tempData, tempTime, tempChart, 20, 30, ALERT_THRESHOLDS.temperature);
+        monitorMetric("sound", "soundLog", soundData, soundTime, soundChart, 30, 50, ALERT_THRESHOLDS.sound);
+        monitorMetric("humidity", "humidityLog", humidityData, humidityTime, humidityChart, 40, 60, ALERT_THRESHOLDS.humidity);
+        monitorMetric("power", "powerLog", powerData, powerTime, powerChart, 0.5, 5, ALERT_THRESHOLDS.power);
+    </script>
+</body>
+</html>
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Center Temperature Monitor</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -36,7 +205,7 @@
 <body>
     <div>
         <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
-        {{!-- <div id="alert"></div> --}}
+        <div id="alert"></div>
     </div>
 
     <canvas id="temperatureChart"></canvas>
@@ -128,7 +297,7 @@
         window.onload = monitorTemperature;
     </script>
 </body>
-</html>
+</html> --}}
 
 
 

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThermoGuard Data Reports</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 39%;
+            height: 80%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chart-container">
+            <h2>Temperature Fluctuations</h2>
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Sound Level Monitoring</h2>
+            <canvas id="soundChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Humidity Levels</h2>
+            <canvas id="humidityChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Power Consumption</h2>
+            <canvas id="powerChart"></canvas>
+        </div>
+    </div>
+    <script>
+        // Temperature Line Chart
+        const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+        new Chart(tempCtx, {
+            type: 'bar',
+            data: {
+                labels: ['5am', '8am', '11am', '1pm', '4pm', '7pm', '10pm', '1am', '3am'],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [23, 25, 22, 27, 27, 22, 23, 22, 23],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    tension: 0.4, // Smoother curve
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Sound Level Radar Chart
+        const soundCtx = document.getElementById('soundChart').getContext('2d');
+        new Chart(soundCtx, {
+            type: 'radar',
+            data: {
+                labels: ['5am', '8am', '11am', '1pm', '4pm', '7pm'],
+                datasets: [{
+                    label: 'Sound Level (dB)',
+                    data: [30, 35, 40, 38, 42, 40],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: { r: { beginAtZero: true } }
+            }
+        });
+
+        // Humidity Doughnut Chart
+        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+        new Chart(humidityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ideal Humidity', 'Current Humidity'],
+                datasets: [{
+                    label: 'Humidity (%)',
+                    data: [50, 52], // Replace with actual data, where 50 is the target, and 52 is the latest reading
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(50, 192, 50, 0.6)']
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        // Power Consumption Polar Area Chart
+        const powerCtx = document.getElementById('powerChart').getContext('2d');
+        new Chart(powerCtx, {
+            type: 'polarArea',
+            data: {
+                labels: ['5am', '8am', '11am', '1pm', '4pm', '7pm'],
+                datasets: [{
+                    label: 'Power Consumption (kW)',
+                    data: [5, 6, 7, 6, 5, 8],
+                    backgroundColor: [
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 159, 64, 0.4)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 159, 64, 0.8)',
+                        'rgba(255, 159, 64, 1)'
+                    ]
+                }]
+            },
+            options: {
+                scales: { r: { beginAtZero: true } }
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 45%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+        .log {
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chart-container">
+            <h2>Temperature Monitoring</h2>
+            <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+            <canvas id="temperatureChart"></canvas>
+            <div id="tempLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Sound Level Monitoring</h2>
+            <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
+            <canvas id="soundChart"></canvas>
+            <div id="soundLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Humidity Monitoring</h2>
+            <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
+            <canvas id="humidityChart"></canvas>
+            <div id="humidityLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Power Consumption Monitoring</h2>
+            <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
+            <canvas id="powerChart"></canvas>
+            <div id="powerLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const ALERT_THRESHOLDS = {
+            temperature: 3,
+            sound: 5,
+            humidity: 10,
+            power: 2
+        };
+
+        const createLogEntry = (logId, message) => {
+            const logDiv = document.getElementById(logId);
+            const newEntry = document.createElement("div");
+            newEntry.innerText = message;
+            logDiv.appendChild(newEntry);
+            if (logDiv.children.length > 5) {
+                logDiv.removeChild(logDiv.firstChild);
+            }
+        };
+
+        const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);
+
+        const monitorMetric = (metricId, logId, dataArr, timeArr, chart, min, max, threshold) => {
+            setInterval(() => {
+                const currentValue = parseFloat(randomDataGenerator(min, max));
+                document.getElementById(metricId).innerText = currentValue;
+
+                // Capture current time for the x-axis label
+                const currentTime = new Date().toLocaleTimeString();
+                
+                // Update data and labels
+                timeArr.push(currentTime);
+                timeArr.shift();
+                dataArr.push(currentValue);
+                dataArr.shift();
+
+                // Update the chart labels and data
+                chart.data.labels = timeArr;
+                chart.data.datasets[0].data = dataArr;
+                chart.update();
+
+                // Check for threshold breach
+                if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
+                    createLogEntry(logId, `${metricId.replace(/^\w/, (c) => c.toUpperCase())} fluctuation detected! Current: ${currentValue} at ${currentTime}`);
+                }
+            }, 3000);
+        };
+
+
+        const initChart = (ctx, label) => {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { 
+                            title: { display: true, text: 'Time' },
+                            ticks: { autoSkip: true, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Initialize charts and data arrays
+        const tempChart = initChart(document.getElementById('temperatureChart').getContext('2d'), 'Temperature (°C)');
+        const soundChart = initChart(document.getElementById('soundChart').getContext('2d'), 'Sound Level (dB)');
+        const humidityChart = initChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)');
+        const powerChart = initChart(document.getElementById('powerChart').getContext('2d'), 'Power Consumption (kW)');
+
+        // Set up data and time arrays for each metric
+        const tempData = Array(10).fill(null);
+        const tempTime = Array(10).fill("");
+        const soundData = Array(10).fill(null);
+        const soundTime = Array(10).fill("");
+        const humidityData = Array(10).fill(null);
+        const humidityTime = Array(10).fill("");
+        const powerData = Array(10).fill(null);
+        const powerTime = Array(10).fill("");
+
+        // Monitor each metric with timestamped data
+        monitorMetric("temperature", "tempLog", tempData, tempTime, tempChart, 20, 30, ALERT_THRESHOLDS.temperature);
+        monitorMetric("sound", "soundLog", soundData, soundTime, soundChart, 30, 50, ALERT_THRESHOLDS.sound);
+        monitorMetric("humidity", "humidityLog", humidityData, humidityTime, humidityChart, 40, 60, ALERT_THRESHOLDS.humidity);
+        monitorMetric("power", "powerLog", powerData, powerTime, powerChart, 0.5, 5, ALERT_THRESHOLDS.power);
+    </script>
+</body>
+</html> --}}
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 45%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+        .log {
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chart-container">
+            <h2>Temperature Monitoring</h2>
+            <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+            <canvas id="temperatureChart"></canvas>
+            <div id="tempLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Sound Level Monitoring</h2>
+            <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
+            <canvas id="soundChart"></canvas>
+            <div id="soundLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Humidity Monitoring</h2>
+            <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
+            <canvas id="humidityChart"></canvas>
+            <div id="humidityLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Power Consumption Monitoring</h2>
+            <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
+            <canvas id="powerChart"></canvas>
+            <div id="powerLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const ALERT_THRESHOLDS = {
+            temperature: 3,
+            sound: 5,
+            humidity: 10,
+            power: 2
+        };
+
+        const createLogEntry = (logId, message) => {
+            const logDiv = document.getElementById(logId);
+            const newEntry = document.createElement("div");
+            newEntry.innerText = message;
+            logDiv.appendChild(newEntry);
+            if (logDiv.children.length > 5) {
+                logDiv.removeChild(logDiv.firstChild);
+            }
+        };
+
+        const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);
+
+        const monitorMetric = (metricId, logId, dataArr, chart, min, max, threshold) => {
+            setInterval(() => {
+                const currentValue = parseFloat(randomDataGenerator(min, max));
+                document.getElementById(metricId).innerText = currentValue;
+
+                dataArr.push(currentValue);
+                dataArr.shift();
+                chart.update();
+
+                if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
+                    createLogEntry(logId, `${metricId.replace(/^\w/, (c) => c.toUpperCase())} fluctuation detected! Current: ${currentValue}`);
+                }
+            }, 3000);
+        };
+
+        const initChart = (ctx, label) => {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { display: false }
+                    }
+                }
+            });
+        };
+
+        const tempChart = initChart(document.getElementById('temperatureChart').getContext('2d'), 'Temperature (°C)');
+        const soundChart = initChart(document.getElementById('soundChart').getContext('2d'), 'Sound Level (dB)');
+        const humidityChart = initChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)');
+        const powerChart = initChart(document.getElementById('powerChart').getContext('2d'), 'Power Consumption (kW)');
+
+        monitorMetric("temperature", "tempLog", tempChart.data.datasets[0].data, tempChart, 20, 30, ALERT_THRESHOLDS.temperature);
+        monitorMetric("sound", "soundLog", soundChart.data.datasets[0].data, soundChart, 30, 50, ALERT_THRESHOLDS.sound);
+        monitorMetric("humidity", "humidityLog", humidityChart.data.datasets[0].data, humidityChart, 40, 60, ALERT_THRESHOLDS.humidity);
+        monitorMetric("power", "powerLog", powerChart.data.datasets[0].data, powerChart, 0.5, 5, ALERT_THRESHOLDS.power);
+    </script>
+</body>
+</html> --}}
+
+
+
+
+
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThermoGuard Data Reports</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .chart-container {
+            width: 45%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chart-container">
+            <h2>Temperature Fluctuations</h2>
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Sound Level Monitoring</h2>
+            <canvas id="soundChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Humidity Levels</h2>
+            <canvas id="humidityChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Power Consumption</h2>
+            <canvas id="powerChart"></canvas>
+        </div>
+    </div>
+    <script>
+            // scripts.js
+
+// Temperature Fluctuation Chart
+const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+const temperatureChart = new Chart(tempCtx, {
+    type: 'line',
+    data: {
+        labels: ['12am', '1am', '2am', '3am', '4am', '5am'], // Example times
+        datasets: [{
+            label: 'Temperature (°C)',
+            data: [23, 24, 22, 25, 26, 27], // Replace with actual data
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Temperature Fluctuations'
+            }
+        }
+    }
+});
+
+// Sound Level Monitoring Chart
+const soundCtx = document.getElementById('soundChart').getContext('2d');
+const soundChart = new Chart(soundCtx, {
+    type: 'line',
+    data: {
+        labels: ['12am', '1am', '2am', '3am', '4am', '5am'],
+        datasets: [{
+            label: 'Sound Level (dB)',
+            data: [30, 35, 40, 38, 42, 40], // Replace with actual data
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Sound Level Monitoring'
+            }
+        }
+    }
+});
+
+// Humidity Levels Chart
+const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+const humidityChart = new Chart(humidityCtx, {
+    type: 'line',
+    data: {
+        labels: ['12am', '1am', '2am', '3am', '4am', '5am'],
+        datasets: [{
+            label: 'Humidity (%)',
+            data: [45, 50, 55, 53, 57, 52], // Replace with actual data
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Humidity Levels'
+            }
+        }
+    }
+});
+
+// Power Consumption Chart
+const powerCtx = document.getElementById('powerChart').getContext('2d');
+const powerChart = new Chart(powerCtx, {
+    type: 'bar',
+    data: {
+        labels: ['12am', '1am', '2am', '3am', '4am', '5am'],
+        datasets: [{
+            label: 'Power Consumption (kW)',
+            data: [5, 6, 7, 6, 5, 8], // Replace with actual data
+            backgroundColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Power Consumption'
+            }
+        }
+    }
+});
+
+    </script>
+</body>
+</html> --}}

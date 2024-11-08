@@ -10,7 +10,7 @@
     .container { width: 90%; max-width: 800px; margin: 40px auto; }
     
     /* Header styling */
-    .headergo { 
+    .headerstuff { 
       background-color: #0066cc; 
       color: white; 
       padding: 20px; 
@@ -18,7 +18,7 @@
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     }
-    .header h1 { margin: 0; font-size: 1.8em; }
+    .headerstuff h1 { margin: 0; font-size: 1.8em; }
     .status-indicator { font-size: 1.2em; margin-top: 10px; }
 
     /* Section styling */
@@ -61,11 +61,11 @@
 
 <div class="container">
   <!-- Header Section -->
-  <div class="headergo">
+  <div class="headerstuff">
     <h1>ThermoGuard Actions</h1>
     <div class="status-indicator">System Status: <span id="statusText">Normal</span></div>
     <button onclick="checkAlerts()">Check Alerts</button>
-    <button onclick="runDiagnostics()">Run Diagnostics</button>
+    {{!-- <button onclick="runDiagnostics()">Run Diagnostics</button> --}}
   </div>
 
   <!-- Key Indicators Section -->
