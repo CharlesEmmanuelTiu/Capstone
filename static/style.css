@@ -4858,7 +4858,7 @@ html:not([dir=rtl]) .navbar-nav {
 }
 
 .card2 {
-  width: 30%;
+  width: 33%;
   height: 10%;
 }
 
@@ -4932,6 +4932,11 @@ html:not([dir=rtl]) .navbar-nav {
 
 .card-body {
   color: var(--cui-card-color);
+}
+
+.card-body2 {
+  color: var(--cui-card-color);
+  align-items: center;
 }
 
 .card-title {

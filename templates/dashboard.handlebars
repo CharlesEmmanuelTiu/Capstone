@@ -101,10 +101,12 @@
                             <div class="card-header">
                                 <h4>Humidity Gauge</h4>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body2">
+                                <center>
                             <div id="humidChart" style="width: 100%; height: 250px;">
-                                <canvas id="humidityContainer"></canvas>
+                                <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
                             </div>
+                                </center>
                             </div>
                     </div>
                     <div class="card card2">
@@ -148,70 +150,128 @@
         </div>
     </div>
     <!-- Scripts for Gathering data -->
-                            <script>
-                                document.getElementById("currentStatus").style.backgroundColor = "green"
-                                anychart.onDocumentReady(function () {
-                                    // Create and return a simple linear gauge
-                                    function drawLinearGauge(value) {
-                                        var gauge = anychart.gauges.linear();
-                                        gauge.data([value]).padding(10, 0, 30, 0);
-                                        gauge.tooltip().useHtml(true).format(function () {
-                                            return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
-                                        });
+    <script>
+        window.onload = function () {
+            // Humidity gauge setup
+            var target = document.getElementById('humidityContainer');
+            if (!target) {
+                console.error('Humidity container element not found');
+                return;
+            }
+            
+            var opts = {
+                angle: 0, // The span of the gauge (0-1, where 0 is 180deg, 1 is 360deg)
+                lineWidth: 0.2, // The thickness of the gauge
+                radiusScale: 1, // Relative radius
+                pointer: {
+                    length: 0.6, // Relative to gauge radius
+                    strokeWidth: 0.04, // Thickness of the pointer
+                    color: '#000000' // Color of the pointer
+                },
+                limitMax: false, // False = infinite max value
+                limitMin: false, // False = infinite min value
+                colorStart: '#6FADCF', // Colors
+                colorStop: '#8FC0DA',
+                strokeColor: '#E0E0E0', 
+                generateGradient: true
+            };
 
-                                        // Set scale settings
-                                        var scale = gauge.scale();
-                                        scale.minimum(10).maximum(50).ticks({ interval: 5 });
+            var HumidityGauge = new Gauge(target).setOptions(opts);
+            HumidityGauge.maxValue = 100;
+            HumidityGauge.setMinValue(0);
+            HumidityGauge.animationSpeed = 32;
+            HumidityGauge.set(70);  // Initial humidity value
 
-                                        // Set axis and axis settings
-                                        var axis = gauge.axis();
-                                        axis.scale(scale).width('0.5%').offset('-1%');
+            function addLabel(value) {
+                var ctx = target.getContext('2d');
+                ctx.font = "20px Arial";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#000000";
 
-                                        // Set text formatter for axis labels
-                                        axis.labels().useHtml(true).format('{%Value}°C');
+                // Increase the clearRect and fillText y-values to move the label lower
+                ctx.clearRect(0, target.height - 5, target.width, 50);  // Adjusted clearRect height
+                ctx.fillText(value + "% Humidity", target.width / 2, target.height - -10);  // Adjusted fillText height
+            }
 
-                                        return gauge;
-                                    }
 
-                                    var gauge = drawLinearGauge(70);
-                                    var thermometer = gauge.thermometer(0);
-                                    thermometer.name('Thermometer').fill('green').stroke('green');
-                                    gauge.container('thermometerContainer');
-                                    gauge.draw();
-                                    
-                                    async function updateData() {
-                                        try {
-                                        const response = await fetch('http://127.0.0.1:5005/data'); // Fetch data from server
-                                        const data = await response.json();
-                                        console.log(data)
-                                        const { temperature, humidity } = data;  // Parse temperature and humidity from server data
+            // Initial label display
+            addLabel(70);
 
-                                        HumidityGauge.set(humidity);  // Update humidity gauge
-                                        gauge.data([temperature]);  // Update temperature gauge
-                                        document.getElementById('currentTemperature').textContent = temperature + ' °C';
+            document.getElementById("currentStatus").style.backgroundColor = "green";
 
-                                        // Update status based on temperature
-                                        if (temperature > 35) {
-                                            document.getElementById("currentStatus").innerHTML = "Danger";
-                                            document.getElementById("currentStatus").style.backgroundColor = "red";
-                                            thermometer.name('Thermometer').fill('red').stroke('red')
-                                        } else if (temperature > 27) {
-                                            document.getElementById("currentStatus").innerHTML = "Risk";
-                                            document.getElementById("currentStatus").style.backgroundColor = "orange";
-                                            thermometer.name('Thermometer').fill('orange').stroke('orange')
-                                        } else {
-                                            document.getElementById("currentStatus").innerHTML = "Optimal";
-                                            document.getElementById("currentStatus").style.backgroundColor = "green";
-                                            thermometer.name('Thermometer').fill('green').stroke('green')
-                                        }
+            anychart.onDocumentReady(function () {
+                // Temperature linear gauge setup
+                function drawLinearGauge(value) {
+                    var gauge = anychart.gauges.linear();
+                    gauge.data([value]).padding(10, 0, 30, 0);
+                    gauge.tooltip().useHtml(true).format(function () {
+                        return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
+                    });
 
-                                        } catch (error) {
-                                        console.error('Error fetching data:', error);
-                                        }
-                                    }
-                                    setInterval(updateData, 2000);
-                                });
-                            </script>
+                    // Set scale settings
+                    var scale = gauge.scale();
+                    scale.minimum(10).maximum(50).ticks({ interval: 5 });
+
+                    // Set axis and axis settings
+                    var axis = gauge.axis();
+                    axis.scale(scale).width('0.5%').offset('-1%');
+
+                    // Set text formatter for axis labels
+                    axis.labels().useHtml(true).format('{%Value}°C');
+
+                    return gauge;
+                }
+
+                var gauge = drawLinearGauge(70);
+                var thermometer = gauge.thermometer(0);
+                thermometer.name('Thermometer').fill('green').stroke('green');
+                gauge.container('thermometerContainer');
+                gauge.draw();
+
+                async function updateData() {
+                    try {
+                        const response = await fetch('http://127.0.0.1:5005/data');
+                        const data = await response.json();
+                        console.log(data);
+                        const { temperature, humidity } = data;
+
+                        // Update humidity gauge first
+                        HumidityGauge.set(humidity);
+                        
+                        // Immediately redraw the label with the updated humidity value
+                        addLabel(humidity);
+
+                        // Update temperature gauge
+                        gauge.data([temperature]);
+                        document.getElementById('currentTemperature').textContent = temperature + ' °C';
+                        
+                        // Update status based on temperature
+                        if (temperature > 35) {
+                            document.getElementById("currentStatus").innerHTML = "Danger";
+                            document.getElementById("currentStatus").style.backgroundColor = "red";
+                            thermometer.name('Thermometer').fill('red').stroke('red');
+                        } else if (temperature > 27) {
+                            document.getElementById("currentStatus").innerHTML = "Risk";
+                            document.getElementById("currentStatus").style.backgroundColor = "orange";
+                            thermometer.name('Thermometer').fill('orange').stroke('orange');
+                        } else {
+                            document.getElementById("currentStatus").innerHTML = "Optimal";
+                            document.getElementById("currentStatus").style.backgroundColor = "green";
+                            thermometer.name('Thermometer').fill('green').stroke('green');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                    }
+                }
+
+                // Initial call to display the label
+                addLabel(70);
+
+
+                setInterval(updateData, 2000);
+            });
+        };
+    </script>
     <!-- Scripts for Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
@@ -296,78 +356,47 @@
             },
             options: {
                 indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: true, // Display legend
+                        labels: {
+                            generateLabels: function(chart) {
+                                let labels = chart.data.labels;
+                                let colors = chart.data.datasets[0].backgroundColor;
+                                return labels.map((label, index) => ({
+                                    text: label,
+                                    fillStyle: colors[index],
+                                    strokeStyle: 'rgb(0, 0, 0)',
+                                    lineWidth: 1,
+                                    hidden: false,
+                                    index: index
+                                }));
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw + ' kW';
+                            }
+                        }
+                    }
+                },
                 scales: {
-                    y: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '(kW)'
+                        },
                         beginAtZero: true,
                         suggestedMax: 500
+                    },
+                    y: {
+                        display: false // Hide the y-axis labels
                     }
                 }
             }
         });
-
-        var opts = {
-            angle: 0, // The span of the gauge (0-1, where 0 is 180deg, 1 is 360deg)
-            lineWidth: 0.2, // The thickness of the gauge
-            radiusScale: 1, // Relative radius
-            pointer: {
-                length: 0.6, // Relative to gauge radius
-                strokeWidth: 0.04, // Thickness of the pointer
-                color: '#000000' // Color of the pointer
-            },
-            limitMax: false, // False = infinite max value
-            limitMin: false, // False = infinite min value
-            colorStart: '#6FADCF', // Colors
-            colorStop: '#8FC0DA',
-            strokeColor: '#E0E0E0', 
-            generateGradient: true
-        };
-        var target = document.getElementById('humidityContainer'); 
-        var HumidityGauge = new Gauge(target).setOptions(opts); 
-        HumidityGauge.maxValue = 100; 
-        HumidityGauge.setMinValue(0);  
-        HumidityGauge.animationSpeed = 32; 
-        HumidityGauge.set(70); 
-
-        function addLabel(value) {
-            var ctx = target.getContext('2d'); 
-            ctx.font = "20px Arial"; 
-            ctx.textAlign = "center";
-            ctx.fillStyle = "#000000";
-            ctx.clearRect(0, 120, 300, 50);
-            ctx.fillText(value + "% Humidity", target.width / 2, 150);
-        }
-
-        // Initial label
-        addLabel(70);
-    </script>
-    <script>
-                // Add labels and lines manually
-        var ctx = myChart.ctx;
-        var chartWidth = myChart.width;
-        var chartHeight = myChart.height;
-        var centerX = chartWidth / 2;
-        var centerY = chartHeight / 2;
-
-        var labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
-        var angles = myChart.data.datasets[0].angles; // Get angles of each slice
-
-        for (var i = 0; i < labels.length; i++) {
-            var angle = angles[i] / 2; // Calculate angle to the center of the slice
-            var x = centerX + Math.cos(angle) * chartWidth / 2;
-            var y = centerY + Math.sin(angle) * chartHeight / 2;
-
-            // Draw label text
-            ctx.font = '12px Arial';
-            ctx.fillStyle = 'black';
-            ctx.fillText(labels[i], x, y);
-
-            // Draw line to the slice
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.lineTo(x, y);
-            ctx.strokeStyle = 'black';
-            ctx.stroke();
-        }
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -525,7 +554,7 @@
         "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS",
         "Firewall","Network Switch", "KVM Switch", "RAID/NVME SSDs", "Server", "Server", "Server", "Server", "Network Attatched Storage", "UPS", // Details for the first server
         // Details for the second server,
-        // Add details for each server as needed
+        // Add details for each server as neededv
     ];
 
     // Create an HTML element to display component info
