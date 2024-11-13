@@ -4860,6 +4860,7 @@ html:not([dir=rtl]) .navbar-nav {
 .card2 {
   width: 33%;
   height: 10%;
+  padding: 2%;
 }
 
 .card3 {
@@ -4932,6 +4933,7 @@ html:not([dir=rtl]) .navbar-nav {
 
 .card-body {
   color: var(--cui-card-color);
+  padding: 2%;
 }
 
 .card-body2 {
@@ -4961,6 +4963,7 @@ html:not([dir=rtl]) .card-link + .card-link {
 
 .card-header {
   margin-bottom: 0;
+  text-align: center;
   color: var(--cui-card-cap-color);
   background-color: var(--cui-card-cap-bg);
   border-bottom: var(--cui-card-border-width) solid var(--cui-card-border-color);

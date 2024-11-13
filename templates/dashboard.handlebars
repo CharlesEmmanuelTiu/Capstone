@@ -247,12 +247,12 @@
                             currentStatus.innerHTML = "Danger";
                             currentStatus.style.backgroundColor = "red";
                             thermometer.name('Thermometer').fill('red').stroke('red');
-                            addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date().toLocaleTimeString());
+                            addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date());
                         } else if (temperature > 27) {
                             currentStatus.innerHTML = "Risk";
                             currentStatus.style.backgroundColor = "orange";
                             thermometer.name('Thermometer').fill('orange').stroke('orange');
-                            addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date().toLocaleTimeString());
+                            addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date());
                         } else {
                             currentStatus.innerHTML = "Optimal";
                             currentStatus.style.backgroundColor = "green";
@@ -263,31 +263,28 @@
                     }
                 }
 
-                function addAlertRow(alertType, source, status, time) {
+                // Declare a Set to store unique alerts outside of the function
+                const uniqueAlerts = new Set();
+
+                async function addAlertRow(alertType, source, status, time) {
                     const alertTableBody = document.getElementById("alertTableBody");
-                    
-                    // Remove the "No Alerts" row if it exists
                     const noAlertsRow = document.getElementById("noAlertsRow");
+                    
                     if (noAlertsRow) {
                         alertTableBody.removeChild(noAlertsRow);
                     }
 
-                    // Check if an identical alert already exists in the table
                     const rows = alertTableBody.getElementsByTagName("tr");
                     for (let i = 0; i < rows.length; i++) {
                         const cells = rows[i].getElementsByTagName("td");
                         if (
-                            cells[0].getElementsByTagName("img")[0]?.src === alertType &&
-                            //cells[0].innerText === alertType &&
                             cells[1].innerText === source &&
                             cells[2].innerText === status
                         ) {
-                            // If an identical alert exists, exit the function
                             return;
                         }
                     }
 
-                    // If no duplicate found, proceed to add a new row
                     const newRow = alertTableBody.insertRow();
                     const alertCell = newRow.insertCell(0);
                     const sourceCell = newRow.insertCell(1);
@@ -295,19 +292,24 @@
                     const timeCell = newRow.insertCell(3);
 
                     alertCell.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="${alertType}" class="icon-small">`;
-                    //alertCell.textContent = alertType;
                     sourceCell.innerHTML = `<a class="alert-links" href="/cooling_system">${source}</a>`;
-                    timeCell.textContent = time;
+                    timeCell.textContent = time.toLocaleTimeString();
 
-                    // Set the status cell with color based on status
                     statusCell.textContent = status;
-                    if (status === "Critical") {
-                        statusCell.style.color = "red";
-                    } else if (status === "Warning") {
-                        statusCell.style.color = "orange";
-                    } else {
-                        statusCell.style.color = "green";
-                    }
+                    statusCell.style.color = status === "Critical" ? "red" : status === "Warning" ? "orange" : "green";
+
+                    // Send the alert data to MongoDB
+                    fetch('http://127.0.0.1:8000/add-alert', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ alertType, source, status, time })
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.error('Failed to add alert to database');
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
                 }
                 setInterval(updateData, 2000);
             });

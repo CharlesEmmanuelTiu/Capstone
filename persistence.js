@@ -5,15 +5,22 @@ let client
 let db
 let users
 let sessions
+let alerts
 
 async function connectDatabase() {
     if (!client) {
         client = new mongodb.MongoClient('mongodb+srv://charlestiu:DirtInYourEye_28@cluster0.n2c2j.mongodb.net/')
         await client.connect()
         db = client.db('Capstone')
+        alerts = db.collection('Alerts')
         sessions = db.collection('Sessions')
         users = db.collection('Users')
     }
+}
+
+async function addAlert(current_alert){
+    await connectDatabase()
+    await alerts.insertOne(current_alert);
 }
 
 async function validateCredentials(username, password) {
@@ -246,5 +253,6 @@ module.exports = {
     getAccountHighestID,
     getHighestStationNumber,
     deleteStation,
-    removeUser
+    removeUser,
+    addAlert
 }

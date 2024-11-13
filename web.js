@@ -12,6 +12,7 @@ const crypto = require('crypto')
 
 let app = express()
 app.set('views', __dirname+"/templates")
+app.use(express.json());
 app.use(express.static('static'))
 app.use('/static', express.static(__dirname+"/static"))
 app.set('view engine', 'handlebars')
@@ -75,6 +76,22 @@ app.get('/', async (req, res) => {
 //     { id: 2, name: 'Humidity Sensor', status: 'Active' },
 //     { id: 3, name: 'Pressure Sensor', status: 'Active' },
 //   ];
+
+app.post('/add-alert', async (req, res) => {
+    try {        
+        const alert = {
+            alertType: req.body.alertType,
+            source: req.body.source,
+            status: req.body.status,
+            time: new Date(req.body.time),
+        };
+        await business.addAlert(alert)
+        res.status(200).send('Alert added to the database');
+    } catch (error) {
+        console.error('Error adding alert:', error);
+        res.status(500).send('Error adding alert');
+    }
+});
 
 app.get('/traditional_dc', async (req, res) =>{
     let key = req.cookies.session
@@ -1721,6 +1738,7 @@ app.use((req, res)=>{
     res.status(500)
     res.render('500_page')
 })
+
 
 app.listen("8000", () => {
     console.log("Application running on http://127.0.0.1:8000")

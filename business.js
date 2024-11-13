@@ -6,6 +6,10 @@ async function validateCredentials(username, password) {
     return await persistence.validateCredentials(username, password)
 }
 
+async function addAlert(current_alert){
+    return await persistence.addAlert(current_alert)
+}
+
 async function getUsers() {
     return await persistence.getAccounts()
 }
@@ -217,5 +221,6 @@ module.exports = {
     addStation,
     unassignManagerStation,
     deleteStation,
-    removeUser
+    removeUser,
+    addAlert
 }
