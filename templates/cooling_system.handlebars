@@ -14,6 +14,967 @@
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
+    }
+    .container {
+      background-color: white;
+      width: 100%;
+      max-width: 1200px;
+      border: 1px solid grey;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    h2 {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 0;
+      text-align: center;
+      width: 100%;
+    }
+    .section {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      width: 48%;
+      height: 60px;
+      background-color: rgba(60, 75, 100, 0.9);
+      border: 1px solid #d3d3d3;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 10px;
+    }
+    .section label {
+      width: 150px;
+      font-weight: bold;
+      color: white;
+    }
+    .section input, .section select, .section button {
+      width: 100px;
+      padding: 5px;
+      margin-right: 20px;
+    }
+    .fan-controls, .liquid-controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      width: 48%;
+    }
+    .fan-status, .liquid-status {
+      display: inline-block;
+      width: 30%;
+      text-align: center;
+      border: 1px solid grey;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .fan-image, .liquid-image {
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .fan-image img, .liquid-image img {
+      width: 100px;
+      height: auto;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .footer-buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #f7f7f7;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .footer-buttons button:hover {
+      background-color: #eaeaea;
+    }
+    button {
+      border: 1px solid #b0b0b0;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Fan speed intensity colors */
+    .fan-speed-normal {
+      background-color: #a8dadc;
+    }
+    .fan-speed-high {
+      background-color: #457b9d;
+      color: white;
+    }
+    .fan-speed-max {
+      background-color: #1d3557;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Cooling System Settings</h2>
+
+  <!-- Box Level and Status Section -->
+  <div class="section">
+    <label for="boxLevel">Box level:</label>
+    <input type="text" id="boxLevel" value="01" readonly>
+  </div>
+  <div class="section">
+    <label for="status">Status:</label>
+    <input type="text" id="status" value="Connected" readonly>
+  </div>
+  <div class="section">
+    <label for="name">Name:</label>
+    <input type="text" id="name" value="Level1" readonly>
+  </div>
+  <div class="section">
+    <label for="location">Location:</label>
+    <input type="text" id="location" value="Rack_001" readonly>
+  </div>
+
+  <!-- Fan Unit Section -->
+  <div class="section">
+    <label for="fanUnit">Fan unit:</label>
+    <select id="fanUnit">
+      <option>01 - RF-1.3 1U Fan Tray</option>
+      <option>02 - RF-2.0 2U Fan Tray</option>
+    </select>
+  </div>
+  <div class="section">
+    <label for="unitSwitch">Unit switch:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="unitCFM">Unit CFM:</label>
+    <button class="fan-speed-normal">Normal</button>
+    <button class="fan-speed-high">High</button>
+    <button class="fan-speed-max">Max</button>
+  </div>
+
+  <!-- Fan Controls Section -->
+  <div class="fan-controls">
+    <div class="fan-status">
+      <p>Fan 01</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 02</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 03</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+  </div>
+
+  <!-- Liquid Cooling Section -->
+  <h2>Liquid Cooling System</h2>
+  <div class="section">
+    <label for="coolantTemp">Coolant Temp (°C):</label>
+    <input type="text" id="coolantTemp" value="24.5" readonly>
+  </div>
+  <div class="section">
+    <label for="flowRate">Coolant Flow Rate (L/min):</label>
+    <input type="text" id="flowRate" value="1.5" readonly>
+  </div>
+  <div class="section">
+    <label for="pumpStatus">Pump Status:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Sensors Control Section -->
+  <h2>Sensors Control</h2>
+  <div class="section">
+    <label for="temperatureSensor">Temperature Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="humiditySensor">Humidity Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="pressureSensor">Pressure Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="vibrationSensor">Vibration Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Fan and Liquid Cooling Image -->
+  <div class="fan-image">
+    <img src="https://forum.huawei.com/enterprise/api/file/v1/small/thread/667934002083926016.gif?appid=esc_en" alt="Fan Diagram" style="height: 150px; width: 30%">
+    <p>Front</p>
+  </div>
+  <div class="liquid-image">
+    <img src="https://theengineeringmindset.com/wp-content/uploads/2018/04/Data-center-CFD-SimScale.gif" alt="Liquid Cooling Diagram" style="height: 150px; width: 30%">
+    <p>Liquid Cooling System</p>
+  </div>
+
+  <!-- Temperature and Auto Data Refresh Section -->
+  <div class="section">
+    <label for="tempSensor">Temp. Sensor (°C):</label>
+    <input type="text" id="tempSensor" value="26.8" readonly>
+  </div>
+  <div class="section">
+    <label>Auto data refresh:</label>
+    <input type="checkbox" checked>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="footer-buttons">
+    <button>Apply</button>
+    <button>Cancel</button>
+    <button>Exit</button>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooling System Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: white;
+      width: 100%;
+      max-width: 1200px;
+      border: 1px solid grey;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    h2 {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 0;
+      text-align: center;
+      width: 100%;
+    }
+    .section {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      width: 48%;
+      height: 60px;
+      background-color: rgba(60, 75, 100, 0.9);
+      border: 1px solid #d3d3d3;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 10px;
+    }
+    .section label {
+      width: 150px;
+      font-weight: bold;
+      color: white;
+    }
+    .section input, .section select, .section button {
+      width: 100px;
+      padding: 5px;
+      margin-right: 20px;
+    }
+    .fan-controls, .liquid-controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      width: 48%;
+      
+    }
+    .fan-status, .liquid-status {
+      display: inline-block;
+      width: 30%;
+      text-align: center;
+      border: 1px solid grey;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .fan-image, .liquid-image {
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .fan-image img, .liquid-image img {
+      width: 100px;
+      height: auto;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .footer-buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #f7f7f7;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .footer-buttons button:hover {
+      background-color: #eaeaea;
+    }
+    button {
+      background-color: beige;
+      border: 1px solid #b0b0b0;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    label{
+      col
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Cooling System Settings</h2>
+
+  <!-- Box Level and Status Section -->
+  <div class="section">
+    <label for="boxLevel">Box level:</label>
+    <input type="text" id="boxLevel" value="01" readonly>
+  </div>
+  <div class="section">
+    <label for="status">Status:</label>
+    <input type="text" id="status" value="Connected" readonly>
+  </div>
+  <div class="section">
+    <label for="name">Name:</label>
+    <input type="text" id="name" value="Level1" readonly>
+  </div>
+  <div class="section">
+    <label for="location">Location:</label>
+    <input type="text" id="location" value="Rack_001" readonly>
+  </div>
+
+  <!-- Fan Unit Section -->
+  <div class="section">
+    <label for="fanUnit">Fan unit:</label>
+    <select id="fanUnit">
+      <option>01 - RF-1.3 1U Fan Tray</option>
+      <option>02 - RF-2.0 2U Fan Tray</option>
+    </select>
+  </div>
+  <div class="section">
+    <label for="unitSwitch">Unit switch:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="unitCFM">Unit CFM:</label>
+    <button>Normal</button>
+    <button>High</button>
+    <button>Max</button>
+  </div>
+
+  <!-- Fan Controls Section -->
+  <div class="fan-controls">
+    <div class="fan-status">
+      <p>Fan 01</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 02</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 03</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+  </div>
+
+  <!-- Liquid Cooling Section -->
+  <h2>Liquid Cooling System</h2>
+  <div class="section">
+    <label for="coolantTemp">Coolant Temp (°C):</label>
+    <input type="text" id="coolantTemp" value="24.5" readonly>
+  </div>
+  <div class="section">
+    <label for="flowRate">Coolant Flow Rate (L/min):</label>
+    <input type="text" id="flowRate" value="1.5" readonly>
+  </div>
+  <div class="section">
+    <label for="pumpStatus">Pump Status:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Sensors Control Section -->
+  <h2>Sensors Control</h2>
+  <div class="section">
+    <label for="temperatureSensor">Temperature Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="humiditySensor">Humidity Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="pressureSensor">Airflow Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="vibrationSensor">Vibration Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Fan and Liquid Cooling Image -->
+  <div class="fan-image">
+    <img src="https://forum.huawei.com/enterprise/api/file/v1/small/thread/667934002083926016.gif?appid=esc_en" alt="Fan Diagram" style="height: 150px; width: 30%">
+    <p>Front</p>
+  </div>
+  <div class="liquid-image">
+    <img src="https://theengineeringmindset.com/wp-content/uploads/2018/04/Data-center-CFD-SimScale.gif" alt="Liquid Cooling Diagram" style="height: 150px; width: 30%">
+    <p>Liquid Cooling System</p>
+  </div>
+
+  <!-- Temperature and Auto Data Refresh Section -->
+  <div class="section">
+    <label for="tempSensor">Temp. Sensor (°C):</label>
+    <input type="text" id="tempSensor" value="26.8" readonly>
+  </div>
+  <div class="section">
+    <label>Auto data refresh:</label>
+    <input type="checkbox" checked>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="footer-buttons">
+    <button>Apply</button>
+    <button>Cancel</button>
+    <button>Exit</button>
+  </div>
+</div>
+
+</body>
+</html> --}}
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooling System Dashboard</title>
+  <style>
+    body {
+      
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .card {
+      background-color: #fff;
+      border: 1px solid grey;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+    .card h2 {
+      font-size: 1.1em;
+      color: #333;
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    .section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .section label {
+      width: 140px;
+      font-weight: bold;
+      color: #555;
+    }
+    .section input, .section select, .section button {
+      width: 130px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+    .status-item {
+      text-align: center;
+    }
+    .status-item p {
+      margin: 5px 0;
+      font-size: 0.9em;
+      color: #666;
+    }
+    .status-item button {
+      padding: 5px 10px;
+      font-size: 0.9em;
+    }
+    .image img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .footer-buttons button {
+      margin: 5px;
+      padding: 8px 12px;
+      font-size: 0.95em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .footer-buttons button:hover {
+      background-color: #ddd;
+    }
+    button{
+      border: 1px solid grey;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Box Level and Status Card -->
+  <div class="card">
+    <h2>Box Level and Status</h2>
+    <div class="section">
+      <label for="boxLevel">Box level:</label>
+      <input type="text" id="boxLevel" value="01" readonly>
+    </div>
+    <div class="section">
+      <label for="status">Status:</label>
+      <input type="text" id="status" value="Connected" readonly>
+    </div>
+    <div class="section">
+      <label for="name">Name:</label>
+      <input type="text" id="name" value="Level1" readonly>
+    </div>
+    <div class="section">
+      <label for="location">Location:</label>
+      <input type="text" id="location" value="Rack_001" readonly>
+    </div>
+  </div>
+
+  <!-- Fan Unit Card -->
+  <div class="card">
+    <h2>Fan Unit</h2>
+    <div class="section">
+      <label for="fanUnit">Fan unit:</label>
+      <select id="fanUnit">
+        <option>01 - RF-1.3 1U Fan Tray</option>
+        <option>02 - RF-2.0 2U Fan Tray</option>
+      </select>
+    </div>
+    <div class="controls">
+      <button>ON</button>
+      <button>OFF</button>
+      <button>Normal</button>
+      <button>High</button>
+      <button>Max</button>
+    </div>
+  </div>
+
+  <!-- Fan Controls Card -->
+  <div class="card">
+    <h2>Fan Controls</h2>
+    <div class="controls">
+      <div class="status-item">
+        <p>Fan 01</p>
+        <p>Status: Max</p>
+        <button>OFF</button>
+      </div>
+      <div class="status-item">
+        <p>Fan 02</p>
+        <p>Status: Max</p>
+        <button>OFF</button>
+      </div>
+      <div class="status-item">
+        <p>Fan 03</p>
+        <p>Status: Max</p>
+        <button>OFF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liquid Cooling System Card -->
+  <div class="card">
+    <h2>Liquid Cooling System</h2>
+    <div class="section">
+      <label for="coolantTemp">Coolant Temp (°C):</label>
+      <input type="text" id="coolantTemp" value="24.5" readonly>
+    </div>
+    <div class="section">
+      <label for="flowRate">Coolant Flow Rate (L/min):</label>
+      <input type="text" id="flowRate" value="1.5" readonly>
+    </div>
+    <div class="controls">
+      <button>ON</button>
+      <button>OFF</button>
+    </div>
+  </div>
+
+  <!-- Sensor Controls Card -->
+  <div class="card">
+    <h2>Sensor Controls</h2>
+    <div class="section">
+      <label for="temperatureSensor">Temperature Sensor:</label>
+      <button>ON</button>
+      <button>OFF</button>
+    </div>
+    <div class="section">
+      <label for="humiditySensor">Humidity Sensor:</label>
+      <button>ON</button>
+      <button>OFF</button>
+    </div>
+    <div class="section">
+      <label for="pressureSensor">Pressure Sensor:</label>
+      <button>ON</button>
+      <button>OFF</button>
+    </div>
+    <div class="section">
+      <label for="vibrationSensor">Vibration Sensor:</label>
+      <button>ON</button>
+      <button>OFF</button>
+    </div>
+  </div>
+
+  <!-- System Diagrams Card -->
+  <div class="card">
+    <h2>System Diagrams</h2>
+    <div class="image">
+      <img src="https://forum.huawei.com/enterprise/api/file/v1/small/thread/667934002083926016.gif?appid=esc_en" alt="Fan Diagram">
+    </div>
+    <div class="image">
+      <img src="https://theengineeringmindset.com/wp-content/uploads/2018/04/Data-center-CFD-SimScale.gif" alt="Liquid Cooling Diagram">
+    </div>
+  </div>
+
+  <!-- Additional Settings Card -->
+  <div class="card">
+    <h2>Additional Settings</h2>
+    <div class="section">
+      <label for="tempSensor">Temp. Sensor (°C):</label>
+      <input type="text" id="tempSensor" value="26.8" readonly>
+    </div>
+    <div class="section">
+      <label>Auto data refresh:</label>
+      <input type="checkbox" checked>
+    </div>
+    <div class="footer-buttons">
+      <button>Apply</button>
+      <button>Cancel</button>
+      <button>Exit</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html> --}}
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooling System Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      flex-wrap: wrap;
+    }
+    .container {
+      background-color: white;
+      width: 100%;
+      max-width: 1200px;
+      border: 1px solid grey;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    h2 {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 0;
+      text-align: center;
+      width: 100%;
+    }
+    .section {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      width: 48%;
+      height: 55px;
+      border-color: grey;
+      box-shadow: #333;
+    }
+    .section label {
+      width: 150px;
+      font-weight: bold;
+    }
+    .section input, .section select, .section button {
+      width: 150px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+    .fan-controls, .liquid-controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      width: 48%;
+    }
+    .fan-status, .liquid-status {
+      display: inline-block;
+      width: 30%;
+      text-align: center;
+    }
+    .fan-image, .liquid-image {
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .fan-image img, .liquid-image img {
+      width: 100px;
+      height: auto;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .footer-buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 1em;
+    }
+    button{
+      background-color:beige;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Cooling System Settings</h2>
+
+  <!-- Box Level and Status Section -->
+  <div class="section">
+    <label for="boxLevel">Box level:</label>
+    <input type="text" id="boxLevel" value="01" readonly>
+  </div>
+  <div class="section">
+    <label for="status">Status:</label>
+    <input type="text" id="status" value="Connected" readonly>
+  </div>
+  <div class="section">
+    <label for="name">Name:</label>
+    <input type="text" id="name" value="Level1" readonly>
+  </div>
+  <div class="section">
+    <label for="location">Location:</label>
+    <input type="text" id="location" value="Rack_001" readonly>
+  </div>
+
+  <!-- Fan Unit Section -->
+  <div class="section">
+    <label for="fanUnit">Fan unit:</label>
+    <select id="fanUnit">
+      <option>01 - RF-1.3 1U Fan Tray</option>
+      <option>02 - RF-2.0 2U Fan Tray</option>
+    </select>
+  </div>
+  <div class="section">
+    <label for="unitSwitch">Unit switch:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="unitCFM">Unit CFM:</label>
+    <button>Normal</button>
+    <button>High</button>
+    <button>Max</button>
+  </div>
+
+  <!-- Fan Controls Section -->
+  <div class="fan-controls">
+    <div class="fan-status">
+      <p>Fan 01</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 02</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+    <div class="fan-status">
+      <p>Fan 03</p>
+      <p>Status: Max</p>
+      <button>OFF</button>
+    </div>
+  </div>
+
+  <!-- Liquid Cooling Section -->
+  <h2>Liquid Cooling System</h2>
+  <div class="section">
+    <label for="coolantTemp">Coolant Temp (°C):</label>
+    <input type="text" id="coolantTemp" value="24.5" readonly>
+  </div>
+  <div class="section">
+    <label for="flowRate">Coolant Flow Rate (L/min):</label>
+    <input type="text" id="flowRate" value="1.5" readonly>
+  </div>
+  <div class="section">
+    <label for="pumpStatus">Pump Status:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Sensors Control Section -->
+  <h2>Sensors Control</h2>
+  <div class="section">
+    <label for="temperatureSensor">Temperature Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="humiditySensor">Humidity Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="pressureSensor">Pressure Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="vibrationSensor">Vibration Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Fan and Liquid Cooling Image -->
+  <div class="fan-image">
+    <img src="https://forum.huawei.com/enterprise/api/file/v1/small/thread/667934002083926016.gif?appid=esc_en" alt="Fan Diagram" style="height: 150px; width: 30%">
+    <p>Front</p>
+  </div>
+  <div class="liquid-image">
+    <img src="https://theengineeringmindset.com/wp-content/uploads/2018/04/Data-center-CFD-SimScale.gif" alt="Liquid Cooling Diagram" style="height: 150px; width: 30%">
+    <p>Liquid Cooling System</p>
+  </div>
+
+  <!-- Temperature and Auto Data Refresh Section -->
+  <div class="section">
+    <label for="tempSensor">Temp. Sensor (°C):</label>
+    <input type="text" id="tempSensor" value="26.8" readonly>
+  </div>
+  <div class="section">
+    <label>Auto data refresh:</label>
+    <input type="checkbox" checked>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="footer-buttons">
+    <button>Apply</button>
+    <button>Cancel</button>
+    <button>Exit</button>
+  </div>
+</div>
+
+</body>
+</html> --}}
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooling System Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
       flex-wrap: wrap;
     }
     .container {
@@ -190,7 +1151,7 @@
 </div>
 
 </body>
-</html>
+</html> --}}
 
 
 {{!-- <!DOCTYPE html>
