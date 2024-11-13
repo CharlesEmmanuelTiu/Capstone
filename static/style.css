@@ -4964,8 +4964,10 @@ html:not([dir=rtl]) .card-link + .card-link {
 .card-header {
   margin-bottom: 0;
   text-align: center;
-  color: var(--cui-card-cap-color);
-  background-color: var(--cui-card-cap-bg);
+  /* color: var(--cui-card-cap-color);
+  background-color: var(--cui-card-cap-bg); */
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #3c4b64;
   border-bottom: var(--cui-card-border-width) solid var(--cui-card-border-color);
 }
 

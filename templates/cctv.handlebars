@@ -91,8 +91,8 @@
 
     <div class="alert" id="alert-box">
         <button onclick="dismissAlert()">✕</button>
-        <h2>INTRUDER ALERT!</h2>
-        <p>Unrecognized person detected. Alert sent to security.</p>
+        <h2>MOTION ALERT!</h2>
+        <p>Possible intruder detected. Alert sent to security.</p>
     </div>
 
     <div class="log" id="log">
@@ -130,7 +130,22 @@
             alertBox.style.display = 'block'; // Show alert box
             logEntry(`Intruder detected: ${name}. Alert sent to security.`);
             sendAlert();
-
+            const alertType = "Intruder Alert"
+            const source = "CCTV"
+            const status = "Critical"
+            const time = new Date()
+            console.log(name)
+            fetch('http://127.0.0.1:8000/add-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alertType, name, source, status, time})
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to add alert to database');
+                    }
+                }).catch(error => {
+                        console.error('Error:', error);
+                });
             // Hide the alert box after 5 seconds if not dismissed
             //setTimeout(() => {
             //    if (alertBox.style.display === 'block') {

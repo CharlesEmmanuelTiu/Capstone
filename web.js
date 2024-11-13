@@ -78,13 +78,28 @@ app.get('/', async (req, res) => {
 //   ];
 
 app.post('/add-alert', async (req, res) => {
-    try {        
-        const alert = {
-            alertType: req.body.alertType,
-            source: req.body.source,
-            status: req.body.status,
-            time: new Date(req.body.time),
-        };
+    try {
+        let alert
+        const DefineAlert = req.body.alertType
+        if (DefineAlert == "Temperature Alert"){
+            alert = {
+                alertType: DefineAlert,
+                source: req.body.source,
+                status: req.body.status,
+                temperature: req.body.temperature,
+                humidity: req.body.humidity,
+                time: new Date(req.body.time),
+            };
+        }
+        else if (DefineAlert == "Intruder Alert"){
+            alert = {
+                alertType: DefineAlert,
+                employee: req.body.name,
+                source: req.body.source,
+                status: req.body.status,
+                time: new Date(req.body.time),
+            };
+        }
         await business.addAlert(alert)
         res.status(200).send('Alert added to the database');
     } catch (error) {

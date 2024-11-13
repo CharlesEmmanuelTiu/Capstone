@@ -36,7 +36,7 @@
                                 <h4>Power Usage</h4>
                             </div>
                             <div class="card-body">
-                                <div id="powerGraph" style="width:100%; height:250px;">
+                                <div id="powerGraph">
                                     <canvas id="powerUsageChart"></canvas>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                                         </thead>
                                         <tbody id="alertTableBody">
                                             <tr id="noAlertsRow">
-                                                <td colspan="4" style="text-align: center;">No Alerts</td>
+                                                <td colspan="4" style="text-align: center;">No Recent Alerts</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -110,7 +110,11 @@
                             <div class="card-header">
                                 <h4>Humidity Gauge</h4>
                             </div>
-                            <div class="card-body2">
+                            <div class="card-bodying">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
+                            </div>
                                 <center>
                             <div id="humidChart" style="width: 100%; height: 250px;">
                                 <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
@@ -128,8 +132,7 @@
                                 <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge bg-warning">0</span></p>
-                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
+                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge bg-warning"></span></p>
                             </div>
                             <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
@@ -160,6 +163,10 @@
     </div>
     <!-- Scripts for Gathering data -->
     <script>
+        document.getElementById("NumberOfAlerts").innerHTML = 0
+        document.getElementById("currentStatus").innerHTML = "Optimal"
+        document.getElementById("currentStatus").style.backgroundColor = "green";
+        document.getElementById('currentStatus2').style.backgroundColor = "green";
         window.onload = function () {
             // Humidity gauge setup
             var target = document.getElementById('humidityContainer');
@@ -241,18 +248,31 @@
                         addLabel(humidity);
                         gauge.data([temperature]);
                         document.getElementById('currentTemperature').textContent = temperature + ' °C';
-
+                        document.getElementById('currentHumidity').textContent = humidity + ' %'
+                        currentStatus2 = document.getElementById('currentStatus2')
+                        if (humidity >= 20 && humidity <= 80){
+                            currentStatus2.style.backgroundColor = 'green'
+                            currentStatus2.innerHTML = 'Normal'
+                        }
+                        else if(humidity > 80){
+                            currentStatus2.style.backgroundColor = 'red'
+                            currentStatus2.innerHTML = 'High'
+                        }
+                        else{
+                            currentStatus2.style.backgroundColor = 'orange'
+                            currentStatus2.innerHTML = 'Low'
+                        }
                         // Check temperature and add alert with severity if needed
                         if (temperature > 35) {
                             currentStatus.innerHTML = "Danger";
                             currentStatus.style.backgroundColor = "red";
                             thermometer.name('Thermometer').fill('red').stroke('red');
-                            addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date());
+                            addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date(), temperature, humidity);
                         } else if (temperature > 27) {
                             currentStatus.innerHTML = "Risk";
                             currentStatus.style.backgroundColor = "orange";
                             thermometer.name('Thermometer').fill('orange').stroke('orange');
-                            addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date());
+                            addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date(), temperature, humidity);
                         } else {
                             currentStatus.innerHTML = "Optimal";
                             currentStatus.style.backgroundColor = "green";
@@ -266,7 +286,7 @@
                 // Declare a Set to store unique alerts outside of the function
                 const uniqueAlerts = new Set();
 
-                async function addAlertRow(alertType, source, status, time) {
+                async function addAlertRow(alertType, source, status, time, temperature, humidity) {
                     const alertTableBody = document.getElementById("alertTableBody");
                     const noAlertsRow = document.getElementById("noAlertsRow");
                     
@@ -297,12 +317,12 @@
 
                     statusCell.textContent = status;
                     statusCell.style.color = status === "Critical" ? "red" : status === "Warning" ? "orange" : "green";
-
+                    document.getElementById("NumberOfAlerts").innerHTML = 1
                     // Send the alert data to MongoDB
                     fetch('http://127.0.0.1:8000/add-alert', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ alertType, source, status, time })
+                        body: JSON.stringify({ alertType, source, status, time, temperature, humidity})
                     }).then(response => {
                         if (!response.ok) {
                             console.error('Failed to add alert to database');
