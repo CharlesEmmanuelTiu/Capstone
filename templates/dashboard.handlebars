@@ -59,13 +59,23 @@
                             </div>
                                 <div class="card-bodying">
                                     <center>
-                                <table>
-                                    <tr>
-                                        <th>Alert</th>
-                                        <th>Source</th>
-                                        <th>Occured</th>
-                                    </tr>
-                                    <tr>
+                                    <table id="alertTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Alert Type</th>
+                                                <th>Source</th>
+                                                <th>Status</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="alertTableBody">
+                                            <tr id="noAlertsRow">
+                                                <td colspan="4" style="text-align: center;">No Alerts</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </center>
+                                    {{!-- <tr>
 
                                         <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="Temperature Alert" class="icon-small"></td>
                                         <td><a class="alert-links" href="/infrastructure">Power Controls</a></td>
@@ -81,8 +91,7 @@
                                         <td><a class="alert-links" href="/cctv">CCTV Detection</a></td>
                                         <td>12:30PM</td>
 
-                                    </tr>
-                                </table></center>
+                                    </tr> --}}
                             </div>
                     </div>
             </div>
@@ -158,21 +167,15 @@
                 console.error('Humidity container element not found');
                 return;
             }
-            
+
             var opts = {
-                angle: 0, // The span of the gauge (0-1, where 0 is 180deg, 1 is 360deg)
-                lineWidth: 0.2, // The thickness of the gauge
-                radiusScale: 1, // Relative radius
-                pointer: {
-                    length: 0.6, // Relative to gauge radius
-                    strokeWidth: 0.04, // Thickness of the pointer
-                    color: '#000000' // Color of the pointer
-                },
-                limitMax: false, // False = infinite max value
-                limitMin: false, // False = infinite min value
-                colorStart: '#6FADCF', // Colors
+                angle: 0,
+                lineWidth: 0.2,
+                radiusScale: 1,
+                pointer: { length: 0.6, strokeWidth: 0.04, color: '#000000' },
+                colorStart: '#6FADCF',
                 colorStop: '#8FC0DA',
-                strokeColor: '#E0E0E0', 
+                strokeColor: '#E0E0E0',
                 generateGradient: true
             };
 
@@ -180,7 +183,7 @@
             HumidityGauge.maxValue = 100;
             HumidityGauge.setMinValue(0);
             HumidityGauge.animationSpeed = 32;
-            HumidityGauge.set(70);  // Initial humidity value
+            HumidityGauge.set(70);
 
             function addLabel(value) {
                 var ctx = target.getContext('2d');
@@ -188,19 +191,21 @@
                 ctx.textAlign = "center";
                 ctx.fillStyle = "#000000";
 
-                // Increase the clearRect and fillText y-values to move the label lower
-                ctx.clearRect(0, target.height - 5, target.width, 50);  // Adjusted clearRect height
-                ctx.fillText(value + "% Humidity", target.width / 2, target.height - -10);  // Adjusted fillText height
+                ctx.clearRect(0, target.height - 5, target.width, 50);
+                ctx.fillText(value + "% Humidity", target.width / 2, target.height - -10);
             }
 
-
-            // Initial label display
             addLabel(70);
 
-            document.getElementById("currentStatus").style.backgroundColor = "green";
-
             anychart.onDocumentReady(function () {
-                // Temperature linear gauge setup
+                const currentStatus = document.getElementById("currentStatus");
+                const alertTable = document.getElementById("alertTable");
+
+                if (!currentStatus) {
+                    console.error("Element with id 'currentStatus' not found.");
+                    return;
+                }
+
                 function drawLinearGauge(value) {
                     var gauge = anychart.gauges.linear();
                     gauge.data([value]).padding(10, 0, 30, 0);
@@ -208,15 +213,11 @@
                         return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
                     });
 
-                    // Set scale settings
                     var scale = gauge.scale();
                     scale.minimum(10).maximum(50).ticks({ interval: 5 });
 
-                    // Set axis and axis settings
                     var axis = gauge.axis();
                     axis.scale(scale).width('0.5%').offset('-1%');
-
-                    // Set text formatter for axis labels
                     axis.labels().useHtml(true).format('{%Value}°C');
 
                     return gauge;
@@ -235,28 +236,26 @@
                         console.log(data);
                         const { temperature, humidity } = data;
 
-                        // Update humidity gauge first
+                        // Update humidity and temperature gauges
                         HumidityGauge.set(humidity);
-                        
-                        // Immediately redraw the label with the updated humidity value
                         addLabel(humidity);
-
-                        // Update temperature gauge
                         gauge.data([temperature]);
                         document.getElementById('currentTemperature').textContent = temperature + ' °C';
-                        
-                        // Update status based on temperature
+
+                        // Check temperature and add alert with severity if needed
                         if (temperature > 35) {
-                            document.getElementById("currentStatus").innerHTML = "Danger";
-                            document.getElementById("currentStatus").style.backgroundColor = "red";
+                            currentStatus.innerHTML = "Danger";
+                            currentStatus.style.backgroundColor = "red";
                             thermometer.name('Thermometer').fill('red').stroke('red');
+                            addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date().toLocaleTimeString());
                         } else if (temperature > 27) {
-                            document.getElementById("currentStatus").innerHTML = "Risk";
-                            document.getElementById("currentStatus").style.backgroundColor = "orange";
+                            currentStatus.innerHTML = "Risk";
+                            currentStatus.style.backgroundColor = "orange";
                             thermometer.name('Thermometer').fill('orange').stroke('orange');
+                            addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date().toLocaleTimeString());
                         } else {
-                            document.getElementById("currentStatus").innerHTML = "Optimal";
-                            document.getElementById("currentStatus").style.backgroundColor = "green";
+                            currentStatus.innerHTML = "Optimal";
+                            currentStatus.style.backgroundColor = "green";
                             thermometer.name('Thermometer').fill('green').stroke('green');
                         }
                     } catch (error) {
@@ -264,10 +263,52 @@
                     }
                 }
 
-                // Initial call to display the label
-                addLabel(70);
+                function addAlertRow(alertType, source, status, time) {
+                    const alertTableBody = document.getElementById("alertTableBody");
+                    
+                    // Remove the "No Alerts" row if it exists
+                    const noAlertsRow = document.getElementById("noAlertsRow");
+                    if (noAlertsRow) {
+                        alertTableBody.removeChild(noAlertsRow);
+                    }
 
+                    // Check if an identical alert already exists in the table
+                    const rows = alertTableBody.getElementsByTagName("tr");
+                    for (let i = 0; i < rows.length; i++) {
+                        const cells = rows[i].getElementsByTagName("td");
+                        if (
+                            cells[0].getElementsByTagName("img")[0]?.src === alertType &&
+                            //cells[0].innerText === alertType &&
+                            cells[1].innerText === source &&
+                            cells[2].innerText === status
+                        ) {
+                            // If an identical alert exists, exit the function
+                            return;
+                        }
+                    }
 
+                    // If no duplicate found, proceed to add a new row
+                    const newRow = alertTableBody.insertRow();
+                    const alertCell = newRow.insertCell(0);
+                    const sourceCell = newRow.insertCell(1);
+                    const statusCell = newRow.insertCell(2);
+                    const timeCell = newRow.insertCell(3);
+
+                    alertCell.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="${alertType}" class="icon-small">`;
+                    //alertCell.textContent = alertType;
+                    sourceCell.innerHTML = `<a class="alert-links" href="/cooling_system">${source}</a>`;
+                    timeCell.textContent = time;
+
+                    // Set the status cell with color based on status
+                    statusCell.textContent = status;
+                    if (status === "Critical") {
+                        statusCell.style.color = "red";
+                    } else if (status === "Warning") {
+                        statusCell.style.color = "orange";
+                    } else {
+                        statusCell.style.color = "green";
+                    }
+                }
                 setInterval(updateData, 2000);
             });
         };
@@ -333,7 +374,7 @@
         var powerUsageChart = new Chart(ctxPower, {
             type: 'bar',
             data: {
-                labels: ['Servers', 'Cooling', 'Sensors', 'UPS', 'Networking'],
+                labels: ['Servers', 'Cooling', 'Sensors', 'UPS'],
                 datasets: [{
                     label: 'Power Usage (kW)',
                     data: [500, 300, 100, 200, 150],
@@ -342,7 +383,6 @@
                         'rgb(54, 162, 235)',
                         'rgb(255, 206, 86)',
                         'rgb(153, 102, 255)',
-                        'rgb(255, 99, 132)'
                     ],
                     borderColor: [
                         'rgb(0, 0, 0)',
