@@ -10,6 +10,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const crypto = require('crypto')
 
+
 let app = express()
 app.set('views', __dirname+"/templates")
 app.use(express.json());
@@ -20,7 +21,7 @@ app.engine('handlebars', handlebars.engine())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(cookieParser())
 app.use('/images', express.static(__dirname+"/static/images"))
-
+const hbs = handlebars.create();
 // function checkLevel(level, threshold) { 
 //     if (level <= threshold) {
 //         return true
@@ -258,6 +259,10 @@ app.get('/actions', async (req, res) =>{
     }
 })
 
+hbs.handlebars.registerHelper('eq', function(a, b) {
+    return a === b;
+});
+
 app.get('/alerts', async (req, res) =>{
     let key = req.cookies.session
     let valid = await authenticateUser(key)
@@ -266,7 +271,8 @@ app.get('/alerts', async (req, res) =>{
     let fm = undefined
     let flashType = undefined
     let isAdmin = false
-
+    let AllAlerts
+    
     if (!valid) {
         let flashKey = await business.saveSession({username:""})
         res.cookie('flash', flashKey)
@@ -281,9 +287,11 @@ app.get('/alerts', async (req, res) =>{
 
         }
 
+        AllAlerts = await business.getFormattedAlerts();
         res.render('alerts', {
             user:user,
-            admin:isAdmin
+            admin:isAdmin,
+            alerts:AllAlerts
             })
     }
 })

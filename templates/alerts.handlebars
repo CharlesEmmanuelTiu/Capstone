@@ -9,18 +9,27 @@
         body {
             font-family: Arial, sans-serif;
         }
-        table {
-            width: 60%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            margin: 20px auto;
+        .table-container {
+            width: 90%;
+            max-height: 700px; /* Adjust height as needed */
+            margin: auto;
+            align-items: center;
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #ddd; /* Optional: Add a border around the container */
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
         th, td {
             padding: 15px;
-            text-align: left;
+            text-align: center;
             border: 1px solid #ddd;
             background-color: lavender;
         }
+
         th {
             background-color: lightsteelblue;
         }
@@ -58,15 +67,51 @@
 </head>
 <body>
 
-    
+    <div class="table-container">
     <table>
         <thead>
             <tr>
                 <th>Alert Type</th>
+                <th>Description</th>
+                <th>Source</th>
                 <th>Status</th>
+                <th>Date and Time</th>
             </tr>
         </thead>
         <tbody>
+            {{#each alerts}}
+                <tr>
+                    {{#if (eq alertType "Temperature Alert")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" class="icon-small"></td>
+                    {{else if (eq alertType "Intruder Alert")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/128/2602/2602046.png" class="icon-small"></td>
+                    {{else}}
+                        <td>Unknown Alert</td>
+                    {{/if}}
+
+                    {{#if (eq alertType "Temperature Alert")}}
+                        <td class="temperature-alert">Reached a dangerous temperature level of {{temperature}} with a recorded humidity of {{humidity}}</td>
+                    {{else if (eq alertType "Intruder Alert")}}
+                        <td class="intruder-alert">{{employee}} detected in the CCTV system</td>
+                    {{else}}
+                        <td>Default Content</td>
+                    {{/if}}
+
+                    {{#if (eq source "Cooling System")}}
+                        <td><a class="alert-links" href="/cooling_system">{{source}}</a></td>
+                    {{else if (eq source "CCTV")}}
+                        <td><a class="alert-links" href="/cctv">{{source}}</a></td>
+                    {{else}}
+                        <td>Unknown Source</td>
+                    {{/if}}
+                    <td style="color: {{color}};">
+                        {{status}}
+                    </td>
+                    <td>{{formattedTime}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+        {{!-- <tbody>
             <tr class="category-row" onclick="toggleAlerts('cooling-alerts', this)">
                 <td>
                     <img src="https://cdn-icons-png.flaticon.com/512/5993/5993272.png" alt="Cooling Alert" class="icon-small">Cooling Alert
@@ -129,9 +174,9 @@
                     <div class="alert-item">Network connectivity issues reported.</div>
                 </td>
             </tr>
-        </tbody>
+        </tbody> --}}
     </table>
-
+    </div>
     <script>
         function toggleAlerts(alertId, rowElement) {
             const alertList = document.getElementById(alertId);

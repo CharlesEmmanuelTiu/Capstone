@@ -14,6 +14,39 @@ async function getUsers() {
     return await persistence.getAccounts()
 }
 
+// async function getAlerts() {
+//     return await persistence.getAlerts()
+// }
+
+async function getFormattedAlerts() {
+    const alerts = await persistence.getAlerts();
+
+    // Sort the alerts by `time` in descending order
+    alerts.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    return alerts.map(alert => {
+        // Set color based on status
+        let color;
+        if (alert.status === 'Critical') {
+            color = 'red';
+        } else if (alert.status === 'Warning') {
+            color = 'orange';
+        } else {
+            color = 'darkblue';
+        }
+
+        // Format the time to a readable string
+        const formattedTime = new Date(alert.time).toLocaleString();
+
+        return {
+            ...alert,
+            color,
+            formattedTime
+        };
+    });
+}
+
+
 async function getUserFromID(ID){
     return await persistence.getUserFromID(ID)
 }
@@ -198,6 +231,7 @@ module.exports = {
     deleteSession,
     deleteRecords,
     getUsers,
+    getFormattedAlerts,
     getPetrolRecords,
     getStationFromID,
     getRecordFromDate,

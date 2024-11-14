@@ -23,6 +23,11 @@ async function addAlert(current_alert){
     await alerts.insertOne(current_alert);
 }
 
+async function getAlerts(){
+    await connectDatabase()
+    return await alerts.find().toArray()
+}
+
 async function validateCredentials(username, password) {
     await connectDatabase()
     let user = await users.find({name:username}).toArray()
@@ -235,6 +240,7 @@ module.exports = {
     getAccountDetails,
     updateSession,
     updateUser,
+    getAlerts,
     updateStation,
     getStationFromID,
     getPetrolRecords,

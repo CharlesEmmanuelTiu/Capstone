@@ -16,13 +16,12 @@ scaler = joblib.load('scaler.pkl')  # Ensure the scaler matches the one used dur
 # Define prediction endpoint
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    # Load data from the CSV file
     try:
         input_data = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
         
         # Ensure the Timestamp column is in datetime format
         input_data['Timestamp'] = pd.to_datetime(input_data['Timestamp'])
-
+        
         # Extract datetime components
         input_data['Year'] = input_data['Timestamp'].dt.year
         input_data['Month'] = input_data['Timestamp'].dt.month
@@ -35,30 +34,33 @@ def predict():
     except FileNotFoundError:
         return jsonify(error="CSV file not found"), 404
 
-    # Ensure the data matches model expectations
     try:
         scaled_data = scaler.transform(input_data)
     except ValueError as e:
         return jsonify(error="Data transformation error: " + str(e)), 400
 
     # Prepare the data for the LSTM model
-    seq_length = 10  # Adjust this if your model was trained with a different sequence length
+    seq_length = 10  # Adjust if needed
     X = [scaled_data[i:i + seq_length] for i in range(len(scaled_data) - seq_length)]
     X = np.array(X)
 
     # Make predictions
     predicted_temp = model.predict(X)
 
-    # Prepare the array to match the shape expected by the scaler (1055,9)
-    # Place the predicted temperatures in the first column
+    # Prepare the array to match the shape expected by the scaler (1055, 9)
     predicted_full = np.zeros((predicted_temp.shape[0], 9))  # 9 columns to match scaler
     predicted_full[:, 0] = predicted_temp[:, 0]  # Place predicted temperatures in the first column
 
-    # Inverse transform using the full array, then select only the temperature column
-    predictions = scaler.inverse_transform(predicted_full)[:, 0]  # Get only the first column
+    # Inverse transform and get only the temperature column
+    predictions = scaler.inverse_transform(predicted_full)[:, 0]
 
-    # Return the predictions in JSON format
-    return jsonify(predictions=predictions.tolist())
+    # Generate time labels for the predictions (you can adjust this as needed)
+    last_timestamp = input_data['Year'].iloc[-1]  # Start from the last timestamp
+    time_labels = pd.date_range(start=f'{last_timestamp}-01-01', periods=len(predictions), freq='T').strftime('%H:%M:%S')
+
+    # Return both predictions and time labels as JSON
+    return jsonify(predictions=predictions.tolist(), time_labels=time_labels.tolist())
+
 
 if __name__ == '__main__':
     app.run(debug=True)
