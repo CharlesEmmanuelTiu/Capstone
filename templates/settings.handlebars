@@ -13,9 +13,7 @@
         <div class="row g-4">
 
             <div class="card">
-              <div class="card-header">
-                <strong>Account</strong>
-              </div>
+              <h3 style="padding: 20px">Account</h3>
               <div class="card-bodying">
                 {{#if mssg}}
                     <div class="alert alert-{{flashType}}" role="alert">
@@ -23,14 +21,10 @@
                     </div>
                 {{/if}}
                 <form action="/settings" method="post">
-                      <h3>Change Username</h3>
                       <input class="form-control" type="text" name="uname" placeholder="New Username" value={{user.name}} required><br>
-                      <h3>Change Password</h3>
                       <input class="form-control" type="password" name="n_psswd" placeholder="New Password"><br>
                       <input class="form-control" type="password" name="c_psswd" placeholder="Confirm Password"><br>
-                      <h3>Change Phone Number</h3>
                       <input class="form-control" type="text" name="phone" placeholder="New Phone Number" value="{{user.phone_number}}" required><br>
-                      <h3>Change Email</h3>
                       <input class="form-control" type="text" name="email" placeholder="New Email" value="{{user.email}}" required><br>
 
                     <div class="row g-4" style="margin-top:15px"> 

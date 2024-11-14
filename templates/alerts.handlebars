@@ -90,9 +90,9 @@
                     {{/if}}
 
                     {{#if (eq alertType "Temperature Alert")}}
-                        <td class="temperature-alert">Reached a dangerous temperature level of {{temperature}} with a recorded humidity of {{humidity}}</td>
+                        <td class="temperature-alert">Reached a dangerous temperature level of <b>{{temperature}}</b> with a recorded humidity of <b>{{humidity}}</b></td>
                     {{else if (eq alertType "Intruder Alert")}}
-                        <td class="intruder-alert">{{employee}} detected in the CCTV system</td>
+                        <td class="intruder-alert"><b>{{employee}}</b> detected in the CCTV system</td>
                     {{else}}
                         <td>Default Content</td>
                     {{/if}}

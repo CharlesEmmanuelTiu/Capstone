@@ -124,7 +124,7 @@ async function saveSession(data) {
     let key = crypto.randomUUID()
     let sd = {
         key:key,
-        expiry:new Date(Date.now() + 1000*60*30),
+        expiry:new Date(Date.now() + 1000*60*60),
         data:data
     }
     await persistence.saveSession(sd)
