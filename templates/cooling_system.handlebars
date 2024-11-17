@@ -7,6 +7,347 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: white;
+      width: 100%;
+      max-width: 1200px;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    h2 {
+      font-size: 1.6em;
+      color: #333;
+      margin-top: 0;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .section {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 20px;
+      width: 48%;
+      height: 60px;
+      background-color: rgba(60, 75, 100, 0.85);
+      border: 1px solid #d3d3d3;
+      border-radius: 5px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .section label {
+      width: 160px;
+      font-weight: bold;
+      color: white;
+    }
+    .section input, .section select, .section button {
+      width: 150px;
+      padding: 8px;
+      margin-right: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 0.9em;
+    }
+    .section button {
+      cursor: pointer;
+      background-color: #f4f7fc;
+      transition: background-color 0.3s;
+    }
+    .section button:hover {
+      background-color: #eaeaea;
+    }
+    .fan-controls {
+      display: none; /* Initially hidden */
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .fan-status {
+      width: 32%;
+      background-color: #f2f5f9;
+      padding: 10px;
+      border: 1px solid #d3d3d3;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .fan-status button {
+      padding: 8px;
+      width: 100px;
+      background-color: #457b9d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .fan-status button:hover {
+      background-color: #1d3557;
+    }
+    .fan-image, .liquid-image {
+      text-align: center;
+      margin-top: 20px;
+      width: 48%;
+      display: inline-block;
+    }
+    .fan-image img, .liquid-image img {
+      width: 80%;
+      max-width: 250px;
+      height: auto;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 30px;
+      width: 100%;
+    }
+    .footer-buttons button {
+      margin: 8px;
+      padding: 12px 18px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #f7f7f7;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transition: background-color 0.3s;
+    }
+    .footer-buttons button:hover {
+      background-color: #eaeaea;
+    }
+
+    /* Fan speed intensity colors 
+    .fan-speed-normal {
+      background-color: #a8dadc;
+    }
+    .fan-speed-high {
+      background-color: #457b9d;
+      color: white;
+    }
+    .fan-speed-max {
+      background-color: #1d3557;
+      color: white;
+    }*/
+    .fan-speed-normal {
+      background-color: #a8dadc;
+      
+    }
+    .fan-speed-high {
+      background-color: #457b9d;
+      
+    }
+    .fan-speed-max {
+      background-color: #1d3557;
+      
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Cooling System Settings</h2>
+
+  <!-- Box Level, Fan Name, and Fan Unit Section -->
+  <div class="section">
+    <label for="boxLevel">Rack:</label>
+    <input type="text" id="boxLevel" placeholder="Enter box level">
+  </div>
+  <div class="section">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter fan name">
+  </div>
+  <div class="section">
+    <label for="fanUnit">Fan unit:</label>
+    <select id="fanUnit">
+      <option value="">Select Fan Unit</option>
+      <option value="01">01 - RF-1.3 1U Fan Tray</option>
+      <option value="02">02 - RF-2.0 2U Fan Tray</option>
+      <option value="02">03 - RF-2.0 2U Fan Tray</option>
+      <option value="02">04 - RF-2.0 2U Fan Tray</option>
+      <option value="02">05 - RF-2.0 2U Fan Tray</option>
+      <option value="02">06 - RF-2.0 2U Fan Tray</option>
+      <option value="02">07 - RF-2.0 2U Fan Tray</option>
+      <option value="02">08 - RF-2.0 2U Fan Tray</option>
+    </select>
+  </div>
+  
+  <!-- Show fan controls button -->
+  <div class="section">
+    <button id="showFanControls" onclick="showFanControls()">Show Fan Controls</button>
+  </div>
+  {{!-- <div class="section">
+    <label for="unitCFM">Unit CFM:</label>
+    <button class="fan-speed-normal">Normal</button>
+    <button class="fan-speed-high">High</button>
+    <button class="fan-speed-max">Max</button>
+  </div> --}}
+
+  <!-- Fan Controls Section (hidden initially) -->
+  <div class="fan-controls">
+    <h2>Fan Controls</h2>
+    <div class="fan-status" id="fan1Status">
+      <p>Fan 01</p>
+      <p>Status: Off</p>
+      <button onclick="toggleFanStatus(1)">OFF</button>
+    </div>
+    <div class="fan-status" id="fan2Status">
+      <p>Fan 02</p>
+      <p>Status: Off</p>
+      <button onclick="toggleFanStatus(2)">OFF</button>
+    </div>
+    <div class="fan-status" id="fan3Status">
+      <p>Fan 03</p>
+      <p>Status: Off</p>
+      <button onclick="toggleFanStatus(3)">OFF</button>
+    </div>
+    <div class="fan-status" id="fan4Status">
+      <p>Fan 04</p>
+      <p>Status: Off</p>
+      <button onclick="toggleFanStatus(4)">OFF</button>
+    </div>
+  </div>
+
+  <!-- Liquid Cooling Section -->
+  <h2>Liquid Cooling System</h2>
+  <div class="section">
+    <label for="coolantTemp">Coolant Temp (°C):</label>
+    <input type="text" id="coolantTemp" value="24.5" readonly>
+  </div>
+  <div class="section">
+    <label for="flowRate">Coolant Flow Rate (L/min):</label>
+    <input type="text" id="flowRate" value="1.5" readonly>
+  </div>
+  <div class="section">
+    <label for="pumpStatus">Pump Status:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Sensors Control Section -->
+  <h2>Sensors Control</h2>
+  <div class="section">
+    <label for="temperatureSensor">Temperature Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="humiditySensor">Humidity Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="pressureSensor">Pressure Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+  <div class="section">
+    <label for="vibrationSensor">Vibration Sensor:</label>
+    <button>ON</button>
+    <button>OFF</button>
+  </div>
+
+  <!-- Fan and Liquid Cooling Image -->
+  <div class="fan-image">
+    <img src="https://forum.huawei.com/enterprise/api/file/v1/small/thread/667934002083926016.gif?appid=esc_en" alt="Fan Diagram">
+    <p>Fan Diagram</p>
+  </div>
+  <div class="liquid-image">
+    <img src="https://theengineeringmindset.com/wp-content/uploads/2018/04/Data-center-CFD-SimScale.gif" alt="Liquid Cooling Diagram">
+    <p>Liquid Cooling System</p>
+  </div>
+
+  <!-- Temperature and Auto Data Refresh Section -->
+  <div class="section">
+    <label for="tempSensor">Temp. Sensor (°C):</label>
+    <input type="text" id="tempSensor" value="26.8" readonly>
+  </div>
+  <div class="section">
+    <label>Auto data refresh:</label>
+    <input type="checkbox" checked>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="footer-buttons">
+    <button>Apply</button>
+    <button>Cancel</button>
+    <button>Exit</button>
+  </div>
+</div>
+
+<script>
+  function showFanControls() {
+    const fanUnit = document.getElementById("fanUnit").value;
+    const fanControlsSection = document.querySelector('.fan-controls');
+    const fan1Status = document.getElementById('fan1Status');
+    const fan2Status = document.getElementById('fan2Status');
+    const fan3Status = document.getElementById('fan3Status');
+    const fan4Status = document.getElementById('fan4Status');
+
+    // Reset all fan controls and hide them initially
+    fan1Status.style.display = 'none';
+    fan2Status.style.display = 'none';
+    fan3Status.style.display = 'none';
+
+    // Show fan controls based on the selected fan unit
+    if (fanUnit === "01") { // RF-1.3 1U Fan Tray (1 fan)
+      fan1Status.style.display = 'block'; // Show first fan
+      fanControlsSection.style.display = 'flex';
+    } else if (fanUnit=== "04") {
+      fan1Status.style.display = 'block'; // Show first fan
+      fan2Status.style.display = 'block'; // Show second fan
+      fan3Status.style.display = 'block'; // Show third fan
+      fan4Status.style.display = 'block'; // Show third fan
+      // Make the fan controls section visible
+    } else if (fanUnit === "02") { // RF-2.0 2U Fan Tray (3 fans)
+      fan1Status.style.display = 'block'; // Show first fan
+      fan2Status.style.display = 'block'; // Show second fan
+      fan3Status.style.display = 'block'; // Show third fan
+      fanControlsSection.style.display = 'flex'; // Make the fan controls section visible
+    } else {
+      fanControlsSection.style.display = 'none'; // Hide fan controls section if no valid fan unit is selected
+    }
+  }
+
+  function toggleFanStatus(fanNumber) {
+    const fanStatus = document.getElementById(`fan${fanNumber}Status`);
+    const button = fanStatus.querySelector('button');
+
+    if (button.textContent === "OFF") {
+      button.textContent = "ON";
+      fanStatus.querySelector('p:nth-of-type(2)').textContent = `Status: ON`;
+    } else {
+      button.textContent = "OFF";
+      fanStatus.querySelector('p:nth-of-type(2)').textContent = `Status: OFF`;
+    }
+  }
+</script>
+
+</body>
+</html>
+
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooling System Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
       background-color: #f0f2f5;
       margin: 0;
       padding: 0;
@@ -248,7 +589,7 @@
 </div>
 
 </body>
-</html>
+</html> --}}
 
 
 {{!-- <!DOCTYPE html>
