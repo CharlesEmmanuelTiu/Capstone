@@ -18,6 +18,8 @@ scaler = joblib.load('scaler.pkl')  # Ensure the scaler matches the one used dur
 def predict():
     try:
         input_data = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
+
+        input_data = input_data.dropna()
         
         # Ensure the Timestamp column is in datetime format
         input_data['Timestamp'] = pd.to_datetime(input_data['Timestamp'])
