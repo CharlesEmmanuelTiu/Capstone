@@ -19,7 +19,7 @@
             padding: 20px;
         }
         .chart-container {
-            width: 80%;
+            width: 45%;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -28,7 +28,7 @@
         }
         canvas {
             width: 100% !important;
-            height: 500px !important;
+            height: 300px !important;
         }
         .log {
             max-height: 100px;
@@ -41,33 +41,62 @@
     </style>
 </head>
 <body>
-
+    <div class="container">
+        <div class="chart-container">
+            <h2>Temperature Prediction</h2>
+            <canvas id="TempPrediction"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Humidity Prediction</h2>
+            <canvas id="HumidPrediction"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Power Consumption Prediction</h2>
+            <canvas id="PowerPrediction"></canvas>
+        </div>
+    </div>
+{{!-- <div class="container">
     <div id="log"></div>
     <div class="container">
         <div class="chart-container">
             <h2>Temperature Prediction</h2>
-            <canvas id="predictionChart"></canvas>
+            <canvas id="TempPrediction"></canvas>
         </div>
     </div>
 
+    <div class="container">
+        <div class="chart-container">
+            <h2>Humidity Prediction</h2>
+            <canvas id="HumidPrediction"></canvas>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="chart-container">
+            <h2>Power Prediction</h2>
+            <canvas id="PowerPrediction"></canvas>
+        </div>
+    </div>
+</div> --}}
 <script>
     // Fetch predicted data from the Flask API
     // Fetch predicted data from the Flask API
     async function fetchPredictedData() {
         try {
+            const response2 = await fetch('http://127.0.0.1:5005/data');
             const response = await fetch('http://localhost:5000/predict', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
             const data = await response.json();
-            const predictions = data.predictions;
+            const TempPredictions = data.temperature_predictions;
+            const HumidPredictions = data.humidity_predictions;
+            const PowerPredictions = data.power_predictions;
             const timeLabels = data.time_labels;  // Get the time labels
             
-            console.log(predictions, timeLabels);  // Log to verify structure
-            
             // Update the chart with new data if predictions are valid
-            if (predictions && predictions.length > 0 && timeLabels && timeLabels.length > 0) {
-                updateChart(predictions, timeLabels);
+            if (TempPredictions && TempPredictions.length > 0 && timeLabels && timeLabels.length > 0) {
+                updateChart(TempPredictions, HumidPredictions, PowerPredictions, timeLabels);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -75,16 +104,23 @@
     }
 
     // Function to update chart data
-    function updateChart(predictions, timeLabels) {
-        // Update labels (time) and temperature data dynamically
-        predictionChart.data.labels = timeLabels;  // Use time labels for the x-axis
-        predictionChart.data.datasets[0].data = predictions;
-        predictionChart.update();
+    function updateChart(TempPredictions, HumidPredictions, PowerPredictions, timeLabels) {
+        TempPredictionChart.data.labels = timeLabels;
+        HumidPredictionsChart.data.labels = timeLabels;
+        PowerPredictionsChart.data.labels = timeLabels;
+
+        TempPredictionChart.data.datasets[0].data = TempPredictions;
+        HumidPredictionsChart.data.datasets[0].data = HumidPredictions;
+        PowerPredictionsChart.data.datasets[0].data = PowerPredictions;
+
+        TempPredictionChart.update();
+        HumidPredictionsChart.update();
+        PowerPredictionsChart.update();
     }
 
     // Create and update the line chart
-    const ctx = document.getElementById('predictionChart').getContext('2d');
-    const predictionChart = new Chart(ctx, {
+    const ctx = document.getElementById('TempPrediction').getContext('2d');
+    const TempPredictionChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [],  // Dynamic labels
@@ -105,21 +141,54 @@
             }
         }
     });
+    const ctx2 = document.getElementById('HumidPrediction').getContext('2d');
+    const HumidPredictionsChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: [],  // Dynamic labels
+            datasets: [
+                {
+                    label: 'Humidity',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    fill: false,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Time' } },
+                y: { title: { display: true, text: 'Humidity (°C)' } }
+            }
+        }
+    });
+    const ctx3 = document.getElementById('PowerPrediction').getContext('2d');
+    const PowerPredictionsChart = new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: [],  // Dynamic labels
+            datasets: [
+                {
+                    label: 'Power',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    fill: false,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Time' } },
+                y: { title: { display: true, text: 'Power (kW)' } }
+            }
+        }
+    });
     // Fetch data every second
+    fetchPredictedData();
     setInterval(fetchPredictedData, 2000)
 </script>
-<script>
-    updateTemps(){
-        try{
-            const response = await fetch('http://127.0.0.1:5005/data');
-        }
-        catch(error){
-            console.error('Error fetching data:', error);
-        }
-    }
-    setInterval(updateTemps, 2000);
-</script>
-
 
 </body>
 </html>

@@ -7,12 +7,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 import joblib
 
-# Define the create_sequences function
 def create_sequences(data, seq_length):
     X, y = [], []
     for i in range(len(data) - seq_length):
         X.append(data[i:i + seq_length])
-        y.append(data[i + seq_length, 0])  # Assuming temperature is the target
+        y.append(data[i + seq_length, :3])  # Use the first 3 columns as targets: temp, power, humidity
     return np.array(X), np.array(y)
 
 

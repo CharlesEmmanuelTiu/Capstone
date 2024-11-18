@@ -49,12 +49,6 @@
             <div id="tempLog" class="log"></div>
         </div>
         <div class="chart-container">
-            <h2>Sound Level Monitoring</h2>
-            <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
-            <canvas id="soundChart"></canvas>
-            <div id="soundLog" class="log"></div>
-        </div>
-        <div class="chart-container">
             <h2>Humidity Monitoring</h2>
             <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
             <canvas id="humidityChart"></canvas>
@@ -65,6 +59,12 @@
             <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
             <canvas id="powerChart"></canvas>
             <div id="powerLog" class="log"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Noise Level Monitoring</h2>
+            <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
+            <canvas id="soundChart"></canvas>
+            <div id="soundLog" class="log"></div>
         </div>
     </div>
 
@@ -86,11 +86,30 @@
             }
         };
 
-        const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);
-
         const monitorMetric = (metricId, logId, dataArr, timeArr, chart, min, max, threshold) => {
-            setInterval(() => {
-                const currentValue = parseFloat(randomDataGenerator(min, max));
+            setInterval(async () => {
+                let currentValue;
+                if (metricId === "sound") {
+                    // Use random generation for sound
+                    currentValue = parseFloat(randomDataGenerator(min, max));
+                } else {
+                    // Fetch actual data for temperature, power, or humidity
+                    try {
+                        const response = await fetch('http://127.0.0.1:5005/data');
+                        const data = await response.json();
+                        
+                        // Use the actual data for the corresponding metric
+                        if (data && data[metricId] !== undefined) {
+                            currentValue = parseFloat(data[metricId]);
+                        } else {
+                            currentValue = randomDataGenerator(min, max); // Fallback to random data
+                        }
+                    } catch (error) {
+                        console.error("Error fetching data:", error);
+                        currentValue = randomDataGenerator(min, max); // Fallback to random data
+                    }
+                }
+
                 document.getElementById(metricId).innerText = currentValue;
 
                 // Capture current time for the x-axis label
@@ -114,6 +133,7 @@
             }, 3000);
         };
 
+        const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);
 
         const initChart = (ctx, label) => {
             return new Chart(ctx, {
@@ -163,6 +183,7 @@
         monitorMetric("humidity", "humidityLog", humidityData, humidityTime, humidityChart, 40, 60, ALERT_THRESHOLDS.humidity);
         monitorMetric("power", "powerLog", powerData, powerTime, powerChart, 0.5, 5, ALERT_THRESHOLDS.power);
     </script>
+
 </body>
 </html>
 

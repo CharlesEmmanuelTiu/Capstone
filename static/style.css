@@ -4868,6 +4868,12 @@ html:not([dir=rtl]) .navbar-nav {
   height: 90%;
 }
 
+.card4 {
+  width: 33%;
+  height: 10%;
+  padding: 2%;
+}
+
 .card {
   --cui-card-spacer-y: 1rem;
   --cui-card-spacer-x: 1rem;

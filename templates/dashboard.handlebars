@@ -30,27 +30,78 @@
 
             <!-- System Overview Row -->
             <div class="row g-4 mb-4">
-                    <!-- Power Usage Bar Chart -->
                     <div class="card card2">
                             <div class="card-header">
-                                <h4>Power Usage</h4>
+                                <h4>Humidity Gauge</h4>
                             </div>
-                            <div class="card-body">
-                                <div id="powerGraph">
-                                    <canvas id="powerUsageChart"></canvas>
-                                </div>
+                            <div class="card-bodying">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
+                            </div>
+                                <center>
+                            <div id="humidChart" style="width: 100%; height: 180px;">
+                                <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
+                            </div>
+                                </center>
+                            </div>
+                    </div>
+                    <!-- Power Usage Bar Chart -->
+                    <div class="card card2">
+                        <div class="sub-card">
+                            <div class="chart-container">
+                                <h2>Temperature Monitoring</h2>
+                                <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+                                <canvas id="temperatureChart"></canvas>
+                                <div id="tempLog" class="log"></div>
+                            </div>
+                            <div class="chart-container">
+                                <h2>Humidity Monitoring</h2>
+                                <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
+                                <canvas id="humidityChart"></canvas>
+                                <div id="humidityLog" class="log"></div>
+                            </div>
+                        </div>
+                        <div class="sub-card">
+                            <div class="chart-container">
+                                <h2>Power Consumption Monitoring</h2>
+                                <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
+                                <canvas id="powerChart"></canvas>
+                                <div id="powerLog" class="log"></div>
+                            </div>
+                            <div class="chart-container">
+                                <h2>Noise Level Monitoring</h2>
+                                <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
+                                <canvas id="soundChart"></canvas>
+                                <div id="soundLog" class="log"></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+                <div class="row g-4 mb-4">
+                    <div class="card card2">
+                            <div class="card-header">
+                                <h4>Temperature</h4>
+                            </div>
+                            <div class="card-bodying">
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Current Temp:</strong> <span id="currentTemperature" class="badge bg-info">°C</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge bg-warning"></span></p>
+                            </div>
+                            <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
                     </div>
                     <div class="card card2">
                             <div class="card-header">
-                                <h4>Humidity</h4>
+                                <h4>3D Model</h4>
                             </div>
-                                <div class="card-body">
-                                    <center>
-                                <div id="humGraph" style="width:100%; height:250px;">
-                                    <canvas id="humidityChart"></canvas>
-                                </div>
-                                </center>
+                            <div class="card-body">
+                            <div id="tempGraph" style="width: 100%; height: 260px;">
+                                <div class="card-body" id="3d-container" style="height: 100%;"></div>
+                            </div>
                             </div>
                     </div>
                     <div class="card card2">
@@ -76,7 +127,6 @@
                                     </table>
                                     </center>
                                     {{!-- <tr>
-
                                         <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="Temperature Alert" class="icon-small"></td>
                                         <td><a class="alert-links" href="/infrastructure">Power Controls</a></td>
                                         <td>1:11PM</td>
@@ -92,49 +142,6 @@
                                         <td>12:30PM</td>
 
                                     </tr> --}}
-                            </div>
-                    </div>
-            </div>
-                <div class="row g-4 mb-4">
-                    <div class="card card2">
-                            <div class="card-header">
-                                <h4>3D Model</h4>
-                            </div>
-                            <div class="card-body">
-                            <div id="tempGraph" style="width: 100%; height: 260px;">
-                                <div class="card-body" id="3d-container" style="height: 100%;"></div>
-                            </div>
-                            </div>
-                    </div>
-                    <div class="card card2">
-                            <div class="card-header">
-                                <h4>Humidity Gauge</h4>
-                            </div>
-                            <div class="card-bodying">
-                            <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
-                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
-                            </div>
-                                <center>
-                            <div id="humidChart" style="width: 100%; height: 250px;">
-                                <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
-                            </div>
-                                </center>
-                            </div>
-                    </div>
-                    <div class="card card2">
-                            <div class="card-header">
-                                <h4>Temperature</h4>
-                            </div>
-                            <div class="card-bodying">
-                            <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Current Temp:</strong> <span id="currentTemperature" class="badge bg-info">°C</span></p>
-                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge bg-warning"></span></p>
-                            </div>
-                            <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
                     </div>
                 </div>
@@ -341,125 +348,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 
-
-    <script>
-        var ctxHumidity = document.getElementById('humidityChart').getContext('2d');
-        var humidityChart = new Chart(ctxHumidity, {
-            type: 'pie',
-            data: {
-                responsive: false,
-                maintainAspectRatio: false,
-                labels: ['Server Rooms', 'Cooling Areas', 'Networking Rooms', 'Electrical Rooms'],
-                datasets: [{
-                    label: 'Humidity (°C)',
-                    data: [40, 30, 15, 10],
-                    backgroundColor: [
-                        'rgb(75, 192, 192)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 206, 86)',
-                        'rgb(153, 102, 255)'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: false  // Hide the default legend
-                    },
-                    datalabels: {
-                        color: '#000',
-                        formatter: (value, context) => {
-                            const label = context.chart.data.labels[context.dataIndex];
-                            return label + '\n' + value + '%';
-                        },
-                        offset: 20,
-                        font: {
-                            size: 12
-                        },
-                        padding: {
-                            top: 2,
-                            bottom: 2,
-                            left: 4,
-                            right: 4
-                        },
-                        borderRadius: 3,
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        borderColor: 'rgba(0, 0, 0, 0.1)',
-                        borderWidth: 1,
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]  // Add the datalabels plugin
-        });
-        var ctxPower = document.getElementById('powerUsageChart').getContext('2d');
-        var powerUsageChart = new Chart(ctxPower, {
-            type: 'bar',
-            data: {
-                labels: ['Servers', 'Cooling', 'Sensors', 'UPS'],
-                datasets: [{
-                    label: 'Power Usage (kW)',
-                    data: [500, 300, 100, 200, 150],
-                    backgroundColor: [
-                        'rgb(75, 192, 192)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 206, 86)',
-                        'rgb(153, 102, 255)',
-                    ],
-                    borderColor: [
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)',
-                        'rgb(0, 0, 0)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                plugins: {
-                    legend: {
-                        display: true, // Display legend
-                        labels: {
-                            generateLabels: function(chart) {
-                                let labels = chart.data.labels;
-                                let colors = chart.data.datasets[0].backgroundColor;
-                                return labels.map((label, index) => ({
-                                    text: label,
-                                    fillStyle: colors[index],
-                                    strokeStyle: 'rgb(0, 0, 0)',
-                                    lineWidth: 1,
-                                    hidden: false,
-                                    index: index
-                                }));
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.raw + ' kW';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: '(kW)'
-                        },
-                        beginAtZero: true,
-                        suggestedMax: 500
-                    },
-                    y: {
-                        display: false // Hide the y-axis labels
-                    }
-                }
-            }
-        });
-    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
