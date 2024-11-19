@@ -4860,7 +4860,8 @@ html:not([dir=rtl]) .navbar-nav {
 .card2 {
   width: 33%;
   height: 10%;
-  padding: 2%;
+  padding: 1%;
+  height: var(--cui-card-height);
 }
 
 .card3 {
@@ -4869,9 +4870,9 @@ html:not([dir=rtl]) .navbar-nav {
 }
 
 .card4 {
-  width: 33%;
-  height: 10%;
-  padding: 2%;
+  width: 48%;
+  height: 370px;
+  padding: 1%;
 }
 
 .card {
@@ -4894,7 +4895,6 @@ html:not([dir=rtl]) .navbar-nav {
   --cui-card-group-margin: 0.75rem;
   position: relative;
   min-width: 0;
-  height: var(--cui-card-height);
   word-wrap: break-word;
   background-color: var(--cui-card-bg);
   background-clip: border-box;

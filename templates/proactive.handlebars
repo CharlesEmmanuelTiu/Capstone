@@ -6,11 +6,6 @@
     <title>Data Center Monitoring</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
-        }
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -130,7 +125,7 @@
                 if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
                     createLogEntry(logId, `${metricId.replace(/^\w/, (c) => c.toUpperCase())} fluctuation detected! Current: ${currentValue} at ${currentTime}`);
                 }
-            }, 3000);
+            }, 2000);
         };
 
         const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);

@@ -9,10 +9,27 @@
     <style>
             body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
     .container { width: 90%; max-width: 800px; margin: 40px auto; }
+        .chart-container {
+            width: 49%;
+            height: 170px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2%;
+        }
+        .log {
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 
 <body>
+    
     <div class="body flex-grow-1 px-3">
         <div class="container-lg">
             <!-- Alerts and role-based messages -->
@@ -30,48 +47,46 @@
 
             <!-- System Overview Row -->
             <div class="row g-4 mb-4">
-                    <div class="card card2">
-                            <div class="card-header">
-                                <h4>Humidity Gauge</h4>
+                        <div class="card card4">
+                            <div class="card card4">
+                                <div class="card-header">
+                                    <h4>Humidity Gauge</h4>
+                                </div>
+                                <div class="card-bodying">
+                                <div class="d-flex justify-content-between">
+                                    <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
+                                    <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
+                                </div>
+                                    <center>
+                                <div id="humidChart" style="width: 100%; height: 180px;">
+                                    <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
+                                </div>
+                                    </center>
+                                </div>
                             </div>
-                            <div class="card-bodying">
-                            <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
-                                <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
-                            </div>
-                                <center>
-                            <div id="humidChart" style="width: 100%; height: 180px;">
-                                <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
-                            </div>
-                                </center>
-                            </div>
-                    </div>
+                        </div>
                     <!-- Power Usage Bar Chart -->
-                    <div class="card card2">
+                    <div class="card card4">
                         <div class="sub-card">
                             <div class="chart-container">
-                                <h2>Temperature Monitoring</h2>
-                                <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
+                                <h5>Temperature Monitoring</h5>
                                 <canvas id="temperatureChart"></canvas>
                                 <div id="tempLog" class="log"></div>
                             </div>
                             <div class="chart-container">
-                                <h2>Humidity Monitoring</h2>
-                                <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
+                                <h5>Humidity Monitoring</h5>
                                 <canvas id="humidityChart"></canvas>
                                 <div id="humidityLog" class="log"></div>
                             </div>
                         </div>
                         <div class="sub-card">
                             <div class="chart-container">
-                                <h2>Power Consumption Monitoring</h2>
-                                <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
+                                <h5>Power Consumption Monitoring</h5>
                                 <canvas id="powerChart"></canvas>
                                 <div id="powerLog" class="log"></div>
                             </div>
                             <div class="chart-container">
-                                <h2>Noise Level Monitoring</h2>
-                                <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
+                                <h5>Noise Level Monitoring</h5>
                                 <canvas id="soundChart"></canvas>
                                 <div id="soundLog" class="log"></div>
                             </div>
@@ -145,27 +160,6 @@
                             </div>
                     </div>
                 </div>
-            {{!-- <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <!-- System Status Overview -->
-                    <div class="card">
-                        <h5 class="card-header"><strong>System Status</strong></h5>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Current Temp:</strong> <span class="badge bg-info">{{currentTemp}}°C</span></p>
-                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-success">Normal</span></p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Alert Level:</strong> <span class="badge bg-warning">Moderate</span></p>
-                                <p class="card-text"><strong>Last Updated:</strong> {{lastUpdated}} Sept 22, 2024</p>
-                            </div>
-
-                            <!-- Container for Thermometer Gauge -->
-                            <div id="humidityContainer" style="height: 195px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
     </div>
     <!-- Scripts for Gathering data -->
@@ -338,10 +332,11 @@
                         console.error('Error:', error);
                     });
                 }
-                setInterval(updateData, 2000);
+                setInterval(updateData, 200000);
             });
         };
     </script>
+    {{!-- BETWEEEEEEEEN --}}
     <!-- Scripts for Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
