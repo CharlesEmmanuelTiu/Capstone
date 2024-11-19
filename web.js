@@ -107,8 +107,8 @@ app.get('/data_reports', async (req, res) =>{
 
         })
 })
-app.get('/cooling_system', async (req, res) =>{
-    res.render('cooling_system', {
+app.get('/coolingSystem', async (req, res) =>{
+    res.render('coolingSystem', {
         
 
         })
