@@ -40,25 +40,25 @@
         <div class="chart-container">
             <h2>Temperature Monitoring</h2>
             <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
-            <canvas id="temperatureChart"></canvas>
+            <canvas id="temperatureProactive"></canvas>
             <div id="tempLog" class="log"></div>
         </div>
         <div class="chart-container">
             <h2>Humidity Monitoring</h2>
             <p>Current Humidity: <span id="humidity">Loading...</span>%</p>
-            <canvas id="humidityChart"></canvas>
+            <canvas id="humidityProactive"></canvas>
             <div id="humidityLog" class="log"></div>
         </div>
         <div class="chart-container">
             <h2>Power Consumption Monitoring</h2>
             <p>Current Power Consumption: <span id="power">Loading...</span> kW</p>
-            <canvas id="powerChart"></canvas>
+            <canvas id="powerProactive"></canvas>
             <div id="powerLog" class="log"></div>
         </div>
         <div class="chart-container">
             <h2>Noise Level Monitoring</h2>
             <p>Current Sound Level: <span id="sound">Loading...</span> dB</p>
-            <canvas id="soundChart"></canvas>
+            <canvas id="soundProactive"></canvas>
             <div id="soundLog" class="log"></div>
         </div>
     </div>
@@ -157,10 +157,10 @@
         };
 
         // Initialize charts and data arrays
-        const tempChart = initChart(document.getElementById('temperatureChart').getContext('2d'), 'Temperature (°C)');
-        const soundChart = initChart(document.getElementById('soundChart').getContext('2d'), 'Sound Level (dB)');
-        const humidityChart = initChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)');
-        const powerChart = initChart(document.getElementById('powerChart').getContext('2d'), 'Power Consumption (kW)');
+        const tempChart = initChart(document.getElementById('temperatureProactive').getContext('2d'), 'Temperature (°C)');
+        const soundChart = initChart(document.getElementById('soundProactive').getContext('2d'), 'Sound Level (dB)');
+        const humidityChart = initChart(document.getElementById('humidityProactive').getContext('2d'), 'Humidity (%)');
+        const powerChart = initChart(document.getElementById('powerProactive').getContext('2d'), 'Power Consumption (kW)');
 
         // Set up data and time arrays for each metric
         const tempData = Array(10).fill(null);

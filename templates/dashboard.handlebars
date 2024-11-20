@@ -4,6 +4,13 @@
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-linear-gauge.min.js"></script>
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
     <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
     <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
     <style>
@@ -16,6 +23,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 2%;
+            text-align: center;
         }
         .log {
             max-height: 100px;
@@ -48,20 +56,20 @@
             <!-- System Overview Row -->
             <div class="row g-4 mb-4">
                         <div class="card card4">
-                            <div class="card card4">
-                                <div class="card-header">
-                                    <h4>Humidity Gauge</h4>
-                                </div>
+                            <div class="sub-card">
                                 <div class="card-bodying">
+                                <button onclick="toggleVisibility()">Toggle Visibility</button>
                                 <div class="d-flex justify-content-between">
                                     <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
                                     <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
                                 </div>
-                                    <center>
                                 <div id="humidChart" style="width: 100%; height: 180px;">
                                     <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
                                 </div>
-                                    </center>
+                                </div>
+                                <div class="chart-container" id="myDiv" style="display: none;">
+                                    <h5 id="Title"></h5>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -69,26 +77,22 @@
                     <div class="card card4">
                         <div class="sub-card">
                             <div class="chart-container">
-                                <h5>Temperature Monitoring</h5>
-                                <canvas id="temperatureChart"></canvas>
-                                <div id="tempLog" class="log"></div>
+                                {{!-- <h5>Temperature Monitoring</h5> --}}
+                                <canvas id="temperatureProactive" style="width: 100%; height: 100%;"></canvas>
                             </div>
                             <div class="chart-container">
-                                <h5>Humidity Monitoring</h5>
-                                <canvas id="humidityChart"></canvas>
-                                <div id="humidityLog" class="log"></div>
+                                {{!-- <h5>Humidity Monitoring</h5> --}}
+                                <canvas id="humidityProactive" style="width: 100%; height: 100%;"></canvas>
                             </div>
                         </div>
                         <div class="sub-card">
                             <div class="chart-container">
-                                <h5>Power Consumption Monitoring</h5>
-                                <canvas id="powerChart"></canvas>
-                                <div id="powerLog" class="log"></div>
+                                {{!-- <h5>Power Consumption Monitoring</h5> --}}
+                                <canvas id="powerProactive" style="width: 100%; height: 100%;"></canvas>
                             </div>
                             <div class="chart-container">
-                                <h5>Noise Level Monitoring</h5>
-                                <canvas id="soundChart"></canvas>
-                                <div id="soundLog" class="log"></div>
+                                {{!-- <h5>Noise Level Monitoring</h5> --}}
+                                <canvas id="soundProactive" style="width: 100%; height: 100%;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -141,213 +145,329 @@
                                         </tbody>
                                     </table>
                                     </center>
-                                    {{!-- <tr>
-                                        <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="Temperature Alert" class="icon-small"></td>
-                                        <td><a class="alert-links" href="/infrastructure">Power Controls</a></td>
-                                        <td>1:11PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="https://cdn-icons-png.flaticon.com/512/5993/5993272.png" alt="Cooling Alert" class="icon-small"></td>
-                                        <td><a class="alert-links" href="/infrastructure">Cooling Devices</a></td>
-                                        <td>1:02PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="https://cdn-icons-png.flaticon.com/128/2602/2602046.png" alt="Intruder Alert" class="icon-small"></td>
-                                        <td><a class="alert-links" href="/cctv">CCTV Detection</a></td>
-                                        <td>12:30PM</td>
-
-                                    </tr> --}}
                             </div>
                     </div>
                 </div>
         </div>
     </div>
-    <!-- Scripts for Gathering data -->
+
     <script>
+        const ALERT_THRESHOLDS = {
+            temperature: 3,
+            sound: 5,
+            humidity: 10,
+            power: 2
+        };
+
         document.getElementById("NumberOfAlerts").innerHTML = 0
         document.getElementById("currentStatus").innerHTML = "Optimal"
         document.getElementById("currentStatus").style.backgroundColor = "green";
         document.getElementById('currentStatus2').style.backgroundColor = "green";
-        window.onload = function () {
-            // Humidity gauge setup
-            var target = document.getElementById('humidityContainer');
-            if (!target) {
-                console.error('Humidity container element not found');
-                return;
-            }
+        // Initialize charts and data arrays
+        const temperatureProactive = tempProChart(document.getElementById('temperatureProactive').getContext('2d'), 'Temperature (°C)');
+        const soundProactive = soundProChart(document.getElementById('soundProactive').getContext('2d'), 'Sound Level (dB)');
+        const humidityProactive = humidProChart(document.getElementById('humidityProactive').getContext('2d'), 'Humidity (%)');
+        const powerProactive = powerProChart(document.getElementById('powerProactive').getContext('2d'), 'Power Consumption (kW)');
+        const tempProData = Array(10).fill(null);
+        const tempProTime = Array(10).fill("");
+        const humidityProData = Array(10).fill(null);
+        const humidityProTime = Array(10).fill("");
+        const powerProData = Array(10).fill(null);
+        const powerProTime = Array(10).fill("");
+        const soundProData = Array(10).fill(null);
+        const soundProTime = Array(10).fill("");
 
-            var opts = {
-                angle: 0,
-                lineWidth: 0.2,
-                radiusScale: 1,
-                pointer: { length: 0.6, strokeWidth: 0.04, color: '#000000' },
-                colorStart: '#6FADCF',
-                colorStop: '#8FC0DA',
-                strokeColor: '#E0E0E0',
-                generateGradient: true
-            };
+        const randomDataGenerator = (min, max) => (Math.random() * (max - min) + min).toFixed(1);
 
-            var HumidityGauge = new Gauge(target).setOptions(opts);
-            HumidityGauge.maxValue = 100;
-            HumidityGauge.setMinValue(0);
-            HumidityGauge.animationSpeed = 32;
-            HumidityGauge.set(70);
+        var gauge = drawLinearGauge(70);
+        var thermometer = gauge.thermometer(0);
+        thermometer.name('Thermometer').fill('green').stroke('green');
+        gauge.container('thermometerContainer');
+        gauge.draw();
 
-            function addLabel(value) {
-                var ctx = target.getContext('2d');
-                ctx.font = "20px Arial";
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#000000";
-
-                ctx.clearRect(0, target.height - 40, target.width, 50);
-                ctx.fillText(value + "% Humidity", target.width / 2, target.height - 5);
-            }
-
-            addLabel(70);
-
-            anychart.onDocumentReady(function () {
-                const currentStatus = document.getElementById("currentStatus");
-                const alertTable = document.getElementById("alertTable");
-
-                if (!currentStatus) {
-                    console.error("Element with id 'currentStatus' not found.");
-                    return;
-                }
-
-                function drawLinearGauge(value) {
-                    var gauge = anychart.gauges.linear();
-                    gauge.data([value]).padding(10, 0, 30, 0);
-                    gauge.tooltip().useHtml(true).format(function () {
-                        return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
-                    });
-
-                    var scale = gauge.scale();
-                    scale.minimum(10).maximum(50).ticks({ interval: 5 });
-
-                    var axis = gauge.axis();
-                    axis.scale(scale).width('0.5%').offset('-1%');
-                    axis.labels().useHtml(true).format('{%Value}°C');
-
-                    return gauge;
-                }
-
-                var gauge = drawLinearGauge(70);
-                var thermometer = gauge.thermometer(0);
-                thermometer.name('Thermometer').fill('green').stroke('green');
-                gauge.container('thermometerContainer');
-                gauge.draw();
-
-                async function updateData() {
+        function monitorMetric(alert, metricId, logId, dataArr, timeArr, chart, min, max, threshold, data){
+                let currentValue;
+                if (metricId === "sound") {
+                    // Use random generation for sound
+                    currentValue = parseFloat(randomDataGenerator(min, max));
+                } else {
+                    // Fetch actual data for temperature, power, or humidity
                     try {
-                        const response = await fetch('http://127.0.0.1:5005/data');
-                        const data = await response.json();
-                        console.log(data);
-                        const { temperature, humidity } = data;
-
-                        // Update humidity and temperature gauges
-                        HumidityGauge.set(humidity);
-                        addLabel(humidity);
-                        gauge.data([temperature]);
-                        document.getElementById('currentTemperature').textContent = temperature + ' °C';
-                        document.getElementById('currentHumidity').textContent = humidity + ' %'
-                        currentStatus2 = document.getElementById('currentStatus2')
-                        if (humidity >= 20 && humidity <= 80){
-                            currentStatus2.style.backgroundColor = 'green'
-                            currentStatus2.innerHTML = 'Normal'
-                        }
-                        else if(humidity > 80){
-                            currentStatus2.style.backgroundColor = 'red'
-                            currentStatus2.innerHTML = 'High'
-                        }
-                        else{
-                            currentStatus2.style.backgroundColor = 'orange'
-                            currentStatus2.innerHTML = 'Low'
-                        }
-                        // Check temperature and add alert with severity if needed
-                        if (temperature > 35) {
-                            currentStatus.innerHTML = "Danger";
-                            currentStatus.style.backgroundColor = "red";
-                            thermometer.name('Thermometer').fill('red').stroke('red');
-                            addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date(), temperature, humidity);
-                        } else if (temperature > 27) {
-                            currentStatus.innerHTML = "Risk";
-                            currentStatus.style.backgroundColor = "orange";
-                            thermometer.name('Thermometer').fill('orange').stroke('orange');
-                            addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date(), temperature, humidity);
+                        // Use the actual data for the corresponding metric
+                        if (data && data[metricId] !== undefined) {
+                            currentValue = parseFloat(data[metricId]);
                         } else {
-                            currentStatus.innerHTML = "Optimal";
-                            currentStatus.style.backgroundColor = "green";
-                            thermometer.name('Thermometer').fill('green').stroke('green');
+                            currentValue = randomDataGenerator(min, max); // Fallback to random data
                         }
                     } catch (error) {
-                        console.error('Error fetching data:', error);
+                        console.error("Error fetching data:", error);
+                        currentValue = randomDataGenerator(min, max); // Fallback to random data
                     }
                 }
+                // Capture current time for the x-axis label
+                const currentTime = new Date().toLocaleTimeString();
+                
+                // Update data and labels
+                timeArr.push(currentTime);
+                timeArr.shift();
+                dataArr.push(currentValue);
+                dataArr.shift();
+                // Update the chart labels and data
+                chart.data.labels = timeArr;
+                chart.data.datasets[0].data = dataArr;
+                chart.update();
 
-                // Declare a Set to store unique alerts outside of the function
-                const uniqueAlerts = new Set();
-
-                async function addAlertRow(alertType, source, status, time, temperature, humidity) {
-                    const alertTableBody = document.getElementById("alertTableBody");
-                    const noAlertsRow = document.getElementById("noAlertsRow");
-                    
-                    if (noAlertsRow) {
-                        alertTableBody.removeChild(noAlertsRow);
-                    }
-
-                    const rows = alertTableBody.getElementsByTagName("tr");
-                    for (let i = 0; i < rows.length; i++) {
-                        const cells = rows[i].getElementsByTagName("td");
-                        if (
-                            cells[1].innerText === source &&
-                            cells[2].innerText === status
-                        ) {
-                            return;
-                        }
-                    }
-
-                    const newRow = alertTableBody.insertRow();
-                    const alertCell = newRow.insertCell(0);
-                    const sourceCell = newRow.insertCell(1);
-                    const statusCell = newRow.insertCell(2);
-                    const timeCell = newRow.insertCell(3);
-
-                    alertCell.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="${alertType}" class="icon-small">`;
-                    sourceCell.innerHTML = `<a class="alert-links" href="/cooling_system">${source}</a>`;
-                    timeCell.textContent = time.toLocaleTimeString();
-
-                    statusCell.textContent = status;
-                    statusCell.style.color = status === "Critical" ? "red" : status === "Warning" ? "orange" : "green";
-                    document.getElementById("NumberOfAlerts").innerHTML = 1
-                    // Send the alert data to MongoDB
-                    fetch('http://127.0.0.1:8000/add-alert', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ alertType, source, status, time, temperature, humidity})
-                    }).then(response => {
-                        if (!response.ok) {
-                            console.error('Failed to add alert to database');
-                        }
-                    }).catch(error => {
-                        console.error('Error:', error);
-                    });
+                // Check for threshold breach
+                if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
+                    console.log("OOOOOH YEAH")
+                    //addAlertRow(alert, "Dashboard", "Warning", new Date(), temperature, humidity);
                 }
-                setInterval(updateData, 200000);
+        }
+
+        // Initialize the Humidity Gauge
+        var target = document.getElementById('humidityContainer');
+        var HumidityGauge = new Gauge(target).setOptions({
+            angle: 0,
+            lineWidth: 0.2,
+            radiusScale: 1,
+            pointer: { length: 0.6, strokeWidth: 0.04, color: '#000000' },
+            colorStart: '#6FADCF',
+            colorStop: '#8FC0DA',
+            strokeColor: '#E0E0E0',
+            generateGradient: true
+        });
+        HumidityGauge.maxValue = 100;
+        HumidityGauge.setMinValue(0);
+        HumidityGauge.animationSpeed = 32;
+
+        function addLabel(value) {
+            var ctx = target.getContext('2d');
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#000000";
+
+            ctx.clearRect(0, target.height - 40, target.width, 50);
+            ctx.fillText(value + "% Humidity", target.width / 2, target.height - 5);
+        }
+
+        function drawLinearGauge(value) {
+            var gauge = anychart.gauges.linear();
+            gauge.data([value]).padding(10, 0, 30, 0);
+            gauge.tooltip().useHtml(true).format(function () {
+                return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
             });
-        };
+
+            var scale = gauge.scale();
+            scale.minimum(10).maximum(50).ticks({ interval: 5 });
+
+            var axis = gauge.axis();
+            axis.scale(scale).width('0.5%').offset('-1%');
+            axis.labels().useHtml(true).format('{%Value}°C');
+
+            return gauge;
+        }
+
+        // Fetch data and update everything
+        async function fetchDataAndUpdate() {
+            try {
+                const response = await fetch('http://127.0.0.1:5005/data');
+                const data = await response.json();
+                const { temperature, humidity, power } = data;
+
+                // Update the dashboard
+                HumidityGauge.set(humidity);
+                addLabel(humidity);
+            
+                gauge.data([temperature]);
+                document.getElementById('currentTemperature').textContent = temperature + ' °C';
+                document.getElementById('currentHumidity').textContent = humidity + ' %'
+                const currentStatus2 = document.getElementById('currentStatus2');
+                if (humidity >= 20 && humidity <= 80) {
+                    currentStatus2.style.backgroundColor = 'green';
+                    currentStatus2.innerHTML = 'Normal';
+                } else if (humidity > 80) {
+                    currentStatus2.style.backgroundColor = 'red';
+                    currentStatus2.innerHTML = 'High';
+                } else {
+                    currentStatus2.style.backgroundColor = 'orange';
+                    currentStatus2.innerHTML = 'Low';
+                }
+
+                const currentStatus = document.getElementById("currentStatus");
+                if (temperature > 35) {
+                    currentStatus.innerHTML = "Danger";
+                    currentStatus.style.backgroundColor = "red";
+                    thermometer.name('Thermometer').fill('red').stroke('red');
+                    addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date(), temperature, humidity);
+                } else if (temperature > 27) {
+                    currentStatus.innerHTML = "Risk";
+                    currentStatus.style.backgroundColor = "orange";
+                    thermometer.name('Thermometer').fill('orange').stroke('orange');
+                    addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date(), temperature, humidity);
+                } else {
+                    currentStatus.innerHTML = "Optimal";
+                    currentStatus.style.backgroundColor = "green";
+                    thermometer.name('Thermometer').fill('green').stroke('green');
+                }
+
+                // Update proactive monitoring charts
+                const currentTime = new Date().toLocaleTimeString();
+                monitorMetric("Temperature Alert", "temperature", "tempLog", tempProData, tempProTime, temperatureProactive, 20, 30, ALERT_THRESHOLDS.temperature);
+                monitorMetric("Sound Alert", "sound", "soundLog", soundProData, soundProTime, soundProactive, 30, 50, ALERT_THRESHOLDS.sound);
+                monitorMetric("Humidity Alert", "humidity", "humidityLog", humidityProData, humidityProTime, humidityProactive, 40, 60, ALERT_THRESHOLDS.humidity);
+                monitorMetric("Power Alert", "power" ,"powerLog", powerProData, powerProTime, powerProactive, 0.5, 5, ALERT_THRESHOLDS.power);
+                console.log('good time to start')
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function updateChart(chart, dataArr, timeArr, currentTime, newValue) {
+            timeArr.push(currentTime);
+            timeArr.shift();
+            dataArr.push(newValue);
+            dataArr.shift();
+            chart.data.labels = timeArr;
+            chart.data.datasets[0].data = dataArr;
+            chart.update();
+        }
+
+        function addAlertRow(alertType, source, status, time, temperature, humidity) {
+            const alertTableBody = document.getElementById("alertTableBody");
+            const noAlertsRow = document.getElementById("noAlertsRow");
+            
+            if (noAlertsRow) {
+                alertTableBody.removeChild(noAlertsRow);
+            }
+
+            const rows = alertTableBody.getElementsByTagName("tr");
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName("td");
+                if (
+                    cells[1].innerText === source &&
+                    cells[2].innerText === status
+                ) {
+                    return;
+                }
+            }
+
+            const newRow = alertTableBody.insertRow();
+            newRow.insertCell(0).innerHTML = `<img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="${alertType}" class="icon-small">`;
+            newRow.insertCell(1).innerHTML = `<a class="alert-links" href="/cooling_system">${source}</a>`;
+            newRow.insertCell(2).textContent = status;
+            newRow.insertCell(3).textContent = time.toLocaleTimeString();
+
+            document.getElementById("NumberOfAlerts").innerHTML = parseInt(document.getElementById("NumberOfAlerts").innerHTML) + 1;
+        }
+
+        // Initialize proactive monitoring
+        function tempProChart(ctx, label) {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(255, 0, 0, 1)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { 
+                            ticks: { autoSkip: true, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function humidProChart(ctx, label) {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(0, 75, 255, 1)',
+                        backgroundColor: 'rgba(0, 75, 255, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { 
+                            ticks: { autoSkip: true, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function powerProChart(ctx, label) {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(255, 138, 0, 1)',
+                        backgroundColor: 'rgba(255, 138, 0, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: {
+                            ticks: { autoSkip: true, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function soundProChart(ctx, label) {
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(""),
+                    datasets: [{
+                        label: label,
+                        data: Array(10).fill(null),
+                        borderColor: 'rgba(80, 209, 0, 1)',
+                        backgroundColor: 'rgba(80, 209, 0, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { 
+                            ticks: { autoSkip: true, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        fetchDataAndUpdate()
     </script>
+
+
     {{!-- BETWEEEEEEEEN --}}
     <!-- Scripts for Graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
     <script>
     // Set up the scene, camera, and renderer
     const scene = new THREE.Scene();
@@ -511,7 +631,8 @@
     infoBox.style.borderRadius = "5px";
     infoBox.style.display = "none"; // Initially hidden
     document.body.appendChild(infoBox);
-
+    var smiles = document.getElementById('myDiv');
+    var compTitle = document.getElementById('Title');
     // Function to handle clicks
     window.addEventListener("click", (event) => {
         const { x, y } = getMousePosition(event);
@@ -526,13 +647,18 @@
 
             if (index !== -1) {
                 // Display the component details for the clicked server
-                infoBox.innerText = `Component:\n${componentDetails[index] || ["No Details"]}`;
-                infoBox.style.left = `${event.clientX + 10}px`;
-                infoBox.style.top = `${event.clientY + 10}px`;
-                infoBox.style.display = "block";
+                //infoBox.innerText = `Component:\n${componentDetails[index] || ["No Details"]}`;
+                //infoBox.style.left = `${event.clientX + 10}px`;
+                //infoBox.style.top = `${event.clientY + 10}px`;
+                //infoBox.style.display = "block";
+                if (smiles.style.display === 'none') {
+                    smiles.style.display = 'block'; // Make it visible again
+                }
+                compTitle.innerHTML = componentDetails[index]
             }
         } else {
-            infoBox.style.display = "none"; // Hide infoBox if no server is clicked
+            //infoBox.style.display = "none"; // Hide infoBox if no server is clicked
+            div.style.display = 'none';
         }
     });
 
