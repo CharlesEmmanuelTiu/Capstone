@@ -170,4 +170,18 @@
             updateData()
         });
     };
+
+            // Send the alert data to MongoDB
+            fetch('http://127.0.0.1:8000/add-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alertType, source, status, time, currentData})
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to add alert to database');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
 </script>
+
