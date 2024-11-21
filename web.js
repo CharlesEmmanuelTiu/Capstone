@@ -98,11 +98,15 @@ app.get('/proactive', async (req, res) =>{
         })
 })
 app.get('/actions', async (req, res) =>{
+    let AllAlerts
+    AllAlerts = await business.getFormattedAlerts();
     res.render('actions', {
-        
-
+        user:user,
+        admin:isAdmin,
+        sensors:sensors
         })
-})
+    }
+)
 app.get('/data_reports', async (req, res) =>{
     res.render('data_reports', {
         

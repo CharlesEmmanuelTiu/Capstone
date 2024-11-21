@@ -510,8 +510,7 @@
         }
 
         .container {
-            max-width: 900px;
-            margin: auto;
+            max-width: 1200px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -552,17 +551,16 @@
         }
 
         .crac-settings {
-            padding: 2%;
+        
             margin-right: auto;
-            flex-direction: column;
+            
             gap: 5px;
         }
 
         .crac-settings input[type="number"], .crac-settings input[type="range"] {
-            width: 100%;
-            padding: 2%;
+            width: 80%;
             font-size: large;
-            margin: auto;
+            
             border: 1px solid #ccc;
             border-radius: 4px;
             text-align: center;
@@ -652,7 +650,9 @@
 
         <div id="internal-crac-controls" class="hidden">
             <h2>Fan Speed Controls</h2>
+            <h6>Row 1</h4>
             <div class="crac-controls">
+                
                 <div class="crac-settings">
                     <label for="internal-fan-speed1">Fan 1</label>
                     <input type="range" id="internal-fan-speed1" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
