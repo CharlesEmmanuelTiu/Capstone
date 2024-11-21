@@ -4,8 +4,8 @@
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-linear-gauge.min.js"></script>
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-table.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -35,7 +35,8 @@
             border-radius: 8px;
             box-shadow: 6px 7px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 2%;
-            text-align: center;
+            max-height: 350px;
+            overflow-y: auto;  /* Allow vertical scrolling if content overflows */
         }
         .log {
             max-height: 100px;
@@ -48,13 +49,20 @@
         .boxTable {
             border: none; /* Removes border from the table */
             border-collapse: collapse; /* Ensures no space between table cells */
-            padding: 1px; /* Removes padding */
+            padding: 0px; /* Removes padding */
             width: 100%; /* Optional: Ensures table spans its container */
         }
         .boxTable tr, 
         .boxTable td {
             border: none; /* Removes borders from table cells */
-            padding: 1px; /* Removes padding from table cells */
+            padding: 0px; /* Removes padding from table cells */
+        }
+        #water-level-chart {
+            height: 50px;
+            width: 100%;
+        }
+        #alertTable{
+            width: 100%;
         }
     </style>
 </head>
@@ -85,12 +93,14 @@
                                     <p class="card-text"><strong>Current Humidity:</strong> <span id="currentHumidity" class="badge bg-info">%</span></p>
                                     <p class="card-text"><strong>Status:</strong> <span id="currentStatus2" class="badge">Normal</span></p>
                                 </div>
-                                <div id="humidChart" style="width: 100%; height: 180px;">
-                                    <canvas id="humidityContainer" style="width: 100%; height: 150px;"></canvas>
+                                <div id="humidChart" style="width: 100%; height: 120px;">
+                                    <canvas id="humidityContainer" style="width: 100%; height: 120px;"></canvas>
                                 </div>
-                                <div id="waterMeterContainer" style="width: 400px; height: 400px; margin: auto;">
-
-                                </div>
+                                <p class="card-text"><strong>Water Detection Status:</strong> <br><span id="WaterStatus" class="badge">No Water Leak</span></p>
+                                <center>
+                                <img src="https://cdn-icons-png.flaticon.com/512/694/694073.png" id="WaterDetector" style="width:40%; height: 100px; display: block;">
+                                <img src="https://www.freeiconspng.com/uploads/water-drop-icon-symbol-20.png" id="WaterDetector2" style="width:30%; height: 110px; display: none;">
+                                </center>
                                 </div>
                                 <div class="chart-container2" id="myDiv" style="display: none;">
                                     <h5 id="Title"></h5>
@@ -162,7 +172,7 @@
                                 <p class="card-text"><strong>Status:</strong> <span id="currentStatus" class="badge">Optimal</span></p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge bg-warning"></span></p>
+                                <p class="card-text"><strong>Alerts:</strong> <span id="NumberOfAlerts" class="badge"></span></p>
                             </div>
                             <div id="thermometerContainer" style="height: 70%;"></div>
                             </div>
@@ -181,7 +191,7 @@
                             <div class="card-header">
                                 <h4>Alerts</h4>
                             </div>
-                                <div class="card-bodying">
+                                <div class="card-bodyingAlert">
                                     <center>
                                     <table id="alertTable">
                                         <thead>
@@ -215,6 +225,8 @@
 
         document.getElementById("NumberOfAlerts").innerHTML = 0
         document.getElementById("currentStatus").innerHTML = "Optimal"
+        document.getElementById("WaterStatus").innerHTML = "No Water Leak";
+        document.getElementById("WaterStatus").style.backgroundColor = "green";
         document.getElementById("currentStatus").style.backgroundColor = "green";
         document.getElementById('currentStatus2').style.backgroundColor = "green";
         // Initialize charts and data arrays
@@ -240,33 +252,28 @@
         gauge.draw();
 
         function monitorMetric(alert, metricId, logId, dataArr, timeArr, chart, min, max, threshold, data){
-                let currentValue;
-                if (metricId === "sound") {
-                    // Use random generation for sound
-                    currentValue = parseFloat(randomDataGenerator(min, max));
-                } else {
-                    // Fetch actual data for temperature, power, or humidity
-                    try {
-                        // Use the actual data for the corresponding metric
-                        if (data && data[metricId] !== undefined) {
-                            currentValue = parseFloat(data[metricId]);
-                        } else {
-                            currentValue = randomDataGenerator(min, max); // Fallback to random data
-                        }
-                    } catch (error) {
-                        console.error("Error fetching data:", error);
+                // Fetch actual data for temperature, power, or humidity, sound
+                try {
+                    // Use the actual data for the corresponding metric
+                    if (data && data[metricId] !== undefined) {
+                        currentValue = parseFloat(data[metricId]);
+                    } else {
                         currentValue = randomDataGenerator(min, max); // Fallback to random data
                     }
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                    currentValue = randomDataGenerator(min, max); // Fallback to random data
                 }
                 data = {
                                 temperature: data.temperature,
                                 humidity: data.humidity,
                                 power: data.power,
-                                sound: currentValue
+                                sound: data.mic_decibels
                             }
+                
                 // Capture current time for the x-axis label
                 const currentTime = new Date().toLocaleTimeString();
-                
+
                 // Update data and labels
                 timeArr.push(currentTime);
                 timeArr.shift();
@@ -279,7 +286,6 @@
 
                 // Check for threshold breach
                 if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
-                    console.log("OOOOOH YEAH")
                     addAlertRow(alert, "Dashboard", "Warning", new Date(), data);
                     //addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date(), temperature, humidity);
                 }
@@ -333,7 +339,7 @@
             try {
                 const response = await fetch('http://127.0.0.1:5005/data');
                 const data = await response.json();
-                const { temperature, humidity, power } = data;
+                const { temperature, humidity, power, water_level, mic_decibels } = data;
                 // Update the dashboard
                 HumidityGauge.set(humidity);
                 addLabel(humidity);
@@ -354,13 +360,13 @@
                 }
 
                 const currentStatus = document.getElementById("currentStatus");
-                const currentData = { temperature, humidity, power }
-                if (temperature > 35) {
+                const currentData = { temperature, humidity, power, water_level, mic_decibels }
+                if (temperature > 20) {
                     currentStatus.innerHTML = "Danger";
                     currentStatus.style.backgroundColor = "red";
                     thermometer.name('Thermometer').fill('red').stroke('red');
                     addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date(), currentData);
-                } else if (temperature > 27) {
+                } else if (temperature > 17) {
                     currentStatus.innerHTML = "Risk";
                     currentStatus.style.backgroundColor = "orange";
                     thermometer.name('Thermometer').fill('orange').stroke('orange');
@@ -371,10 +377,25 @@
                     thermometer.name('Thermometer').fill('green').stroke('green');
                 }
 
+                console.log(water_level)
+                if (water_level>0){
+                    document.getElementById("WaterStatus").innerHTML = "Water Leakage Detected!";
+                    document.getElementById("WaterStatus").style.backgroundColor = "red";
+                    document.getElementById("WaterDetector").style.display = "none";
+                    document.getElementById("WaterDetector2").style.display = "block";
+                    addAlertRow("Water Leakage Alert", "Dashboard", "Urgent", new Date(), "NoData");
+                }
+                else{
+                    document.getElementById("WaterStatus").innerHTML = "No Water Leak";
+                    document.getElementById("WaterStatus").style.backgroundColor = "green";
+                    document.getElementById("WaterDetector2").style.display = "none";
+                    document.getElementById("WaterDetector").style.display = "block";
+                }
+
                 // Update proactive monitoring charts
                 const currentTime = new Date().toLocaleTimeString();
                 monitorMetric("Temperature Fluctuation", "temperature", "tempLog", tempProData, tempProTime, temperatureProactive, 20, 30, ALERT_THRESHOLDS.temperature, currentData);
-                monitorMetric("SoundLevel Fluctuation", "sound", "soundLog", soundProData, soundProTime, soundProactive, 30, 50, ALERT_THRESHOLDS.sound, currentData);
+                monitorMetric("SoundLevel Fluctuation", "mic_decibels", "soundLog", soundProData, soundProTime, soundProactive, 30, 50, ALERT_THRESHOLDS.sound, currentData);
                 monitorMetric("Humidity Fluctuation", "humidity", "humidityLog", humidityProData, humidityProTime, humidityProactive, 40, 60, ALERT_THRESHOLDS.humidity, currentData);
                 monitorMetric("Power Fluctuation", "power" ,"powerLog", powerProData, powerProTime, powerProactive, 0.5, 5, ALERT_THRESHOLDS.power, currentData);
             } catch (error) {
@@ -400,6 +421,7 @@
                 alertTableBody.removeChild(noAlertsRow);
             }
 
+
             const rows = alertTableBody.getElementsByTagName("tr");
             for (let i = 0; i < rows.length; i++) {
                 const cells = rows[i].getElementsByTagName("td");
@@ -407,7 +429,10 @@
                     cells[1].innerText === source &&
                     cells[2].innerText === status
                 ) {
-                    return;
+                    // Update existing row's time and status if necessary
+                    cells[2].innerText = status;
+                    cells[3].innerText = time.toLocaleTimeString();
+                    return; // Exit as the row is already updated
                 }
             }
 
@@ -422,6 +447,8 @@
                 newRow.insertCell(0).innerHTML = `<img src="https://cdn-icons-png.flaticon.com/256/6368/6368706.png" alt="${alertType}" title="${alertType}" class="icon-small">`;
             } else if(alertType=="SoundLevel Fluctuation"){
                 newRow.insertCell(0).innerHTML = `<img src="https://cdn-icons-png.freepik.com/512/4040/4040118.png" alt="${alertType}" title="${alertType}" class="icon-small">`;
+            } else if(alertType=="Water Leakage Alert"){
+                newRow.insertCell(0).innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/445/445800.png" alt="${alertType}" title="${alertType}" class="icon-small">`;
             }
             newRow.insertCell(1).innerHTML = `<a class="alert-links" href="/cooling_system">${source}</a>`;
             newRow.insertCell(2).textContent = status;
@@ -532,6 +559,7 @@
         }
 
         fetchDataAndUpdate()
+        setInterval(fetchDataAndUpdate, 1000)
     </script>
 
 
@@ -703,14 +731,23 @@
             ConnectionType: "Fiber",
             PowerRequirements: "Wattage"
         },
-        "Firewall":{
-            ModelName: "Cisco Nexus 9372TX Switch",
-            ModelNumber: "WS-C3850-24T",
+        "Server":{
+            ModelName: "Cisco UCS Server",
+            ModelNumber: "UCS-5108",
             Description: "Provide network security by filtering traffic and blocking unauthorized access.",
-            PortCount: 48,
-            PortSpeed: "10Gbps",
-            ConnectionType: "Fiber",
-            PowerRequirements: "Wattage"
+            PortCount: 6,
+            PortSpeed: "10-Gbps",
+            ConnectionType: "SFP Cable",
+            PowerRequirements: "1444 W"
+        },
+        "Firewall":{
+            ModelName: "Cisco UCS Server",
+            ModelNumber: "UCS-5108",
+            Description: "Provide network security by filtering traffic and blocking unauthorized access.",
+            PortCount: 6,
+            PortSpeed: "10-Gbps",
+            ConnectionType: "SFP Cable",
+            PowerRequirements: "1444 W"
         }
     };
 
@@ -748,7 +785,6 @@
                 }
                 compTitle.innerHTML = componentDetails[index]
                 let data_gather = componentDetails[index].split(" ").join("");
-                console.log(data_gather) //data_gather is NetworkSwitch
                 document.getElementById('ModelName').innerHTML = ModelData[data_gather].ModelName;
                 document.getElementById('ModelNumber').innerHTML = ModelData[data_gather].ModelNumber;
                 document.getElementById('Description').innerHTML = ModelData[data_gather].Description;
@@ -756,11 +792,13 @@
                 document.getElementById('PortSpeed').innerHTML = ModelData[data_gather].PortSpeed;
                 document.getElementById('ConnectionType').innerHTML = ModelData[data_gather].ConnectionType;
                 document.getElementById('PowerRequirements').innerHTML = ModelData[data_gather].PowerRequirements;
+                document.getElementById("WaterDetector").style.height = "85px";
+                document.getElementById("WaterDetector2").style.height = "90px";
+                document.getElementById("WaterDetector2").style.width = "25%";
             }
         } else {
             //infoBox.style.display = "none"; // Hide infoBox if no server is clicked
             div.style.display = 'none';
-
         }
     });
 

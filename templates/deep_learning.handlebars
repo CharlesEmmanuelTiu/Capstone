@@ -83,7 +83,7 @@
     // Fetch predicted data from the Flask API
     async function fetchPredictedData() {
         try {
-            const response2 = await fetch('http://127.0.0.1:5005/data');
+            //const response2 = await fetch('http://127.0.0.1:5005/data');
             const response = await fetch('http://localhost:5000/predict', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
@@ -104,7 +104,17 @@
     }
 
     // Function to update chart data
+    // Function to update chart data with the latest predictions (limit data length)
     function updateChart(TempPredictions, HumidPredictions, PowerPredictions, timeLabels) {
+        const maxDataPoints = 30;  // Maximum number of data points to display
+
+        // Limit the data to the latest maxDataPoints
+        TempPredictions = TempPredictions.slice(-maxDataPoints);
+        HumidPredictions = HumidPredictions.slice(-maxDataPoints);
+        PowerPredictions = PowerPredictions.slice(-maxDataPoints);
+        timeLabels = timeLabels.slice(-maxDataPoints);
+
+        // Update chart with the limited data
         TempPredictionChart.data.labels = timeLabels;
         HumidPredictionsChart.data.labels = timeLabels;
         PowerPredictionsChart.data.labels = timeLabels;
@@ -128,8 +138,9 @@
                 {
                     label: 'Temperature',
                     data: [],
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
                     fill: false,
+                    pointRadius: 0, // Remove dots
                 }
             ]
         },
@@ -150,8 +161,9 @@
                 {
                     label: 'Humidity',
                     data: [],
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(0, 75, 255, 1)',
                     fill: false,
+                    pointRadius: 0, // Remove dots
                 }
             ]
         },
@@ -172,8 +184,9 @@
                 {
                     label: 'Power',
                     data: [],
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(255, 138, 0, 1)',
                     fill: false,
+                    pointRadius: 0, // Remove dots
                 }
             ]
         },

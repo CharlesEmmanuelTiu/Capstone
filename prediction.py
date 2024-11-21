@@ -17,8 +17,7 @@ scaler = joblib.load('scaler.pkl')  # Ensure the scaler matches the one used dur
 SEQ_LENGTH = 10  # Match this with the value used in training
 
 # Define prediction endpoint
-@app.route('/predict', methods=['GET', 'POST'])
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['GET'])
 def predict():
     try:
         # Load and preprocess input data

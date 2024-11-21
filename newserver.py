@@ -1,90 +1,206 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+import socket
 import wmi
 import pythoncom
 import pandas as pd
+import pyaudio
+import os
+import numpy as np
 from datetime import datetime
+import time
+import threading
+from flask import Flask, jsonify
+from flask_cors import CORS  # Import Flask-CORS
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+# UDP server settings to listen for temperature, humidity, water sensor data
+UDP_IP = '127.0.0.1'
+UDP_PORT = 12345
 
+# CSV file path to store the data
 CSV_FILE_PATH = 'cpu_monitoring_log.csv'
 
-def get_sensor_data():
-    pythoncom.CoInitialize()
+# Microphone settings
+FORMAT = pyaudio.paInt16  # Format for the audio data (16-bit)
+CHANNELS = 1  # Mono sound
+RATE = 44100  # Sampling rate (samples per second)
+CHUNK = 1024  # Size of the chunk to read at a time
+DURATION = 0.1  # Duration in seconds to record at a time
 
+# Flask app for HTTP requests
+app = Flask(__name__)
+CORS(app)  # Enable CORS
+
+# Create a UDP socket to receive data from Arduino and microphone
+udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udp_socket.bind((UDP_IP, UDP_PORT))
+
+# Initialize pyaudio
+p = pyaudio.PyAudio()
+
+# Global variable to store sensor data
+combined_data = {
+    'temperature': None,
+    'power': None,
+    'humidity': None,
+    'water_level': None,
+    'mic_decibels': None
+}
+
+# Function to fetch power data using WMI
+def get_power_data():
+    pythoncom.CoInitialize()
     try:
         w = wmi.WMI(namespace="root/OpenHardwareMonitor")
-
-        # Retrieve all available sensors
-        sensors = w.Sensor()
-
-        # Find the temperature and power sensors
-        temperature_sensor = next((sensor for sensor in sensors if sensor.SensorType == 'Temperature' and sensor.Name == 'CPU Package'), None)
-        power_sensor = next((sensor for sensor in sensors if sensor.SensorType == 'Power' and 'CPU' in sensor.Name), None)
-
-        # Debug: List all available sensors
-        if not power_sensor:
-            print("Available sensors:")
-            for sensor in sensors:
-                print(f"Name: {sensor.Name}, Type: {sensor.SensorType}, Value: {sensor.Value}")
-
-        # Get sensor values with appropriate defaults
-        temperature = temperature_sensor.Value if temperature_sensor else None
-        power = power_sensor.Value if power_sensor else 0.0  # Default to 0 if not found
-        humidity = max(20, 100 - int(temperature * 1.5)) if temperature else None
-
-        return {
-            'temperature': temperature,
-            'power': f"{float(power):.2f}" if power is not None else None,
-            'humidity': humidity
-        }
-
+        # Find the power sensor for CPU
+        power_sensor = next((sensor for sensor in w.Sensor() if sensor.SensorType == 'Power' and 'CPU' in sensor.Name), None)
+        power = power_sensor.Value if power_sensor else None
+        return power
     finally:
         pythoncom.CoUninitialize()
 
-
+# Function to append data to the CSV file
 def append_to_csv(data):
-    # Define the expected columns
-    expected_columns = ['Timestamp', 'CPU Package Temperature (C)', 'CPU Power Consumption (W)', 'Humidity (%)']
+    """Append sensor data to the CSV file."""
+    # Check if the file exists
+    file_exists = os.path.exists(CSV_FILE_PATH)
 
-    # Create a new row of data
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    new_data = {
-        'Timestamp': timestamp,
-        'CPU Package Temperature (C)': data['temperature'],
-        'CPU Power Consumption (W)': data['power'],
-        'Humidity (%)': data['humidity']
+    # Define the column names
+    columns = ['Timestamp', 'Temperature (°C)', 'Power (W)', 'Humidity (%)', 'Water Level', 'Mic Decibels (dB)']
+
+    # Prepare the data row
+    row = {
+        'Timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'Temperature (°C)': data['temperature'],
+        'Power (W)': data['power'],
+        'Humidity (%)': data['humidity'],
+        'Water Level': data['water_level'],
+        'Mic Decibels (dB)': data['mic_decibels']
     }
-    new_row = pd.DataFrame([new_data])
+
+    # Append to the CSV
+    try:
+        df = pd.DataFrame([row])
+        if not file_exists:
+            # Write the header if the file doesn't exist
+            df.to_csv(CSV_FILE_PATH, mode='w', index=False, header=True)
+        else:
+            # Append without the header
+            df.to_csv(CSV_FILE_PATH, mode='a', index=False, header=False)
+    except Exception as e:
+        print(f"Error writing to CSV: {e}")
+
+# Function to calculate the decibel level from audio data
+def calculate_decibels(data):
+    """Calculate the decibel level from raw audio data."""
+    audio_data = np.frombuffer(data, dtype=np.int16)
+    
+    # Calculate the RMS (Root Mean Square) value
+    rms = np.sqrt(np.mean(audio_data**2))
+    
+    # Convert RMS to decibels (dB)
+    if rms > 0:
+        decibels = 20 * np.log10(rms)
+    else:
+        decibels = -np.inf  # If no sound is detected, return a very low value
+    
+    return decibels
+
+# Function to monitor the microphone and return the decibel level
+def monitor_microphone():
+    """Continuously monitor the microphone and return the current decibel level."""
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
+    
+    data = stream.read(CHUNK, exception_on_overflow=False)
+        
+    # Calculate the decibel level
+    decibels = calculate_decibels(data)
+        
+    # Update the global variable or store it to be sent to CSV
+    global mic_decibels
+    mic_decibels = decibels
+
+# Function to handle receiving sensor data from UDP and saving it with decibel data
+def handle_sensor_data():
+    global combined_data  # Declare that we're using the global variable combined_data
+    global mic_decibels
+
+    # Listen for UDP data
+    data, addr = udp_socket.recvfrom(1024)  # Buffer size is 1024 bytes
 
     try:
-        # Read the existing CSV file
-        df = pd.read_csv(CSV_FILE_PATH, encoding='ISO-8859-1')
+        sensor_data = data.decode('utf-8', errors='replace')  # Decode received data
+    except UnicodeDecodeError as e:
+        print(f"Error decoding data: {e}")
 
-        # Validate that the columns match the expected structure
-        if list(df.columns) != expected_columns:
-            raise ValueError("CSV columns do not match expected format.")
-    except FileNotFoundError:
-        # If the file doesn't exist, create an empty DataFrame with expected columns
-        df = pd.DataFrame(columns=expected_columns)
+    print(f"Received Data: {sensor_data}")  # Print the raw data for debugging
 
-    # Append the new row to the DataFrame
-    df = pd.concat([df, new_row], ignore_index=True)
+    # Check if data contains humidity and temperature
+    if "Humidity:" in sensor_data and "Temp:" in sensor_data:
+        try:
+            sensor_data = sensor_data.replace("%%", "%")  # Fix extra percent symbols
+            humidity_part, temp_part = sensor_data.split(' Temp:')
+            humidity = humidity_part.replace("Humidity: ", "").strip()
+            temp_celsius, temp_fahrenheit = temp_part.split('°C ')
+            temp_celsius = temp_celsius.strip()
+            temp_fahrenheit = temp_fahrenheit.replace("°F", "").strip()
 
-    # Ensure the DataFrame has the correct column order
-    df = df[expected_columns]
+            # Fetch power data
+            power = get_power_data()
 
-    # Write the updated DataFrame back to the CSV
-    df.to_csv(CSV_FILE_PATH, index=False, encoding='ISO-8859-1')
+            # Update the global combined_data dictionary
+            combined_data.update({
+                'temperature': temp_celsius,
+                'power': f"{float(power):.2f}" if power is not None else None,
+                'humidity': humidity,
+                'mic_decibels': f"{mic_decibels:.2f}"  # Add microphone decibels to the data
+            })
 
+        except ValueError as e:
+            print(f"Error processing temperature/humidity data: {e}")
 
-@app.route('/data')
-def data():
-    sensor_data = get_sensor_data()
+    # Check if data contains water level
+    elif "Water Level:" in sensor_data:
+        try:
+            water_level = sensor_data.replace("Water Level:", "").strip()
+                
+            # Update water level data
+            combined_data['water_level'] = water_level
+
+        except ValueError as e:
+            print(f"Error processing water level data: {e}")
+    
+
+# API route to fetch sensor data from the server
+@app.route('/data', methods=['GET'])
+def get_sensor_data():
+    global combined_data  # Access the global combined_data variable
+    handle_sensor_data()
+    sensor_data = {
+        'temperature': combined_data['temperature'],
+        'power': combined_data['power'],
+        'humidity': combined_data['humidity'],
+        'water_level': combined_data['water_level'],
+        'mic_decibels': combined_data['mic_decibels']
+    }
     print(sensor_data)
-    append_to_csv(sensor_data)  # Append the sensor data to the CSV file
     return jsonify(sensor_data)
 
+def main():
+    print(f"Listening for UDP packets on {UDP_IP}:{UDP_PORT}...")
+
+    # Start the microphone monitoring in a separate thread
+    mic_thread = threading.Thread(target=monitor_microphone, daemon=True)
+    mic_thread.start()
+
+    # Start handling sensor data in a separate thread
+    handle_thread = threading.Thread(target=handle_sensor_data, daemon=True)
+    handle_thread.start()
+
+    # Start the Flask app to serve data
+    app.run(host='0.0.0.0', port=5005)
+
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5005)
+    main()
