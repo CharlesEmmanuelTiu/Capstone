@@ -5,6 +5,7 @@ let client
 let db
 let users
 let sessions
+let alerts
 
 async function connectDatabase() {
     if (!client) {
@@ -13,7 +14,14 @@ async function connectDatabase() {
         db = client.db('Capstone')
         sessions = db.collection('Sessions')
         users = db.collection('Users')
+        alerts = db.collection('Alerts')
     }
+}
+
+
+async function getAlerts(){
+    await connectDatabase()
+    return await alerts.find().toArray()
 }
 
 async function validateCredentials(username, password) {
@@ -246,5 +254,6 @@ module.exports = {
     getAccountHighestID,
     getHighestStationNumber,
     deleteStation,
-    removeUser
+    removeUser,
+    getAlerts
 }

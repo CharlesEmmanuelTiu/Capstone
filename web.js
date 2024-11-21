@@ -10,6 +10,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const crypto = require('crypto')
 
+const hbs = handlebars.create();
+
 let app = express()
 app.set('views', __dirname+"/templates")
 app.use(express.static('static'))
@@ -113,13 +115,41 @@ app.get('/coolingSystem', async (req, res) =>{
 
         })
 })
+hbs.handlebars.registerHelper('eq', function(a, b) {
+    return a === b;
+});
 
 app.get('/alerts', async (req, res) =>{
-    res.render('alerts', {
-        
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
+    let AllAlerts
 
-        })
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+
+        }
+    console.log(AllAlerts)
+        AllAlerts = await business.getFormattedAlerts();
+        res.render('alerts', {
+            alerts:AllAlerts
+            })
+    }
 })
+
 app.get('/infrastructure', async (req, res) => {
     let key = req.cookies.session
     let valid = await authenticateUser(key)

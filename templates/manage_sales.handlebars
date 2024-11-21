@@ -50,3 +50,160 @@
         </div>  
     </div>
 </body>
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .table-container {
+            width: 80%;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: lightsteelblue;
+        }
+        td {
+            background-color: lavender;
+        }
+        .filters {
+            margin: 20px auto;
+            text-align: center;
+        }
+        .filters select, .filters input {
+            padding: 5px;
+            margin: 5px;
+        }
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="filters">
+        <label for="alertTypeFilter">Alert Type:</label>
+        <select id="alertTypeFilter">
+            <option value="">All</option>
+            <option value="Temperature Alert">Temperature Alert</option>
+            <option value="Intruder Alert">Intruder Alert</option>
+        </select>
+        
+        {{!-- <label for="sourceFilter">Source:</label>
+        <select id="sourceFilter">
+            <option value="">All</option>
+            <option value="Cooling System">Cooling System</option>
+            <option value="CCTV">CCTV</option>
+        </select> --}}
+        
+        <label for="statusFilter">Status:</label>
+        <select id="statusFilter">
+            <option value="">All</option>
+            <option value="Critical">Critical</option>
+            <option value="Solved">Solved</option>
+        </select>
+        
+        <label for="dateFilter">Date:</label>
+        <input type="date" id="dateFilter">
+        
+        <button onclick="applyFilters()">Apply Filters</button>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Alert Type</th>
+                    <th>Description</th>
+                    <th>Source</th>
+                    <th>Actions</th>
+                    <th>Status</th>
+                    <th>
+                        Date and Time
+                        <button onclick="sortTable()">Sort</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="alertsTable">
+                {{#each alerts}}
+                <tr>
+                    {{#if (eq alertType "Temperature Alert")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" class="icon-small"></td>
+                    {{else if (eq alertType "Intruder Alert")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/128/2602/2602046.png" class="icon-small"></td>
+                    {{else}}
+                        <td>Unknown Alert</td>
+                    {{/if}}
+                    <td>{{description}}</td>
+                    <td>{{source}}</td>
+                    <td><a href="/actions">Actions</a></td>
+                    <td>{{status}}</td>
+                    <td>{{formattedTime}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function applyFilters() {
+            const alertType = document.getElementById('alertTypeFilter').value;
+            //const source = document.getElementById('sourceFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const date = document.getElementById('dateFilter').value;
+
+            const rows = document.querySelectorAll('#alertsTable tr');
+            rows.forEach(row => {
+                const alertTypeCell = row.cells[0].textContent || row.cells[0].innerText;
+                console.log(alertTypeCell)
+                const descCell = row.cells[2].textContent || row.cells[2].innerText;
+                //const sourceCell = row.cells[4].textContent || row.cells[2].innerText;
+                const statusCell = row.cells[4].textContent || row.cells[4].innerText;
+                const dateCell = row.cells[5].textContent || row.cells[5].innerText;
+
+                const matchesAlertType = alertType === '' || alertTypeCell.includes(alertType);
+                console.log(alertType)
+                //const matchesSource = source === '' || sourceCell.includes(source);
+                const matchesStatus = status === '' || statusCell.includes(status);
+                console.log(status)
+                const matchesDate = date === '' || dateCell.startsWith(date);
+                console.log(date)
+                console.log(matchesDate)
+
+                if (matchesAlertType && matchesStatus && matchesDate) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function sortTable() {
+            const table = document.getElementById('alertsTable');
+            const rows = Array.from(table.rows);
+
+            rows.sort((a, b) => {
+                const dateA = new Date(a.cells[5].textContent);
+                const dateB = new Date(b.cells[5].textContent);
+                return dateA - dateB;
+            });
+
+            rows.forEach(row => table.appendChild(row));
+        }
+    </script>
+</body>
+</html> --}}
