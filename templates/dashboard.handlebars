@@ -722,6 +722,15 @@
     ];
 
     const ModelData = {
+        "Firewall": {
+            ModelName: "Palo Alto PA-5220 Firewall",
+            ModelNumber: "PA-5220",
+            Description: "Provide network security by filtering traffic and blocking unauthorized access.",
+            PortCount: 8,
+            PortSpeed: "1Gbps/10Gbps",
+            ConnectionType: "Ethernet/Fiber",
+            PowerRequirements: "400W"
+        },
         "NetworkSwitch": {
             ModelName: "Cisco Nexus 9372TX Switch",
             ModelNumber: "WS-C3850-24T",
@@ -729,25 +738,52 @@
             PortCount: 48,
             PortSpeed: "10Gbps",
             ConnectionType: "Fiber",
-            PowerRequirements: "Wattage"
+            PowerRequirements: "350W"
         },
-        "Server":{
+        "KVMSwitch": {
+            ModelName: "Tripp Lite KVM Switch",
+            ModelNumber: "B072-016-1-IP",
+            Description: "Allow control of multiple servers from a single keyboard, video monitor, and mouse.",
+            PortCount: 16,
+            PortSpeed: "N/A",
+            ConnectionType: "USB/HDMI",
+            PowerRequirements: "15W"
+        },
+        "RAID/NVMESSDs": {
+            ModelName: "Dell PowerVault ME4024",
+            ModelNumber: "ME4024",
+            Description: "Provide high-speed data storage and redundancy for critical systems.",
+            PortCount: 4,
+            PortSpeed: "12Gbps",
+            ConnectionType: "SAS",
+            PowerRequirements: "585W"
+        },
+        "Server": {
             ModelName: "Cisco UCS Server",
             ModelNumber: "UCS-5108",
-            Description: "Provide network security by filtering traffic and blocking unauthorized access.",
+            Description: "Provide computing resources for applications, virtualization, and services.",
             PortCount: 6,
-            PortSpeed: "10-Gbps",
+            PortSpeed: "10Gbps",
             ConnectionType: "SFP Cable",
-            PowerRequirements: "1444 W"
+            PowerRequirements: "1444W"
         },
-        "Firewall":{
-            ModelName: "Cisco UCS Server",
-            ModelNumber: "UCS-5108",
-            Description: "Provide network security by filtering traffic and blocking unauthorized access.",
-            PortCount: 6,
-            PortSpeed: "10-Gbps",
-            ConnectionType: "SFP Cable",
-            PowerRequirements: "1444 W"
+        "NetworkAttatchedStorage": {
+            ModelName: "Synology DiskStation NAS",
+            ModelNumber: "DS1821+",
+            Description: "Centralized storage solution for backup, file sharing, and collaboration.",
+            PortCount: 4,
+            PortSpeed: "1Gbps",
+            ConnectionType: "Ethernet",
+            PowerRequirements: "60W"
+        },
+        "UPS": {
+            ModelName: "APC Smart-UPS SRT",
+            ModelNumber: "SRT2200XLA",
+            Description: "Provide backup power and surge protection for connected equipment.",
+            PortCount: 8,
+            PortSpeed: "N/A",
+            ConnectionType: "N/A",
+            PowerRequirements: "2200VA"
         }
     };
 
@@ -785,6 +821,7 @@
                 }
                 compTitle.innerHTML = componentDetails[index]
                 let data_gather = componentDetails[index].split(" ").join("");
+                console.log(data_gather)
                 document.getElementById('ModelName').innerHTML = ModelData[data_gather].ModelName;
                 document.getElementById('ModelNumber').innerHTML = ModelData[data_gather].ModelNumber;
                 document.getElementById('Description').innerHTML = ModelData[data_gather].Description;
