@@ -20,17 +20,18 @@ SEQ_LENGTH = 10  # Match this with the value used in training
 @app.route('/predict', methods=['GET'])
 def predict():
     try:
+
         # Load and preprocess input data
         input_data = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
+        input_data = input_data[['Timestamp', 'CPU Package Temperature (C)', 'CPU Power Consumption (W)', 'Humidity (%)']]
         input_data = input_data.dropna()
-
         # Debug: Check column names
-        print("Columns in the CSV:", input_data.columns)
+        #print("Columns in the CSV:", input_data.columns)
 
         # Ensure the Timestamp column exists
         if 'Timestamp' not in input_data.columns:
             return jsonify(error="Timestamp column not found in the CSV"), 400
-
+        
         # Convert the Timestamp column to datetime
         input_data['Timestamp'] = pd.to_datetime(input_data['Timestamp'], errors='coerce')
         if input_data['Timestamp'].isna().all():
@@ -56,6 +57,8 @@ def predict():
     try:
         # Scale the input data
         scaled_data = scaler.transform(input_data)
+        if np.isnan(scaled_data).any():
+            return jsonify(error="Invalid scaled data (contains NaN values)"), 400
     except ValueError as e:
         return jsonify(error="Data transformation error: " + str(e)), 400
 
@@ -67,8 +70,10 @@ def predict():
     X = [scaled_data[i:i + SEQ_LENGTH] for i in range(len(scaled_data) - SEQ_LENGTH)]
     X = np.array(X)
 
+    print(X)
     # Make predictions
     predicted_metrics = model.predict(X)  # Outputs shape: (num_samples, 3)
+    print(predicted_metrics)
 
     # Prepare a full array to match scaler dimensions
     predicted_full = np.zeros((predicted_metrics.shape[0], scaled_data.shape[1]))
@@ -84,7 +89,6 @@ def predict():
 
     # Generate time labels for the predictions
     time_labels = timestamp_column.iloc[-len(temperature_predictions):].dt.strftime('%H:%M:%S').tolist()
-
     # Return predictions as JSON
     return jsonify(
         temperature_predictions=temperature_predictions.tolist(),

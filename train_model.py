@@ -18,7 +18,7 @@ def create_sequences(data, seq_length):
 
 # Load and preprocess your data
 df = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
-
+df = df[['Timestamp', 'CPU Package Temperature (C)', 'CPU Power Consumption (W)', 'Humidity (%)']]
 # Convert Timestamp column to datetime
 df['Timestamp'] = pd.to_datetime(df['Timestamp'])
 df['Year'] = df['Timestamp'].dt.year

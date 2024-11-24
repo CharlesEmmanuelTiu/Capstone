@@ -55,32 +55,7 @@
             <canvas id="PowerPrediction"></canvas>
         </div>
     </div>
-{{!-- <div class="container">
-    <div id="log"></div>
-    <div class="container">
-        <div class="chart-container">
-            <h2>Temperature Prediction</h2>
-            <canvas id="TempPrediction"></canvas>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="chart-container">
-            <h2>Humidity Prediction</h2>
-            <canvas id="HumidPrediction"></canvas>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="chart-container">
-            <h2>Power Prediction</h2>
-            <canvas id="PowerPrediction"></canvas>
-        </div>
-    </div>
-</div> --}}
 <script>
-    // Fetch predicted data from the Flask API
-    // Fetch predicted data from the Flask API
     async function fetchPredictedData() {
         try {
             //const response2 = await fetch('http://127.0.0.1:5005/data');
@@ -89,6 +64,7 @@
                 headers: { 'Content-Type': 'application/json' },
             });
             const data = await response.json();
+            console.log(data)
             const TempPredictions = data.temperature_predictions;
             const HumidPredictions = data.humidity_predictions;
             const PowerPredictions = data.power_predictions;
@@ -103,8 +79,7 @@
         }
     }
 
-    // Function to update chart data
-    // Function to update chart data with the latest predictions (limit data length)
+
     function updateChart(TempPredictions, HumidPredictions, PowerPredictions, timeLabels) {
         const maxDataPoints = 30;  // Maximum number of data points to display
 
@@ -200,197 +175,8 @@
     });
     // Fetch data every second
     fetchPredictedData();
-    setInterval(fetchPredictedData, 2000)
+    //setInterval(fetchPredictedData, 2000)
 </script>
 
 </body>
 </html>
-
-
-
-
-{{!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Center Temperature Monitor</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            
-        }
-        #alert {
-            color: red;
-            font-weight: bold;
-        }
-        #temperatureChart {
-            width: 50%;
-            height: 450px;
-            margin-top: 20px;
-            margin: 20px auto;
-        }
-    </style>
-</head>
-<body>
-    <h1>Data Center Temperature Monitor</h1>
-    <div>
-        <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
-        <p id="alert"></p>
-    </div>
-
-    <canvas id="temperatureChart"></canvas>
-
-    <script>
-        const ALERT_THRESHOLD = 5.0; // Temperature fluctuation threshold
-        let previousTemp = null;
-        let temperatureData = []; // Array to hold temperature readings
-        let timeLabels = []; // Array to hold time labels for the chart
-
-        // Set up Chart.js
-        const ctx = document.getElementById('temperatureChart').getContext('2d');
-        const temperatureChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: timeLabels,
-                datasets: [{
-                    label: 'Temperature (°C)',
-                    data: temperatureData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Temperature (°C)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Time'
-                        }
-                    }
-                }
-            }
-        });
-
-        function getTemperature() {
-            // Simulate temperature reading (random between 20°C and 30°C)
-            return (Math.random() * 10 + 20).toFixed(2);
-        }
-
-        function sendAlert(message) {
-            const alertDiv = document.getElementById("alert");
-            alertDiv.innerText = message; // Display alert message on the page
-            alertDiv.style.display = "block"; // Show the alert
-            setTimeout(() => { alertDiv.style.display = "none"; }, 5000); // Hide after 5 seconds
-            console.log(message); // Log the message in the console
-        }
-
-        function monitorTemperature() {
-            setInterval(() => {
-                const currentTemp = getTemperature();
-                document.getElementById("temperature").innerText = currentTemp;
-
-                // Add current temperature and time to the chart data
-                const currentTime = new Date().toLocaleTimeString();
-                temperatureData.push(currentTemp);
-                timeLabels.push(currentTime);
-                
-                // Update the chart with new data
-                temperatureChart.update();
-
-                if (previousTemp !== null) {
-                    // Check for significant fluctuations
-                    if (Math.abs(currentTemp - previousTemp) > ALERT_THRESHOLD) {
-                        const alertMessage = `Temperature fluctuation detected! Previous: ${previousTemp}°C, Current: ${currentTemp}°C`;
-                        sendAlert(alertMessage);
-                    }
-                }
-
-                previousTemp = currentTemp;
-            }, 3000); // Check every 3 seconds
-        }
-
-        // Start monitoring when the page loads
-        window.onload = monitorTemperature;
-    </script>
-</body>
-</html> --}}
-
-
-
-
-
-{{!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Center Temperature Monitor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            
-            
-        }
-        #alert {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <h1>Data Center Temperature Monitor</h1>
-    <div>
-        <p>Current Temperature: <span id="temperature">Loading...</span>°C</p>
-        <p id="alert"></p>
-    </div>
-
-    <script>
-        const ALERT_THRESHOLD = 5.0; // Temperature fluctuation threshold
-        let previousTemp = null;
-
-        function getTemperature() {
-            // Simulate temperature reading (random between 20°C and 30°C)
-            return (Math.random() * 10 + 20).toFixed(2);
-        }
-
-        function sendAlert(message) {
-            const alertDiv = document.getElementById("alert");
-            alertDiv.innerText = message; // Display alert message on the page
-            alertDiv.style.display = "block"; // Show the alert
-            setTimeout(() => { alertDiv.style.display = "none"; }, 5000); // Hide after 5 seconds
-            console.log(message); // Log the message in the console
-        }
-
-        function monitorTemperature() {
-            setInterval(() => {
-                const currentTemp = getTemperature();
-                document.getElementById("temperature").innerText = currentTemp;
-
-                if (previousTemp !== null) {
-                    // Check for significant fluctuations
-                    if (Math.abs(currentTemp - previousTemp) > ALERT_THRESHOLD) {
-                        const alertMessage = `Temperature fluctuation detected! Previous: ${previousTemp}°C, Current: ${currentTemp}°C`;
-                        sendAlert(alertMessage);
-                    }
-                }
-
-                previousTemp = currentTemp;
-            }, 3000); // Check every 3 seconds
-        }
-
-        // Start monitoring when the page loads
-        window.onload = monitorTemperature;
-    </script>
-</body>
-</html> --}}
