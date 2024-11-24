@@ -136,13 +136,13 @@ def handle_sensor_data():
         print(f"Error decoding data: {e}")
 
     print(f"Received Data: {sensor_data}")  # Print the raw data for debugging
-
     # Check if data contains humidity and temperature
     if "Humidity:" in sensor_data and "Temp:" in sensor_data:
         try:
             sensor_data = sensor_data.replace("%%", "%")  # Fix extra percent symbols
             humidity_part, temp_part = sensor_data.split(' Temp:')
             humidity = humidity_part.replace("Humidity: ", "").strip()
+            humidity = float(humidity.replace('%', '').strip())
             temp_celsius, temp_fahrenheit = temp_part.split('°C ')
             temp_celsius = temp_celsius.strip()
             temp_fahrenheit = temp_fahrenheit.replace("°F", "").strip()
@@ -157,21 +157,22 @@ def handle_sensor_data():
                 'humidity': humidity,
                 'mic_decibels': f"{mic_decibels:.2f}"  # Add microphone decibels to the data
             })
+            
+            #append_to_csv(combined_data)
 
         except ValueError as e:
             print(f"Error processing temperature/humidity data: {e}")
-
-    # Check if data contains water level
-    elif "Water Level:" in sensor_data:
-        try:
-            water_level = sensor_data.replace("Water Level:", "").strip()
-                
-            # Update water level data
-            combined_data['water_level'] = water_level
-
-        except ValueError as e:
-            print(f"Error processing water level data: {e}")
-    
+    # Check if data contains water level or water detection status
+    elif "Humidity" not in sensor_data:
+        print("WTF BROOOOOOOOOOOOOOOOOOOOn")
+        if int(sensor_data) < 100:
+            combined_data['water_level'] = 0  # Water detected (1)
+        elif int(sensor_data) > 100:
+            combined_data['water_level'] = 1  # No water detected (0)
+    print("COME BACK")
+    # Append water level to the CSV if present
+    if 'water_level' in combined_data:
+        append_to_csv(combined_data)
 
 # API route to fetch sensor data from the server
 @app.route('/data', methods=['GET'])

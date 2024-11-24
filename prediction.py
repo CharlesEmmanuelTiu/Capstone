@@ -1,3 +1,5 @@
+# predict.py
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 import pandas as pd
@@ -9,36 +11,25 @@ import numpy as np
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://127.0.0.1:8000", "http://localhost:8000"]}})
 
-# Load the trained model and scaler
-model = tf.keras.models.load_model('temperature_model.h5')  # Use the updated model name if changed
-scaler = joblib.load('scaler.pkl')  # Ensure the scaler matches the one used during training
+# Load the trained model and scalers
+model = tf.keras.models.load_model('temperature_model.h5')  # Ensure the model file matches the saved one
+scaler = joblib.load('scaler.pkl')  # Load the feature scaler
+target_scaler = joblib.load('target_scaler.pkl')  # Load the target scaler
 
 # Define the sequence length used during training
 SEQ_LENGTH = 10  # Match this with the value used in training
 
-# Define prediction endpoint
 @app.route('/predict', methods=['GET'])
 def predict():
     try:
-
         # Load and preprocess input data
         input_data = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
         input_data = input_data[['Timestamp', 'CPU Package Temperature (C)', 'CPU Power Consumption (W)', 'Humidity (%)']]
         input_data = input_data.dropna()
-        # Debug: Check column names
-        #print("Columns in the CSV:", input_data.columns)
-
-        # Ensure the Timestamp column exists
-        if 'Timestamp' not in input_data.columns:
-            return jsonify(error="Timestamp column not found in the CSV"), 400
-        
-        # Convert the Timestamp column to datetime
         input_data['Timestamp'] = pd.to_datetime(input_data['Timestamp'], errors='coerce')
-        if input_data['Timestamp'].isna().all():
-            return jsonify(error="Invalid Timestamp data"), 400
 
-        # Save a copy of the Timestamp column for later use
-        timestamp_column = input_data['Timestamp'].copy()
+        if 'Timestamp' not in input_data.columns or input_data['Timestamp'].isna().all():
+            return jsonify(error="Invalid or missing Timestamp column"), 400
 
         # Extract datetime components
         input_data['Year'] = input_data['Timestamp'].dt.year
@@ -48,55 +39,53 @@ def predict():
         input_data['Minute'] = input_data['Timestamp'].dt.minute
         input_data['Second'] = input_data['Timestamp'].dt.second
 
-        # Drop the Timestamp column after processing
+        # Save and drop the Timestamp column
+        timestamps = input_data['Timestamp'].copy()  # Save original timestamps
         input_data = input_data.drop(columns=['Timestamp'])
 
-    except FileNotFoundError:
-        return jsonify(error="CSV file not found"), 404
-
-    try:
         # Scale the input data
+        scaler = joblib.load('scaler.pkl')
         scaled_data = scaler.transform(input_data)
-        if np.isnan(scaled_data).any():
-            return jsonify(error="Invalid scaled data (contains NaN values)"), 400
-    except ValueError as e:
-        return jsonify(error="Data transformation error: " + str(e)), 400
 
-    # Ensure enough data for sequence generation
-    if len(scaled_data) < SEQ_LENGTH:
-        return jsonify(error="Not enough data to generate sequences"), 400
+        if len(scaled_data) < SEQ_LENGTH:
+            return jsonify(error="Not enough data to generate sequences"), 400
 
-    # Prepare the data for the LSTM model
-    X = [scaled_data[i:i + SEQ_LENGTH] for i in range(len(scaled_data) - SEQ_LENGTH)]
-    X = np.array(X)
+        # Prepare sequences for prediction
+        X = [scaled_data[i:i + SEQ_LENGTH] for i in range(len(scaled_data) - SEQ_LENGTH)]
+        X = np.array(X)
 
-    print(X)
-    # Make predictions
-    predicted_metrics = model.predict(X)  # Outputs shape: (num_samples, 3)
-    print(predicted_metrics)
+        # Predict the future metrics
+        model = tf.keras.models.load_model('temperature_model.h5')
+        predicted_metrics = model.predict(X)
 
-    # Prepare a full array to match scaler dimensions
-    predicted_full = np.zeros((predicted_metrics.shape[0], scaled_data.shape[1]))
-    predicted_full[:, :3] = predicted_metrics  # Place predictions in the first 3 columns
+        # Inverse scale the predictions
+        target_scaler = joblib.load('target_scaler.pkl')
+        predicted_full = np.zeros((predicted_metrics.shape[0], scaled_data.shape[1]))
+        predicted_full[:, :3] = predicted_metrics
+        predictions = scaler.inverse_transform(predicted_full)
 
-    # Inverse transform to get original scale values
-    predictions = scaler.inverse_transform(predicted_full)
+        temperature_predictions = predictions[:, 0]
+        power_predictions = predictions[:, 1]
+        humidity_predictions = predictions[:, 2]
 
-    # Extract individual predictions
-    temperature_predictions = predictions[:, 0]
-    power_predictions = predictions[:, 1]
-    humidity_predictions = predictions[:, 2]
+        # Generate future timestamps
+        last_timestamp = timestamps.iloc[-1]  # Last timestamp from the dataset
+        prediction_interval = pd.Timedelta(minutes=5)  # Set interval between predictions
+        future_dates = [
+            (last_timestamp + i * prediction_interval).strftime('%Y-%m-%d')
+            for i in range(1, len(temperature_predictions) + 1)
+        ]
 
-    # Generate time labels for the predictions
-    time_labels = timestamp_column.iloc[-len(temperature_predictions):].dt.strftime('%H:%M:%S').tolist()
-    # Return predictions as JSON
-    return jsonify(
-        temperature_predictions=temperature_predictions.tolist(),
-        power_predictions=power_predictions.tolist(),
-        humidity_predictions=humidity_predictions.tolist(),
-        time_labels=time_labels
-    )
+        # Return predictions
+        return jsonify(
+            temperature_predictions=temperature_predictions.tolist(),
+            power_predictions=power_predictions.tolist(),
+            humidity_predictions=humidity_predictions.tolist(),
+            future_dates=future_dates  # Send predicted future dates
+        )
 
+    except Exception as e:
+        return jsonify(error="Prediction error: " + str(e)), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

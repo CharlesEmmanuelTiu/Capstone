@@ -1,0 +1,83 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            {{#if mssg}}
+                <div class="alert alert-{{flashType}}" role="alert">
+                    {{mssg}}
+                </div>
+            {{/if}}
+            
+            <h1 class="display-1">Admin Dashboard</h1>
+            <p class="lead">Hello, admin <strong>{{user.name}}</strong>!</p>
+
+            <div class="row">
+                <h2>Assigned Managers</h2>
+                <p>Below is an overview of assigned managers. To reassign a manager and see unassigned managers, go to <strong><a href='/admin/manage-accounts'>Manage User Accounts</a></strong>.</p>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Station</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each users}}
+                            {{#if this.assigned_station}}
+                                <tr>
+                                    <th scope="row">{{this.ID}}</th>
+                                    <td>{{this.name}}</td>
+                                    <td>{{this.phone_number}}</td>
+                                    <td>{{this.assigned_station}}</td>
+                                </tr>
+                            {{/if}}
+                        {{/each}}
+                    </tbody>
+                </table>
+                
+                <div class="col-2">
+                    <a href="/admin/manage-accounts" class="btn btn-primary" tabindex="-1" role="button">See all managers</a>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row g-4">
+                <h2>Petrol Stations</h2>
+                <p>An overview of petrol stations. To modify existing stations and add new stations, go to <strong><a href="/admin/manage-stations">Manage Stations</a></strong>.</p>
+                
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Station ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each stations}}
+                                <tr>
+                                    <th scope="row">{{this.stationNumber}}</th>
+                                    <td><a href="/admin/view-statistics/{{this.stationNumber}}">{{this.stationName}}</a></td>
+                                    <td>{{this.location}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+
+                    <div class="col-2">
+                        <a href="/admin/manage-stations" class="btn btn-primary" tabindex="-1" role="button">See all stations</a>
+                    </div><br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

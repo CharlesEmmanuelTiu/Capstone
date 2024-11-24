@@ -24,6 +24,7 @@ def read_sensor_data(ser):
     """Read data from the Arduino's serial port."""
     if ser.in_waiting > 0:
         data = ser.readline().decode('utf-8').strip()  # Decode and remove whitespace
+        
         return data
     return None
 
@@ -58,18 +59,21 @@ def process_serial_data(serial_port, source, sensor_type):
                         print(f"[{source}] Error processing data: {e}")
                 else:
                     print(f"[{source}] Data format not recognized, skipping...")
-            elif sensor_type == "Water":
+            elif "Water" in sensor_type:
                 try:
                     # Remove the label if present and extract the numeric value
-                    if "Sensor value:" in data:
-                        data = data.replace("Sensor value:", "").strip()
+                    sensor_data = f"{data}"
+                    sensor_data = sensor_data.split(":")[1].strip()  # Remove the label
+                    sensor_data = int(sensor_data)  # Convert to integer
                     
-                    # Convert the remaining value to an integer
-                    water_level = int(data)
-                    sensor_data = f"Water Level: {water_level}"
-                    send_udp_data(sensor_data, source)
+                    # Convert to string before encoding
+                    sensor_data_str = str(sensor_data)
+                    
+                    # Send the data
+                    send_udp_data(sensor_data_str, source)  # Pass the string version of the sensor data
                 except ValueError:
                     print(f"[{source}] Invalid water sensor data: {data}")
+
         else:
             print(f"[{source}] Waiting for data...")
 

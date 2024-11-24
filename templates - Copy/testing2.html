@@ -1,0 +1,187 @@
+<script>
+    document.getElementById("NumberOfAlerts").innerHTML = 0
+    document.getElementById("currentStatus").innerHTML = "Optimal"
+    document.getElementById("currentStatus").style.backgroundColor = "green";
+    document.getElementById('currentStatus2').style.backgroundColor = "green";
+    window.onload = function () {
+        // Humidity gauge setup
+        var target = document.getElementById('humidityContainer');
+        if (!target) {
+            console.error('Humidity container element not found');
+            return;
+        }
+
+        var opts = {
+            angle: 0,
+            lineWidth: 0.2,
+            radiusScale: 1,
+            pointer: { length: 0.6, strokeWidth: 0.04, color: '#000000' },
+            colorStart: '#6FADCF',
+            colorStop: '#8FC0DA',
+            strokeColor: '#E0E0E0',
+            generateGradient: true
+        };
+
+        var HumidityGauge = new Gauge(target).setOptions(opts);
+        HumidityGauge.maxValue = 100;
+        HumidityGauge.setMinValue(0);
+        HumidityGauge.animationSpeed = 32;
+        HumidityGauge.set(70);
+
+        function addLabel(value) {
+            var ctx = target.getContext('2d');
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#000000";
+
+            ctx.clearRect(0, target.height - 40, target.width, 50);
+            ctx.fillText(value + "% Humidity", target.width / 2, target.height - 5);
+        }
+
+        addLabel(70);
+
+        anychart.onDocumentReady(function () {
+            const currentStatus = document.getElementById("currentStatus");
+            const alertTable = document.getElementById("alertTable");
+
+            if (!currentStatus) {
+                console.error("Element with id 'currentStatus' not found.");
+                return;
+            }
+
+            function drawLinearGauge(value) {
+                var gauge = anychart.gauges.linear();
+                gauge.data([value]).padding(10, 0, 30, 0);
+                gauge.tooltip().useHtml(true).format(function () {
+                    return this.value + '°C (' + (this.value * 1.8 + 32).toFixed(1) + '°F)';
+                });
+
+                var scale = gauge.scale();
+                scale.minimum(10).maximum(50).ticks({ interval: 5 });
+
+                var axis = gauge.axis();
+                axis.scale(scale).width('0.5%').offset('-1%');
+                axis.labels().useHtml(true).format('{%Value}°C');
+
+                return gauge;
+            }
+
+            var gauge = drawLinearGauge(70);
+            var thermometer = gauge.thermometer(0);
+            thermometer.name('Thermometer').fill('green').stroke('green');
+            gauge.container('thermometerContainer');
+            gauge.draw();
+
+            async function updateData() {
+                try {
+                    const response = await fetch('http://127.0.0.1:5005/data');
+                    const data = await response.json();
+                    console.log(data);
+                    const { temperature, humidity } = data;
+
+                    // Update humidity and temperature gauges
+                    HumidityGauge.set(humidity);
+                    addLabel(humidity);
+                    gauge.data([temperature]);
+                    document.getElementById('currentTemperature').textContent = temperature + ' °C';
+                    document.getElementById('currentHumidity').textContent = humidity + ' %'
+                    currentStatus2 = document.getElementById('currentStatus2')
+                    if (humidity >= 20 && humidity <= 80){
+                        currentStatus2.style.backgroundColor = 'green'
+                        currentStatus2.innerHTML = 'Normal'
+                    }
+                    else if(humidity > 80){
+                        currentStatus2.style.backgroundColor = 'red'
+                        currentStatus2.innerHTML = 'High'
+                    }
+                    else{
+                        currentStatus2.style.backgroundColor = 'orange'
+                        currentStatus2.innerHTML = 'Low'
+                    }
+                    // Check temperature and add alert with severity if needed
+                    if (temperature > 35) {
+                        currentStatus.innerHTML = "Danger";
+                        currentStatus.style.backgroundColor = "red";
+                        thermometer.name('Thermometer').fill('red').stroke('red');
+                        addAlertRow("Temperature Alert", "Cooling System", "Critical", new Date(), temperature, humidity);
+                    } else if (temperature > 27) {
+                        currentStatus.innerHTML = "Risk";
+                        currentStatus.style.backgroundColor = "orange";
+                        thermometer.name('Thermometer').fill('orange').stroke('orange');
+                        addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date(), temperature, humidity);
+                    } else {
+                        currentStatus.innerHTML = "Optimal";
+                        currentStatus.style.backgroundColor = "green";
+                        thermometer.name('Thermometer').fill('green').stroke('green');
+                    }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+
+            // Declare a Set to store unique alerts outside of the function
+            const uniqueAlerts = new Set();
+
+            async function addAlertRow(alertType, source, status, time, temperature, humidity) {
+                const alertTableBody = document.getElementById("alertTableBody");
+                const noAlertsRow = document.getElementById("noAlertsRow");
+                
+                if (noAlertsRow) {
+                    alertTableBody.removeChild(noAlertsRow);
+                }
+
+                const rows = alertTableBody.getElementsByTagName("tr");
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName("td");
+                    if (
+                        cells[1].innerText === source &&
+                        cells[2].innerText === status
+                    ) {
+                        return;
+                    }
+                }
+
+                const newRow = alertTableBody.insertRow();
+                const alertCell = newRow.insertCell(0);
+                const sourceCell = newRow.insertCell(1);
+                const statusCell = newRow.insertCell(2);
+                const timeCell = newRow.insertCell(3);
+
+                alertCell.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="${alertType}" class="icon-small">`;
+                sourceCell.innerHTML = `<a class="alert-links" href="/cooling_system">${source}</a>`;
+                timeCell.textContent = time.toLocaleTimeString();
+
+                statusCell.textContent = status;
+                statusCell.style.color = status === "Critical" ? "red" : status === "Warning" ? "orange" : "green";
+                document.getElementById("NumberOfAlerts").innerHTML = 1
+                // Send the alert data to MongoDB
+                fetch('http://127.0.0.1:8000/add-alert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ alertType, source, status, time, temperature, humidity})
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to add alert to database');
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            updateData()
+        });
+    };
+
+            // Send the alert data to MongoDB
+            fetch('http://127.0.0.1:8000/add-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alertType, source, status, time, currentData})
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to add alert to database');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+</script>
+

@@ -1,0 +1,81 @@
+<body>
+    <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            <h1 class="display-1">Edit Station</h1>
+            <p class="lead">Modify <strong>{{station.stationName}}</strong> Station properties.</p>
+
+            <div class="bg-white border rounded p-3">
+                <form method="post" action="/admin/edit-station">
+                    <div class="row g-3" style="margin-bottom:30px">
+                        <h3>Station Details</h3>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingInputGrid" name="name" value="{{station.stationName}}">
+                                <label for="floatingInputGrid">Station Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingInputGrid" name="location" value="{{station.location}}">
+                                <label for="floatingInputGrid">Location</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3" style="margin-bottom:30px">
+                        <h3>Premium Fuel</h3>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGrid" name="premium" value="{{station.fuelGrades.Premium.price}}">
+                                <label for="floatingInputGrid">Price</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGrid" name="premiumCap" value="{{station.fuelGrades.Premium.tankCapacity}}">
+                                <label for="floatingInputGrid">Tank Capacity</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGrid" name="premiumThreshold" value="{{station.fuelGrades.Premium.fuelThreshold}}">
+                                <label for="floatingInputGrid">Fuel Threshold</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3" style="margin-bottom:30px">
+                        <h3>Super Fuel</h3>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGrid" name="super" value="{{station.fuelGrades.Super.price}}">
+                                <label for="floatingInputGrid">Price</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGrid" name="superCap" value="{{station.fuelGrades.Super.tankCapacity}}">
+                                <label for="floatingInputGrid">Tank Capacity</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGrid" name="superThreshold" value="{{station.fuelGrades.Premium.fuelThreshold}}">
+                                <label for="floatingInputGrid">Fuel Threshold</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3" style="margin-top:15px">
+                        <input type="hidden" name="stationNumber" value="{{station.stationNumber}}">
+                        <input type="hidden" name="token" value="{{csrfToken}}">
+                        <div class="col-md-3">
+                            <a href="/admin/manage-stations" class="btn btn-light">Go Back</a>
+                            <input type="submit" class="btn btn-primary" tabindex="-1" role="button" value="Edit Station">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

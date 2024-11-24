@@ -1,0 +1,45 @@
+<body>
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <h1 class="display-1">Station Assignment</h1>
+      <p class="lead">Assign/reassign a station to Manager <strong>{{account.name}}</strong>.</p>
+
+      <form method="post">
+      <table class="table">
+        <tr>
+          <th>Select</th>
+          <th>Petrol Station Name</th>
+          <th>Location</th>
+          <th>Status</th>
+        </tr>
+      {{#each stations}}
+      {{#if (incl ../account this)}}
+      <tr>
+        <td><input type="radio" name="assign_stat" value="{{this.stationNumber}}" disabled></td>
+        <td> {{this.stationName}}</td>
+        <td> {{this.location}}</td>
+        <td>
+          <span class="badge text-bg-warning">Currently assigned</span>
+        </td>
+      </tr>
+      {{else}}
+      <tr>
+        <td><input type="radio" name="assign_stat" value="{{this.stationNumber}}"></td>
+        <td> {{this.stationName}}</td>
+        <td> {{this.location}}</td>
+        <td></td>
+      </tr>
+      {{/if}}
+      {{/each}}
+      </table>
+      <input type="hidden" name="token" value="{{csrfToken}}">
+      <div class="col-2">
+        <a href="/admin/manage-accounts" class="btn btn-dark">Go Back</a>
+      </div><br>
+      <div class="col-2">
+        <input type="submit" class="btn btn-primary" tabindex="-1" role="button" value="Assign">
+      </div>
+    </form><br>
+  </div>
+</div>
+</body>

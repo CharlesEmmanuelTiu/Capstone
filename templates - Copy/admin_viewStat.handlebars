@@ -1,0 +1,119 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <h1 class="display-1">Station Overview</h1>
+      <p class="lead">See daily statistics for sales and fuel levels for <strong>{{stations.stationName}}</strong></p>
+
+      <div class="row g-3">
+        {{#if date}}
+        <h5>Today's Date: {{date}}</h5>
+        {{else}}
+        <h5>No records available for station {{stations.stationName}}</h5>
+        {{/if}}
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header"><strong>Fuel Sales</strong></div>
+            {{#unless records.Sales}}
+              <span class="badge text-bg-warning">No record for Fuel Sales</span>
+            {{/unless}}
+            <div class="card-body">
+              <div class="example">
+                      <canvas id="barChart" width="200" height="100"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header"><strong>Fuel Levels</strong></div>
+            {{#unless records.fuelLevels}}
+            <span class="badge text-bg-warning">No record for Fuel Levels</span>
+            {{/unless}}
+            <div class="card-body">
+              <div class="example">
+                <canvas id="barChart1" width="200" height="100"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const label = []
+          const sales = []
+          {{#each records.Sales}}
+              label.push(`{{@key}}`)
+              sales.push({{this}})
+          {{/each}}
+          const ctx = document.getElementById('barChart').getContext('2d');
+          const barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: label,
+              datasets: [{
+                label: 'Fuel Levels Sold (gal)',
+                data: sales,
+                backgroundColor: 'rgba(132, 140, 207)',
+                borderColor: 'rgba(52, 45, 113)',
+                borderWidth: 1.5,
+                highlightFill: 'rgba(151, 187, 205, 0.75)',
+                highlightStroke: 'rgba(151, 187, 205, 1)'
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        });
+      </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const label = []
+          const levels = []
+          {{#each records.fuelLevels}}
+              label.push(`{{@key}}`)
+              levels.push({{this}})
+          {{/each}}
+          const ctx = document.getElementById('barChart1').getContext('2d');
+          const barChart1 = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: label,
+              datasets: [{
+                label: 'Current Fuel Levels in Tank (gal)',
+                data: levels,
+                backgroundColor: 'rgba(132, 140, 207)',
+                borderColor: 'rgba(52, 45, 113)',
+                borderWidth: 1.5,
+                highlightFill: 'rgba(151, 187, 205, 0.75)',
+                highlightStroke: 'rgba(151, 187, 205, 1)'
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        });
+      </script>
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <a href="/admin-dashboard" class="btn btn-dark">Go Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

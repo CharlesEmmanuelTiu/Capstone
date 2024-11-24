@@ -1,0 +1,121 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <h1 class="display-1">Station Overview</h1>
+      <p class="lead">See daily statistics for <strong>{{stations.stationName}}'s</strong> sales and fuel levels.</p>
+      {{#if mssg}}
+        <div class="alert alert-{{flashType}}" role="alert">
+          {{mssg}}
+        </div>
+      {{/if}}
+      <div class="row g-3">
+        {{#if date}}
+        <h5>Today's Date: {{date}}</h5>
+        {{else}}
+        <h5>No records available for station {{stations.stationName}}</h5>
+        {{/if}}
+        {{#if stations}}
+          <div class="col-md-6">
+            <div class="card mb-4">
+              <div class="card-header"><strong>Fuel Sales</strong></div>
+              {{#unless record.Sales}}
+                <span class="badge text-bg-warning">Fuel Sales not Recorded</span>
+              {{/unless}}
+              <div class="card-body">
+                <div class="example">
+                        <canvas id="barChart" width="200" height="100"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-4">
+              <div class="card-header"><strong>Fuel Levels</strong></div>
+              {{#unless record.fuelLevels}}
+                <span class="badge text-bg-warning">Fuel Levels not Recorded</span>
+              {{/unless}}
+              <div class="card-body">
+                <div class="example">
+                  <canvas id="barChart1" width="200" height="100"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              const label = []
+              const sales = []
+              {{#each record.Sales}}
+                  label.push(`{{@key}}`)
+                  sales.push({{this}})
+              {{/each}}
+              const ctx = document.getElementById('barChart').getContext('2d');
+              const barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: label,
+                  datasets: [{
+                    label: 'Fuel Levels Sold (gal)',
+                    data: sales,
+                    backgroundColor: 'rgba(132, 140, 207)',
+                    borderColor: 'rgba(52, 45, 113)',
+                    borderWidth: 1.5,
+                    highlightFill: 'rgba(151, 187, 205, 0.75)',
+                    highlightStroke: 'rgba(151, 187, 205, 1)'
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+                }
+              });
+            });
+          </script>
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              const label = []
+              const levels = []
+              {{#each record.fuelLevels}}
+                  label.push(`{{@key}}`)
+                  levels.push({{this}})
+              {{/each}}
+              const ctx = document.getElementById('barChart1').getContext('2d');
+              const barChart1 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: label,
+                  datasets: [{
+                    label: 'Current Fuel Levels in Tank (gal)',
+                    data: levels,
+                    backgroundColor: 'rgba(132, 140, 207)',
+                    borderColor: 'rgba(52, 45, 113)',
+                    borderWidth: 1.5,
+                    highlightFill: 'rgba(151, 187, 205, 0.75)',
+                    highlightStroke: 'rgba(151, 187, 205, 1)'
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+                }
+              });
+            });
+          </script>
+        {{else}}
+          <div class="alert alert-info" role="alert">You are currently not assigned to any petrol station yet!</div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</body>

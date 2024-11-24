@@ -1,0 +1,46 @@
+<body>
+    <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            {{#if mssg}}
+                <div class="alert alert-{{flashType}}" role="alert">
+            {{mssg}}
+            </div>
+            {{/if}}
+
+            <h1 class="display-1">All Stations</h1>
+            <p class="lead">View petrol station location and fuel prices. Edit, add, and remove stations here.</p>
+
+            <table class="table">
+                <tr>
+                    <th>Station ID</th>
+                    <th>Station Name</th>
+                    <th>Location</th>
+                    <th>Fuel Premium Price</th>
+                    <th>Fuel Super Price</th>
+                    <th>Action</th>
+                </tr>
+                {{#each stations}}
+                    <tr>
+                        <td>{{this.stationNumber}}</td>
+                        <td><a href="/admin/view-statistics/{{this.stationNumber}}">{{this.stationName}}</a></td>
+                        <td>{{this.location}}</td>
+                        <td>{{this.fuelGrades.Premium.price}}</td>
+                        <td>{{this.fuelGrades.Super.price}}</td>
+                        <td>
+                            <form action="/admin/delete-station" method="post">
+                                <input type="hidden" name="token" value="{{../csrfToken}}">
+                                <a class="btn btn-warning btn-sm" href="/admin/edit-station?station={{this.stationNumber}}">Edit Station</a> &nbsp; &nbsp;
+                                <input type="hidden" name="stationNumber" value="{{this.stationNumber}}">
+                                <input type="submit" class="btn btn-danger btn-sm" tabindex="-1" role="button" value="Remove Station">
+                            </form>            
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+            <div class="col-3">
+                <a href="/admin/add-station" class="btn btn-primary" tabindex="-1" role="button">Add new Station</a>
+            </div><br>
+            <br>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,61 @@
+<body>
+    <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+            {{#if mssg}}
+                <div class="alert alert-{{flashType}}" role="alert">
+                {{mssg}}
+                </div>
+            {{/if}}
+
+            <h1 class="display-1">All Users</h1>
+            <p class="lead">Assign, reassign, remove, and add managers in this page.</p>
+
+            <table class="table">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Account Type</th>
+                    <th>Station</th>
+                    <th>Position</th>
+                    <th>Action</th>
+                </tr>
+                {{#each accounts}}
+                    <tr>
+                        <td>{{this.ID}}</td>
+                        <td>{{this.name}}</td>
+                        <td>{{this.phone_number}}</td>
+                        <td>{{this.account_type}}</td>
+                        {{#if (admin this.account_type)}}
+                            <td>Only Managers can be assigned</td>
+                            <td></td>
+                        {{else}}
+                            {{#if this.assigned_station}}
+                                <td>{{this.assigned_station}}</td>
+                                <td><a class="btn btn-warning btn-sm" href="/admin/manage-accounts/{{this.ID}}">Reassign </a>&nbsp;
+                                <a class="btn btn-danger btn-sm" href="/admin/manage-accounts/remove/{{this.ID}}">Remove</a></td>
+                            {{else}}
+                                <td>
+                                    <span class="text-muted">Unassigned</span>   
+                                </td>
+                                <td><a class="btn btn-success btn-sm" href="/admin/manage-accounts/{{this.ID}}">Assign</a></td>
+                            {{/if}}
+                        {{/if}}
+                        <td>
+                            <form action="/admin/remove-user/{{this.ID}}" method="post">
+                                <input type="hidden" name="token" value="{{../csrfToken}}">
+                                <input type="hidden" name="name" value="{{this.ID}}">
+                                <input type="submit" role="button" class="btn btn-danger btn-sm" value="Remove User">
+                            </form>
+                        </td>
+                        {{!-- <td><a href="/manage_accounts/{{this.ID}}">Assign to Petrol Station</a></td> --}}
+                    </tr>
+                {{/each}}
+                
+            </table>
+            <div class="col-2">
+                <a href="/admin/add-account" class="btn btn-primary" tabindex="-1" role="button">Add new account</a>
+            </div>
+        </div>
+    </div>
+</body>
