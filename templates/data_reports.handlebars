@@ -36,6 +36,9 @@
 </head>
 <body>
     <div class="container">
+        <div class="print-btn">
+            <button class="btn" onclick="printPage()">Print Page</button>
+        </div>
         <div class="chart-container">
             <h2>Temperature Fluctuations</h2>
             <canvas id="temperatureChart"></canvas>
@@ -54,6 +57,9 @@
         </div>
     </div>
     <script>
+        function printPage() {
+            window.print();
+        }
         // Temperature Line Chart
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
         new Chart(tempCtx, {

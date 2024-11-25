@@ -29,7 +29,7 @@
       border-radius: 8px; 
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
     }
-    .section h2 { color: #333; font-size: 1.4em; margin-bottom: 15px; }
+    .section h3 { ; font-size: 1.4em; margin-bottom: 15px; }
     
     /* Indicator and alert styling */
     .indicator { 
@@ -54,6 +54,9 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+    h4 {
+      color: red;
+    }
     button:hover { background-color: #3c4b64; }
   </style>
 </head>
@@ -69,7 +72,7 @@
 
   <!-- Key Indicators Section -->
   <div class="section">
-    <h2>High Temperature</h2>
+    <h4>High Temperature Detected</h4>
     <p>The temperature is currently unstable. It reached a threshold where potential overheating may cause severe damage to the racks and its components</p>
   </div>
     <!--<div class="indicator">Temperature Anomalies: <span id="tempAnomaly">Normal</span></div>
@@ -88,7 +91,7 @@
 
   <!-- Recommendations Section -->
   <div class="section">
-    <h2>Recommendations</h2>
+    <h3>Recommendations</h3>
     <ul id="recommendations">
       <li>Monitor temperature levels regularly, especially during high usage periods.</li>
       <li>Schedule fan inspection and maintenance immediately if overheating is detected.</li>
@@ -99,17 +102,17 @@
 
   <!-- Overheating Alerts Panel -->
   <div class="section">
-    <h2>Alerts</h2>
+    <h3>Alerts</h3>
     <!--<div id="alerts" class="alert">No active alerts.</div>
     <button onclick="adjustAlertSettings()">Adjust Alert Settings</button>
   </div>-->
 
   <!-- Overheating Mitigation Actions -->
   <div class="section">
-    <h2>Overheating Mitigation Actions</h2>
-    <button onclick="resetCoolingSystem()">Reset Cooling System</button>
-    <button onclick="increaseFanSpeed()">Increase Fan Speed</button>
-    <button onclick="addCoolant()">Add Coolant</button>
+    <h3>Overheating Mitigation Actions</h3>
+    <button onclick="resetCoolingSystem()">Reset Cooling System</button> 
+    <!-- <button onclick="increaseFanSpeed()">Increase Fan Speed</button>
+    <button onclick="addCoolant()">Add Coolant</button> -->
   </div>
 </div>
 

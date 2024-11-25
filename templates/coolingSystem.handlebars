@@ -505,11 +505,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cooling System Control</title>
     <style>
-        h1, h2 {
+        h1, h2, h3, h4 {
             text-align: center;
         }
 
         .container {
+            max-height: 800px;
             max-width: 1200px;
             background: #fff;
             padding: 20px;
@@ -525,27 +526,45 @@
         select, button{
             display: block;
             width: 100%;
-            margin: 10px 0;
-            padding: 8px;
+            /*margin: 10px 0;*/
+
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
         button{
             background-color: rgba(60, 75, 100, 0.85);
             color: white;
+            display: block;
+            padding: 5px;
         }
+        .bttn{
+            margin: auto;
+            width: 35%;
+            padding: 5px;
+        }
+        .bttn1{
+            width: 30%;
+            margin-left: 25%;
+            
+            padding: 5px;
+        }
+        input{
+            padding: 10px;
 
+        }
         .crac-controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 20px;
+            padding: 5px;
+            margin: auto;
+            margin-top: 5px;
         }
 
         .crac {
-            flex: 1 1 calc(50% - 20px);
+            flex: 1 1 calc(50% - 10px);
             background: #f9f9f9;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
@@ -560,11 +579,26 @@
         .crac-settings input[type="number"], .crac-settings input[type="range"] {
             width: 80%;
             font-size: large;
-            
+            padding: 8px;
+            margin-left: 2%;
             border: 1px solid #ccc;
             border-radius: 4px;
             text-align: center;
+            color: rgba(60, 75, 100, 0.85);
         }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #FF5722; /* Thumb color */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-track {
+            background: #2196F3; /* Track color for Firefox */
+            height: 6px;
+            border-radius: 5px;
+        }
+
 
         .hidden {
             display: none;
@@ -583,12 +617,19 @@
             color: green;
             text-align: center;
         }
+        .row{
+            padding: 10px;
+            margin-top: 10px;
+            border: 0.5px solid rgba(60, 75, 100, 0.5);
+            border-radius: 20px 10px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
         
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Cooling System Control</h2>
+        <h3>Cooling System Control</h3>
         <div id="system-selection">
             <label for="cooling-system">Select Cooling System:</label>
             <select id="cooling-system" onchange="updateSystemSelection()">
@@ -608,7 +649,7 @@
         </div>
 
         <div id="external-crac-controls" class="hidden">
-            <h2>CRAC Controls</h2>
+            <h4>CRAC Controls</h4>
             <div class="crac-controls">
                 <div class="crac">
                     <label>Temperature (°C)</label>
@@ -621,7 +662,9 @@
                             max="30"
                             step="1"
                         />
-                        <button id="set-temp" onclick="setTemp()">Set</button>
+                        <div class="bttn1">
+                            <button id="set-temp" onclick="setTemp()">Set</button>
+                        </div>
                         <div id="temp-confirmation" class="confirmation hidden">Temperature has been set.</div>
                     </div>
                 </div>
@@ -636,79 +679,99 @@
                             max="80"
                             step="1"
                         />
-                        <button id="set-humidity" onclick="setHumidity()">Set</button>
+                        <div class="bttn1">
+                            <button id="set-humidity" onclick="setHumidity()">Set</button>
+                        </div>
                         <div id="humidity-confirmation" class="confirmation hidden">Humidity has been set.</div>
                     </div>
                 </div>
                 <div class="crac">
-                    <button onclick="toggleCracMode(this)">Set to Automatic</button>
+                    <div class="bttn">
+                        <button onclick="toggleCracMode(this)">Set to Automatic</button>
+                    </div>
                     <div class="hidden" id="crac-status">Automatic Mode Enabled.</div>
                 </div>
             </div>
-            <button onclick="logSettings()">Save Settings</button>
+            <div class="bttn">
+                <button onclick="logSettings()">Save Settings</button>
+            </div>
         </div>
 
         <div id="internal-crac-controls" class="hidden">
-            <h2>Fan Speed Controls</h2>
-            <h6>Row 1</h4>
-            <div class="crac-controls">
-                
-                <div class="crac-settings">
-                    <label for="internal-fan-speed1">Fan 1</label>
-                    <input type="range" id="internal-fan-speed1" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
-                    <span id="fan-speed-value1">50%</span>
+            <h4>Fan Speed Controls</h4>
+            
+            <div class="row">
+                <h6>Row 1</h4>
+                <div class="crac-controls">
+                    
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed1">Fan 1</label>
+                        <input type="range" id="internal-fan-speed1" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
+                        <span id="fan-speed-value1">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed2">Fan 2</label>
+                        <input type="range" id="internal-fan-speed2" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(2)" />
+                        <span id="fan-speed-value2">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed3">Fan 3</label>
+                        <input type="range" id="internal-fan-speed3" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
+                        <span id="fan-speed-value3">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed4">Fan 4</label>
+                        <input type="range" id="internal-fan-speed4" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
+                        <span id="fan-speed-value4">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed5">Fan 5</label>
+                        <input type="range" id="internal-fan-speed5" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
+                        <span id="fan-speed-value5">50%</span>
+                    </div>
                 </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed2">Fan 2</label>
-                    <input type="range" id="internal-fan-speed2" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(2)" />
-                    <span id="fan-speed-value2">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed3">Fan 3</label>
-                    <input type="range" id="internal-fan-speed3" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
-                    <span id="fan-speed-value3">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed4">Fan 4</label>
-                    <input type="range" id="internal-fan-speed4" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
-                    <span id="fan-speed-value4">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed5">Fan 5</label>
-                    <input type="range" id="internal-fan-speed5" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
-                    <span id="fan-speed-value5">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed6">Fan 6</label>
-                    <input type="range" id="internal-fan-speed6" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(2)" />
-                    <span id="fan-speed-value6">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed7">Fan 7</label>
-                    <input type="range" id="internal-fan-speed7" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
-                    <span id="fan-speed-value7">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed8">Fan 8</label>
-                    <input type="range" id="internal-fan-speed8" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
-                    <span id="fan-speed-value8">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed9">Fan 9</label>
-                    <input type="range" id="internal-fan-speed9" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(2)" />
-                    <span id="fan-speed-value9">50%</span>
-                </div>
-                <div class="crac-settings">
-                    <label for="internal-fan-speed10">Fan 10</label>
-                    <input type="range" id="internal-fan-speed10" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
-                    <span id="fan-speed-value10">50%</span>
+            </div>
+            
+            <div class="row">
+                <h6>Row 2</h6>
+                <div class="crac-controls">
+            
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed6">Fan 6</label>
+                        <input type="range" id="internal-fan-speed6" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(2)" />
+                        <span id="fan-speed-value6">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed7">Fan 7</label>
+                        <input type="range" id="internal-fan-speed7" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
+                        <span id="fan-speed-value7">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed8">Fan 8</label>
+                        <input type="range" id="internal-fan-speed8" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(1)" />
+                        <span id="fan-speed-value8">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed9">Fan 9</label>
+                        <input type="range" id="internal-fan-speed9" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(2)" />
+                        <span id="fan-speed-value9">50%</span>
+                    </div>
+                    <div class="crac-settings">
+                        <label for="internal-fan-speed10">Fan 10</label>
+                        <input type="range" id="internal-fan-speed10" value="50" min="0" max="100" step="5" onchange="updateFanSpeed(3)" />
+                        <span id="fan-speed-value10">50%</span>
+                    </div>
                 </div>
             </div>
             <div class="crac-controls">
-                <button onclick="toggleInternalMode(this)">Set to Automatic</button>
+                <div class="bttn">
+                    <button onclick="toggleInternalMode(this)">Set to Automatic</button>
+                </div>
                 <div class="hidden" id="internal-status">Automatic Mode Enabled.</div>
             </div>
-            <button onclick="logSettings()">Save Settings</button>
+            <div class="bttn">
+                <button onclick="logSettings()">Save Settings</button>
+            </div>
         </div>
 
         <div id="log" class="log hidden"></div>
