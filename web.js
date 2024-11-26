@@ -76,11 +76,6 @@ app.get('/', async (req, res) => {
     }
 })
 
-// let sensors = [
-//     { id: 1, name: 'Temperature Sensor', status: 'Active' },
-//     { id: 2, name: 'Humidity Sensor', status: 'Active' },
-//     { id: 3, name: 'Pressure Sensor', status: 'Active' },
-//   ];
 
 app.post('/add-alert', async (req, res) => {
     try {
@@ -214,24 +209,56 @@ app.get('/view-report', async (req, res) =>{
         report = req.query.report;
         date = req.query.date;
         if (report=="Statistics"){
-            filteredData = await getFilteredData(date);
-            console.log(filteredData)
+            data = await fetchData(date);
             res.render('report-statistics', {
                 user:user,
                 admin:isAdmin,
                 report:report,
                 date:date,
-                data:JSON.stringify(filteredData)
+                data:JSON.stringify(data)
                 })
         }
         else if(report=="Alerts"||report=="Inventory"){
-            AllAlerts = await getSpecificAlerts()
-            console.log(AllAlerts)
+            AllAlerts = await getSpecificAlerts(date)
+            const groupedAlerts = [];
+
+            // Group alerts by alertType
+            const alertMap = {};
+          
+            AllAlerts.forEach(alert => {
+              const { alertType, time } = alert;
+          
+              // Create a key for each alert type
+              if (!alertMap[alertType]) {
+                alertMap[alertType] = { amount: 0, dates: [] };
+              }
+          
+              // Increment the amount and push the alert's time to the dates array
+              alertMap[alertType].amount++;
+              alertMap[alertType].dates.push(time);
+            });
+          
+            // Format the grouped data
+            for (const alertType in alertMap) {
+              const { amount, dates } = alertMap[alertType];
+              
+              // Find the oldest and latest date
+              const sortedDates = dates.sort((a, b) => a - b);
+              const startDate = sortedDates[0].toISOString().split('T')[0];  // YYYY-MM-DD
+              const endDate = sortedDates[sortedDates.length - 1].toISOString().split('T')[0];  // YYYY-MM-DD
+          
+              // Create the final object with the formatted date range
+              groupedAlerts.push({
+                alertType,
+                amount,
+                date: `${startDate} - ${endDate}`
+              });
+            }
             res.render('report-table', {
                 user:user,
                 admin:isAdmin,
                 report:report,
-                alerts:AllAlerts,
+                alerts:groupedAlerts,
                 })
         }
         else{
@@ -239,6 +266,69 @@ app.get('/view-report', async (req, res) =>{
         }
     }
 })
+
+const filePath = 'cpu_monitoring_log.csv';
+// Function to parse CSV, find the oldest date, and filter data
+async function fetchData(date) {
+    try {
+      // Await the result from the parseCSV function
+      const result = await parseCSV(filePath, date);
+      
+      // Access the filtered data and oldest date
+      const { data, oldestDate } = result;
+      console.log('Filtered Data:', data);
+      console.log('Oldest Date:', oldestDate);
+      
+      return data;  // You can return the data if you need it
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+function parseCSV(filePath, endDate) {
+    return new Promise((resolve, reject) => {
+      const data = [];
+      let oldestDate = null;
+  
+      fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (row) => {
+          // Parse the Timestamp to a moment object
+          const timestamp = moment(row['Timestamp'], 'YYYY-MM-DD HH:mm:ss');
+  
+          // Set the oldestDate if this is the first row or a newer oldestDate is found
+          if (!oldestDate || timestamp.isBefore(oldestDate)) {
+            oldestDate = timestamp;
+          }
+  
+          // If the row's date is within the specified range (from oldest date to endDate)
+          if (timestamp.isBetween(oldestDate, endDate, undefined, '[]')) {
+            // Push the relevant data (Time, Temperature, Power, Humidity)
+            data.push({
+              time: timestamp.format('YYYY-MM-DD HH:mm:ss'),
+              temperature: parseFloat(row['CPU Package Temperature (C)']),
+              power: parseFloat(row['CPU Power Consumption (W)']),
+              humidity: parseFloat(row['Humidity (%)']),
+            });
+          }
+        })
+        .on('end', () => {
+          // If we didn't find any valid data
+          if (!oldestDate) {
+            reject('No data found');
+            return;
+          }
+  
+          // Sort data by timestamp in ascending order
+          data.sort((a, b) => moment(a.time) - moment(b.time));
+          resolve({ data, oldestDate: oldestDate.format('YYYY-MM-DD HH:mm:ss') }); // Return data and the oldest date
+        })
+        .on('error', (err) => {
+          console.error('Error reading CSV:', err);
+          reject(err);
+        });
+    });
+  }
 
 app.get('/cctv', async (req, res) =>{
     let key = req.cookies.session
@@ -333,6 +423,10 @@ app.get('/actions', async (req, res) =>{
 hbs.handlebars.registerHelper('eq', function(a, b) {
     return a === b;
 });
+
+hbs.handlebars.registerHelper('formatttingDate', function (date) {
+    return moment(date).format('YYYY-MM-DD HH:mm:ss');
+  });
 
 hbs.handlebars.registerHelper('formatDate', function (date) {
     const d = new Date(date);

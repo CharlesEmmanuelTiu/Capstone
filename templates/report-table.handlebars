@@ -119,18 +119,16 @@
             <thead>
                 <tr>
                     <th>Alert Type</th>
-                    <th>Amount</th>
-                    <th>Description</th>
+                    <th>Alerts Triggered</th>
+                    <th>Date Range</th>
                 </tr>
             </thead>
             <tbody>
-                {{#each reports}}
-                <tr class="report-row" data-date="{{date}}" data-type="{{report}}">
-                    <td>{{formatDate date}}</td>
-                    <td>{{reportName}}</td>
-                    <td>{{report}}</td>
-                    <td>{{description}}</td>
-                    <td><a href="/view-report?report={{report}}&date={{date}}" target="_blank">View Report</a></td>
+                {{#each alerts}}
+                <tr class="report-row">
+                    <td>{{alertType}}</td>
+                    <td>{{amount}}</td>
+                    <td>{{date}}</td>
                 </tr>
                 {{/each}}
             </tbody>
