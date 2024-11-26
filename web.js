@@ -129,7 +129,6 @@ app.get('/traditional_dc', async (req, res) =>{
         let user = await business.getUser(valid.data.user)
         if (user.account_type == 'admin'){
             isAdmin = true
-
         }
 
         res.render('traditional_dc', {
