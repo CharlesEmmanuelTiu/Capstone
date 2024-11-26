@@ -49,6 +49,11 @@
         <select id="alertTypeFilter">
             <option value="">All</option>
             <option value="Temperature Alert">Temperature Alert</option>
+            <option value="Humidity Alert">Humidity Alert</option>
+            <option value="Water Leakage Alert">Water Leakage Alert</option>
+            <option value="SoundLevel Fluctuation">SoundLevel Fluctuation</option>
+            <option value="Power Fluctuation">Power Fluctuation</option>
+            <option value="Temperature Fluctuation">Temperature Fluctuation</option>
             <option value="Intruder Alert">Intruder Alert</option>
         </select>
         
@@ -56,6 +61,7 @@
         <select id="statusFilter">
             <option value="">All</option>
             <option value="Stable">Stable</option>
+            <option value="Warning">Warning</option>
             <option value="Critical">Critical</option>
             <option value="Solved">Solved</option>
         </select>
@@ -93,6 +99,14 @@
                         <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" class="icon-small"></td>
                     {{else if (eq alertType "Intruder Alert")}}
                         <td><img src="https://cdn-icons-png.flaticon.com/128/2602/2602046.png" class="icon-small"></td>
+                    {{else if (eq alertType "Humidity Fluctuation")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/512/5664/5664982.png" class="icon-small"></td>
+                    {{else if (eq alertType "Power Fluctuation")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/256/6368/6368706.png" class="icon-small"></td>
+                    {{else if (eq alertType "SoundLevel Fluctuation")}}
+                        <td><img src="https://cdn-icons-png.freepik.com/512/4040/4040118.png" class="icon-small"></td>
+                    {{else if (eq alertType "Water Leakage Alert")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/512/445/445800.png" class="icon-small"></td>
                     {{else if (eq alertType "Temperature Fluctuation")}}
                         <td><img src="https://cdn-icons-png.flaticon.com/512/15788/15788427.png" class="icon-small"></td>
                     {{else}}
@@ -101,11 +115,19 @@
 
                     <td>{{alertType}}</td>
                     {{#if (eq alertType "Temperature Alert")}}
-                        <td class="temperature-alert">Reached a temperature level of <b>{{temperature}}</b> with a recorded humidity of <b>{{humidity}}</b></td>
-                    {{else if (eq  status "Stable" )}}
-                        <td class="temperature-alert">Reached a stable temperature level of <b>{{temperature}}</b> with a recorded humidity of <b>{{humidity}}</b></td>
+                        <td class="temperature-alert">Reached a temperature level of <b>{{data.temperature}}</b> with a recorded humidity of <b>{{data.humidity}}</b></td>
+                    {{else if (eq alertType "Humidity Fluctuation")}}
+                        <td class="temperature-alert">Humidity fluctuation detected at the value of <b>{{data.humidity}}</b></td>
+                    {{else if (eq alertType "Power Fluctuation")}}
+                        <td class="temperature-alert">A sudden spike of power usage detected of <b>{{data.power}} kW</b></td>
+                    {{else if (eq alertType "SoundLevel Fluctuation")}}
+                        <td class="temperature-alert">Noise detected! Sound level at <b>{{data.mic_decibels}} Decibels</b></td>
+                    {{else if (eq alertType "Water Leakage Alert")}}
+                        <td class="temperature-alert">Water leakage detected!</td>
+                    {{else if (eq  status "Stable")}}
+                        <td class="temperature-alert">Reached a stable temperature level of <b>{{data.temperature}}</b> with a recorded humidity of <b>{{data.humidity}}</b></td>
                     {{else if (eq alertType "Intruder Alert")}}
-                        <td class="intruder-alert"><b>{{employee}}</b> detected in the CCTV system</td>
+                        <td class="intruder-alert"><b>Intruder</b> detected in the CCTV system</td>
                     {{else if (eq alertType "Temperature Fluctuation")}}
                         <td class="temperature-alert">Temperature spike detected in the dashboard system</td>
                     {{else}}

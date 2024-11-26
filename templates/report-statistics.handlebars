@@ -73,6 +73,16 @@
     <div class="chart-container">
         <canvas id="TempPrediction" width="400" height="200"></canvas>
     </div>
+
+
+    <div class="print-btn">
+        <button class="btn" onclick="printPage()">Print Page</button>
+    </div>
+    <script>
+        function printPage() {
+            const reportType = document.getElementById("filterType").value;
+        }
+    </script>
     <script>
     const ctx = document.getElementById('TempPrediction').getContext('2d');
     const TempPredictionChart = new Chart(ctx, {
@@ -107,34 +117,37 @@
             responsive: true,
             scales: {
                 x: { title: { display: true, text: 'Time' } },
-                y: { title: { display: true, text: 'Values' } }
+                y: { title: { display: true, text: 'Values' }, beginAtZero: true }
             }
         }
     });
 
         function updateChart(data) {
         // Ensure timestamps are valid Date objects for Chart.js
-        const timeLabels = data.map(entry => new Date(entry.timestamp)); // Convert to Date object
+        const timeLabels = data.map(entry => new Date(entry.time).toISOString().split('T')[0]); // Format: YYYY-MM-DD
         const temperatureData = data.map(entry => entry.temperature);
-        //const powerData = data.map(entry => entry.power);
-        //const humidityData = data.map(entry => entry.humidity);
+        const powerData = data.map(entry => entry.power);
+        const humidityData = data.map(entry => entry.humidity);
 
         // Update the chart with the new data
-        chart.data.labels = timeLabels;
-        chart.data.datasets[0].data = temperatureData;
-        //chart.data.datasets[1].data = powerData;
-        //chart.data.datasets[2].data = humidityData;
+        TempPredictionChart.data.labels = timeLabels;
+        TempPredictionChart.data.datasets[0].data = temperatureData;
+        TempPredictionChart.data.datasets[1].data = powerData;
+        TempPredictionChart.data.datasets[2].data = humidityData;
 
         // Re-render the chart
-        chart.update();
+        TempPredictionChart.update();
     }
-
+    const data = JSON.parse('{{{data}}}');
+    const smallData = data.slice(0, 10); 
+    console.log(data[1])
     const testData = [
         { timestamp: '2024-11-26T14:00:00Z', temperature: 22, power: 120, humidity: 45 },
         { timestamp: '2024-11-26T14:05:00Z', temperature: 23, power: 130, humidity: 50 },
         { timestamp: '2024-11-26T14:10:00Z', temperature: 24, power: 125, humidity: 48 }
     ];
-    updateChart(testData); 
+    console.log(testData[1])
+    updateChart(data); 
     </script>
 </body>
 </html>

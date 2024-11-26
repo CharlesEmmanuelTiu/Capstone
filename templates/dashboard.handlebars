@@ -251,45 +251,49 @@
         gauge.container('thermometerContainer');
         gauge.draw();
 
-        function monitorMetric(alert, metricId, logId, dataArr, timeArr, chart, min, max, threshold, data){
-                // Fetch actual data for temperature, power, or humidity, sound
-                try {
-                    // Use the actual data for the corresponding metric
-                    if (data && data[metricId] !== undefined) {
-                        currentValue = parseFloat(data[metricId]);
-                    } else {
-                        currentValue = randomDataGenerator(min, max); // Fallback to random data
-                    }
-                } catch (error) {
-                    console.error("Error fetching data:", error);
+        function monitorMetric(alert, metricId, logId, dataArr, timeArr, chart, min, max, threshold, data) {
+            let currentValue;
+
+            try {
+                // Use the actual data for the corresponding metric
+                if (data && data[metricId] !== undefined) {
+                    currentValue = parseFloat(data[metricId]);
+                } else {
                     currentValue = randomDataGenerator(min, max); // Fallback to random data
                 }
-                data = {
-                                temperature: data.temperature,
-                                humidity: data.humidity,
-                                power: data.power,
-                                sound: data.mic_decibels
-                            }
-                
-                // Capture current time for the x-axis label
-                const currentTime = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                currentValue = randomDataGenerator(min, max); // Fallback to random data
+            }
 
-                // Update data and labels
-                timeArr.push(currentTime);
-                timeArr.shift();
-                dataArr.push(currentValue);
-                dataArr.shift();
-                // Update the chart labels and data
-                chart.data.labels = timeArr;
-                chart.data.datasets[0].data = dataArr;
-                chart.update();
+            // Capture current time for the x-axis label
+            const currentTime = new Date().toLocaleTimeString();
 
-                // Check for threshold breach
-                if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
-                    addAlertRow(alert, "Dashboard", "Warning", new Date(), data);
-                    //addAlertRow("Temperature Alert", "Cooling System", "Warning", new Date(), temperature, humidity);
+            // Update data and labels
+            timeArr.push(currentTime);
+            timeArr.shift();
+            dataArr.push(currentValue);
+            dataArr.shift();
+
+            // Update the chart labels and data
+            chart.data.labels = timeArr;
+            chart.data.datasets[0].data = dataArr;
+            chart.update();
+
+            // Check for power fluctuation (specific to kilowatts)
+            if (metricId === "power") {
+                if (data.power > 0.6) {
+                    console.log(`Power fluctuation detected!`);
+                    addAlertRow("Power Fluctuation", "Dashboard", "Warning", new Date(), data);
                 }
+            }
+            // General threshold breach check (optional for other metrics)
+            if (Math.abs(currentValue - dataArr[dataArr.length - 2]) > threshold) {
+                addAlertRow(alert, "Dashboard", "Warning", new Date(), data);
+            }
         }
+
+
 
         // Initialize the Humidity Gauge
         var target = document.getElementById('humidityContainer');
@@ -416,6 +420,9 @@
         }
 
         function addAlertRow(alertType, source, status, time, currentData) {
+            if (alertType=="Power Fluctuation"){
+                console.log(alertType)
+            }
             const alertTableBody = document.getElementById("alertTableBody");
             const noAlertsRow = document.getElementById("noAlertsRow");
             
@@ -427,7 +434,11 @@
             const rows = alertTableBody.getElementsByTagName("tr");
             for (let i = 0; i < rows.length; i++) {
                 const cells = rows[i].getElementsByTagName("td");
+                // Get the <img> element in the first cell (or adjust based on where the image is)
+                const img = cells[0].querySelector("img");
                 if (
+                    img.alt === alertType && // Check if the alt matches
+                    img.title === alertType && // Check if the title matches
                     cells[1].innerText === source &&
                     cells[2].innerText === status
                 ) {
@@ -437,7 +448,7 @@
                     return; // Exit as the row is already updated
                 }
             }
-
+            console.log(alertType)
             const newRow = alertTableBody.insertRow();
             if(alertType=="Temperature Alert"){
                 newRow.insertCell(0).innerHTML = `<img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" alt="${alertType}" title="${alertType}" class="icon-small">`;
