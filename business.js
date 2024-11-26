@@ -10,6 +10,19 @@ async function addAlert(current_alert){
     return await persistence.addAlert(current_alert)
 }
 
+async function getReports() {
+    return await persistence.getReports()
+}
+
+
+async function getSpecificAlerts(date) {
+    return await persistence.getSpecificAlerts()
+}
+
+async function addReport(current_report){
+    return await persistence.addReport(current_report);
+}
+
 async function getUsers() {
     return await persistence.getAccounts()
 }
@@ -228,6 +241,8 @@ module.exports = {
     getSession,
     getStations,
     addAccount,
+    getReports,
+    addReport,
     deleteSession,
     deleteRecords,
     getUsers,
@@ -256,5 +271,6 @@ module.exports = {
     unassignManagerStation,
     deleteStation,
     removeUser,
+    getSpecificAlerts,
     addAlert
 }

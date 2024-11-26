@@ -10,7 +10,7 @@
     .container { width: 90%; max-width: 800px; margin: 40px auto; }
     
     /* Header styling */
-    .header { 
+    .header1 { 
       background-color: #3c4b64; 
       color: white; 
       padding: 20px; 
@@ -18,18 +18,18 @@
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     }
-    .header h1 { margin: 0; font-size: 1.8em; }
+    .header1 h1 { margin: 0; font-size: 1.8em; }
     .status-indicator { font-size: 1.2em; margin-top: 10px; }
 
     /* Section styling */
-    .section { 
+    .section1 { 
       margin: 10px 0; 
       padding: 20px; 
       background-color: #fff; 
       border-radius: 8px; 
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
     }
-    .section h3 { ; font-size: 1.4em; margin-bottom: 15px; }
+    .section1 h3 { ; font-size: 1.4em; margin-bottom: 15px; }
     
     /* Indicator and alert styling */
     .indicator { 
@@ -64,14 +64,14 @@
 
 <div class="container">
   <!-- Header Section -->
-  <div class="header">
+  <div class="header1">
     <h1>Proactive Response</h1><div class="status-indicator">System Status: <span id="statusText">Severe</span></div>
     <!--<button onclick="checkAlerts()">Check Alerts</button> -->
     <!--<button onclick="runDiagnostics()">Run Diagnostics</button>-->
   </div>
 
   <!-- Key Indicators Section -->
-  <div class="section">
+  <div class="section1">
     <h4>High Temperature Detected</h4>
     <p>The temperature is currently unstable. It reached a threshold where potential overheating may cause severe damage to the racks and its components</p>
   </div>
@@ -90,7 +90,7 @@
   </div>-->
 
   <!-- Recommendations Section -->
-  <div class="section">
+  <div class="section1">
     <h3>Recommendations</h3>
     <ul id="recommendations">
       <li>Monitor temperature levels regularly, especially during high usage periods.</li>
@@ -101,14 +101,14 @@
   </div>
 
   <!-- Overheating Alerts Panel -->
-  <div class="section">
+  <div class="section1">
     <h3>Alerts</h3>
     <!--<div id="alerts" class="alert">No active alerts.</div>
     <button onclick="adjustAlertSettings()">Adjust Alert Settings</button>
   </div>-->
 
   <!-- Overheating Mitigation Actions -->
-  <div class="section">
+  <div class="section1">
     <h3>Overheating Mitigation Actions</h3>
     <button onclick="resetCoolingSystem()">Reset Cooling System</button> 
     <!-- <button onclick="increaseFanSpeed()">Increase Fan Speed</button>

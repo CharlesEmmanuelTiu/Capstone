@@ -93,6 +93,8 @@
                         <td><img src="https://cdn-icons-png.flaticon.com/128/5641/5641074.png" class="icon-small"></td>
                     {{else if (eq alertType "Intruder Alert")}}
                         <td><img src="https://cdn-icons-png.flaticon.com/128/2602/2602046.png" class="icon-small"></td>
+                    {{else if (eq alertType "Temperature Fluctuation")}}
+                        <td><img src="https://cdn-icons-png.flaticon.com/512/15788/15788427.png" class="icon-small"></td>
                     {{else}}
                         <td>No alerts found</td>
                     {{/if}}
@@ -104,6 +106,8 @@
                         <td class="temperature-alert">Reached a stable temperature level of <b>{{temperature}}</b> with a recorded humidity of <b>{{humidity}}</b></td>
                     {{else if (eq alertType "Intruder Alert")}}
                         <td class="intruder-alert"><b>{{employee}}</b> detected in the CCTV system</td>
+                    {{else if (eq alertType "Temperature Fluctuation")}}
+                        <td class="temperature-alert">Temperature spike detected in the dashboard system</td>
                     {{else}}
                         <td>Default Content</td>
                     {{/if}}

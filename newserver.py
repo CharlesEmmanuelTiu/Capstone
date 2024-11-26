@@ -158,7 +158,7 @@ def handle_sensor_data():
                 'mic_decibels': f"{mic_decibels:.2f}"  # Add microphone decibels to the data
             })
             
-            #append_to_csv(combined_data)
+            append_to_csv(combined_data)
 
         except ValueError as e:
             print(f"Error processing temperature/humidity data: {e}")

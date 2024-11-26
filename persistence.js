@@ -6,6 +6,7 @@ let db
 let users
 let sessions
 let alerts
+let reports
 
 async function connectDatabase() {
     if (!client) {
@@ -15,6 +16,7 @@ async function connectDatabase() {
         alerts = db.collection('Alerts')
         sessions = db.collection('Sessions')
         users = db.collection('Users')
+        reports = db.collection('Reports')
     }
 }
 
@@ -23,9 +25,26 @@ async function addAlert(current_alert){
     await alerts.insertOne(current_alert);
 }
 
+async function addReport(current_report){
+    await connectDatabase()
+    await reports.insertOne(current_report);
+}
+
+async function getReports(){
+    await connectDatabase()
+    return await reports.find().toArray()
+}
+
 async function getAlerts(){
     await connectDatabase()
-    return await alerts.find().toArray()
+    return await alerts.find().toArray();
+}
+
+async function getSpecificAlerts(date){
+    await connectDatabase()
+    return await alerts.find({
+        "time": { $lte: new Date(date) }  // Directly compare the 'time' field as a Date object
+    }).sort({ "time": -1 }).toArray(); 
 }
 
 async function validateCredentials(username, password) {
@@ -233,6 +252,9 @@ module.exports = {
     assignManager,
     getSession,
     addAccount,
+    getReports,
+    getSpecificAlerts,
+    addReport,
     saveSession,
     getLatestRecord,
     deleteSession,

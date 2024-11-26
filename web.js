@@ -2,13 +2,17 @@
 //For routes, add a folder and have one route each js file
 const business = require('./business.js')
 const flash = require('./flash.js')
-
+const fs = require('fs');
+const csv = require('csv-parser');
+const moment = require('moment');  // For date handling
 const express = require('express')
+const _ = require('lodash');
 const handlebars = require('express-handlebars')
 const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const crypto = require('crypto')
+const crypto = require('crypto');
+const { getAlerts, getSpecificAlerts } = require('./persistence.js');
 
 
 let app = express()
@@ -82,24 +86,12 @@ app.post('/add-alert', async (req, res) => {
     try {
         let alert
         const DefineAlert = req.body.alertType
-        if (DefineAlert == "Temperature Alert"){
-            alert = {
-                alertType: DefineAlert,
-                source: req.body.source,
-                status: req.body.status,
-                temperature: req.body.temperature,
-                humidity: req.body.humidity,
-                time: new Date(req.body.time),
-            };
-        }
-        else if (DefineAlert == "Intruder Alert"){
-            alert = {
-                alertType: DefineAlert,
-                employee: req.body.name,
-                source: req.body.source,
-                status: req.body.status,
-                time: new Date(req.body.time),
-            };
+        alert = {
+            alertType: DefineAlert,
+            source: req.body.source,
+            status: req.body.status,
+            data: req.body.currentData,
+            time: new Date(req.body.time)
         }
         await business.addAlert(alert)
         res.status(200).send('Alert added to the database');
@@ -138,6 +130,29 @@ app.get('/traditional_dc', async (req, res) =>{
     }
 })
 
+app.post('/add-report', async (req, res) => {
+    try {
+        const DefineReport = req.body.reportType;
+        const description = req.body.reportType + "Summary"
+        const today = new Date();
+        const prefix = "thermoguard_report"
+        // Format the date as YYYYMMDD
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Add leading zero
+        const day = String(today.getDate()).padStart(2, '0'); // Add leading zero
+        report = {
+            date: today,
+            reportName: `${prefix}-${year}${month}${day}`,
+            report: DefineReport,
+            description: description
+        }
+        await business.addReport(report)
+        res.redirect('/data_reports')
+    } catch (error) {
+        console.error('Error adding report:', error);
+    }
+})
+
 app.get('/data_reports', async (req, res) =>{
     let key = req.cookies.session
     let valid = await authenticateUser(key)
@@ -146,7 +161,7 @@ app.get('/data_reports', async (req, res) =>{
     let fm = undefined
     let flashType = undefined
     let isAdmin = false
-    let AllAlerts
+    let AllReports
 
     if (!valid) {
         let flashKey = await business.saveSession({username:""})
@@ -161,13 +176,67 @@ app.get('/data_reports', async (req, res) =>{
             isAdmin = true
 
         }
-        AllAlerts = await business.getFormattedAlerts();
-        const serializedAlerts = JSON.stringify(AllAlerts);
+        AllReports = await business.getReports();
         res.render('data_reports', {
             user:user,
             admin:isAdmin,
-            alerts:serializedAlerts
+            reports:AllReports
             })
+    }
+})
+
+app.get('/view-report', async (req, res) =>{
+    let key = req.cookies.session
+    let valid = await authenticateUser(key)
+    let flashSession = req.cookies.flash
+    let flashValid = await authenticateUser(flashSession)
+    let fm = undefined
+    let flashType = undefined
+    let isAdmin = false
+    let report
+    let date
+    let filteredData
+    let AllAlerts
+
+
+    if (!valid) {
+        let flashKey = await business.saveSession({username:""})
+        res.cookie('flash', flashKey)
+        await flash.setFlash(flashKey, 'Login required')
+        res.redirect('/login')
+        return
+    }
+    else{
+        let user = await business.getUser(valid.data.user)
+        if (user.account_type == 'admin'){
+            isAdmin = true
+        }
+        report = req.query.report;
+        date = req.query.date;
+        if (report=="Statistics"){
+            filteredData = await getFilteredData(date);
+            console.log(filteredData)
+            res.render('report-statistics', {
+                user:user,
+                admin:isAdmin,
+                report:report,
+                date:date,
+                data:JSON.stringify(filteredData)
+                })
+        }
+        else if(report=="Alerts"||report=="Inventory"){
+            AllAlerts = await getSpecificAlerts()
+            console.log(AllAlerts)
+            res.render('report-table', {
+                user:user,
+                admin:isAdmin,
+                report:report,
+                alerts:AllAlerts,
+                })
+        }
+        else{
+            res.status(400).send('Invalid report type');
+        }
     }
 })
 
@@ -263,6 +332,14 @@ app.get('/actions', async (req, res) =>{
 
 hbs.handlebars.registerHelper('eq', function(a, b) {
     return a === b;
+});
+
+hbs.handlebars.registerHelper('formatDate', function (date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
 });
 
 app.get('/alerts', async (req, res) =>{

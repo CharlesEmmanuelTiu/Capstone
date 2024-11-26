@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-size: medium;
+        }
+        h1 {
+            text-align: center;
+        }
+        .filter-section, .report-table {
+            margin: 10px auto;
+            max-width: 2000px;
+        }
+        .filter-section label, .filter-section input, .filter-section select {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 2px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 25px;
+        }
+        th, td {
+            text-align: center;
+        }
+        th {
+            background-color: rgba(60, 75, 100, 0.85);
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .print-btn {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function filterReports() {
+            const filterDate = document.getElementById("filterDate").value;
+            const filterType = document.getElementById("filterType").value;
+            const rows = document.querySelectorAll(".report-row");
+
+            rows.forEach(row => {
+                const rowDate = row.getAttribute("data-date");
+                const rowType = row.getAttribute("data-type");
+
+                const dateMatch = !filterDate || rowDate === filterDate;
+                const typeMatch = !filterType || rowType === filterType;
+
+                if (dateMatch && typeMatch) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        function printPage() {
+            const reportType = document.getElementById("filterType").value;
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Statistics Report for {{formatDate date}}</h1>
+    <div class="filter-section">
+        <label for="filterType">Filter by Data Type:</label>
+        <select id="filterType" onchange="filterReports()">
+            <option value="">All</option>
+            <option value="Statistics">Statistics</option>
+            <option value="Alerts">Alerts</option>
+            <option value="Inventory">Inventory</option>
+        </select>
+        <label for="filterDate">Filter by Date:</label>
+        <input type="date" id="filterDate" onchange="filterReports()">
+    </div>
+    <canvas id="reportChart" width="400" height="200"></canvas>
+    <div class="report-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Report Name</th>
+                    <th>Data Type</th>
+                    <th>Description</th>
+                    <th>Report Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each reports}}
+                <tr class="report-row" data-date="{{date}}" data-type="{{report}}">
+                    <td>{{formatDate date}}</td>
+                    <td>{{reportName}}</td>
+                    <td>{{report}}</td>
+                    <td>{{description}}</td>
+                    <td><a href="/view-report?report={{report}}&date={{date}}" target="_blank">View Report</a></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="print-btn">
+        <button class="btn" onclick="printPage()">Print Page</button>
+    </div>
+    <script>
+        // Parse the data passed from the server
+        const data = JSON.parse(`{{{data}}}`);  // The data object passed from Node.js
+
+        // Create the chart using Chart.js
+        const ctx = document.getElementById('reportChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,  // Timestamps for the x-axis
+                datasets: [{
+                    label: 'Temperature (C)',
+                    data: data.temperature,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: false
+                }, {
+                    label: 'Power Consumption (W)',
+                    data: data.power,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: false
+                }, {
+                    label: 'Humidity (%)',
+                    data: data.humidity,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'minute',
+                            tooltipFormat: 'll HH:mm'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Values'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            font-size: medium;
+        }
+        h1 {
+            text-align: center;
+        }
+        .filter-section, .report-table {
+            margin: 10px auto;
+            max-width: 2000px;
+        }
+        .filter-section label, .filter-section input {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 2px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+        th, td {
+            text-align: center;
+        }
+        th {
+            background-color: rgba(60, 75, 100, 0.85);
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .print-btn {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function filterReports() {
+            const filterDate = document.getElementById("filterDate").value;
+            const rows = document.querySelectorAll(".report-row");
+            
+            rows.forEach(row => {
+                const rowDate = row.getAttribute("data-date");
+                if (filterDate && rowDate !== filterDate) {
+                    row.style.display = "none";
+                } else {
+                    row.style.display = "table-row";
+                }
+            });
+        }
+
+        function printPage() {
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <div class="filter-section">
+        <label for="filterDate">Filter by Date:</label>
+        <input type="date" id="filterDate" onchange="filterReports()">
+    </div>
+
+    <div class="report-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Report Name</th>
+                    <th>Data type</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="report-row" data-date="2024-11-20">
+                    <td>2024-11-20</td>
+                    <td>thermoguard_report-20241120</td>
+                    <td>Statistics</td>
+                    <td>Visual Summary</td>
+                    <td><a href="report1.html" target="_blank">View Details</a></td>
+                </tr>
+                <tr class="report-row" data-date="2024-11-21">
+                    <td>2024-11-21</td>
+                    <td>thermoguard_report-20241121</td>
+                    <td>Alerts</td>
+                    <td>Alerts Summary</td>
+                    <td><a href="report2.html" target="_blank">View Details</a></td>
+                </tr>
+                <tr class="report-row" data-date="2024-11-21">
+                    <td>2024-11-23</td>
+                    <td>thermoguard_report-20241121</td>
+                    <td>Alerts</td>
+                    <td>Alerts Summary</td>
+                    <td><a href="report2.html" target="_blank">View Details</a></td>
+                </tr>
+                <tr class="report-row" data-date="2024-11-25">
+                    <td>2024-11-23</td>
+                    <td>thermoguard_report-20241121</td>
+                    <td>Inventory</td>
+                    <td>Components Summary</td>
+                    <td><a href="report2.html" target="_blank">View Details</a></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="print-btn">
+        <button class="btn" onclick="printPage()">Print Page</button>
+    </div>
+</body>
+</html> --}}

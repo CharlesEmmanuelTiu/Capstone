@@ -74,7 +74,30 @@
         }
 
         function printPage() {
-            window.print();
+            const reportType = document.getElementById("filterType").value;
+        }
+
+        function createReport() {
+            const reportType = document.getElementById("reportType").value; // Ensure this element exists
+            console.log(`Report type: ${reportType}`);
+
+            // Send a POST request to the server
+            fetch('/add-report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ alertType: reportType })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Report generated successfully');
+                    window.location.href = '/data_reports'; // Redirect if needed
+                } else {
+                    console.error('Error generating report');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </head>
@@ -103,41 +126,34 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="report-row" data-date="2024-11-20" data-type="Statistics">
-                    <td>2024-11-20</td>
-                    <td>thermoguard_report-20241120</td>
-                    <td>Statistics</td>
-                    <td>Visual Summary</td>
-                    <td><a href="/data_reports">View Report</a></td>
+                {{#each reports}}
+                <tr class="report-row" data-date="{{date}}" data-type="{{report}}">
+                    <td>{{formatDate date}}</td>
+                    <td>{{reportName}}</td>
+                    <td>{{report}}</td>
+                    <td>{{description}}</td>
+                    <td><a href="/view-report?report={{report}}&date={{date}}" target="_blank">View Report</a></td>
                 </tr>
-                <tr class="report-row" data-date="2024-11-21" data-type="Alerts">
-                    <td>2024-11-21</td>
-                    <td>thermoguard_report-20241121</td>
-                    <td>Alerts</td>
-                    <td>Alerts Summary</td>
-                    <td><a href="">View Report</a></td>
-                </tr>
-                <tr class="report-row" data-date="2024-11-23" data-type="Alerts">
-                    <td>2024-11-23</td>
-                    <td>thermoguard_report-20241123</td>
-                    <td>Alerts</td>
-                    <td>Alerts Summary</td>
-                    <td><a href="report3.html" target="_blank">View Report</a></td>
-                </tr>
-                <tr class="report-row" data-date="2024-11-25" data-type="Inventory">
-                    <td>2024-11-25</td>
-                    <td>thermoguard_report-20241125</td>
-                    <td>Inventory</td>
-                    <td>Components Summary</td>
-                    <td><a href="report4.html" target="_blank">View Report</a></td>
-                </tr>
+                {{/each}}
             </tbody>
         </table>
     </div>
 
+    <form action="/add-report" method="POST">
     <div class="print-btn">
-        <button class="btn" onclick="printPage()">Print Page</button>
+        {{!-- <button class="btn" onclick="printPage()">Print Page</button> --}}
+
+        <div class="filter-section">
+            <label for="reportType">Select type of Report</label>
+            <select name="reportType" id="reportType">
+                <option value="Statistics">Statistics</option>
+                <option value="Alerts">Alerts</option>
+                <option value="Inventory">Inventory</option>
+            </select>
+        </div>
+        <button class="btn" type="submit">Generate Report</button>
     </div>
+    </form>
 </body>
 </html>
 
