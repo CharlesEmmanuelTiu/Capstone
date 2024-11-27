@@ -218,7 +218,7 @@ app.get('/view-report', async (req, res) =>{
                 data:JSON.stringify(data)
                 })
         }
-        else if(report=="Alerts"||report=="Inventory"){
+        else if(report=="Alerts"){
             AllAlerts = await getSpecificAlerts(date)
             const groupedAlerts = [];
 
@@ -254,11 +254,30 @@ app.get('/view-report', async (req, res) =>{
                 date: `${startDate} - ${endDate}`
               });
             }
-            res.render('report-table', {
+            res.render('report-alert', {
                 user:user,
                 admin:isAdmin,
                 report:report,
                 alerts:groupedAlerts,
+                })
+        }
+        else if(report=="Inventory"){
+            const dataCenterFilePath = 'data_center.csv';
+            const dataCenterData = [];
+            const dataCenterPromise = new Promise((resolve) => {
+                fs.createReadStream(dataCenterFilePath)
+                    .pipe(csv())
+                    .on('data', (row) => {
+                        dataCenterData.push(row);
+                    })
+                    .on('end', resolve);
+            });
+            await Promise.all([dataCenterPromise]);
+            res.render('report-inventory', {
+                user:user,
+                admin:isAdmin,
+                report:report,
+                dataCenter:JSON.stringify(dataCenterData),
                 })
         }
         else{
@@ -309,6 +328,8 @@ function parseCSV(filePath, endDate) {
               temperature: parseFloat(row['CPU Package Temperature (C)']),
               power: parseFloat(row['CPU Power Consumption (W)']),
               humidity: parseFloat(row['Humidity (%)']),
+              water: parseFloat(row['Water Level']),
+              mic_decibels: parseFloat(row['Microphone Decibel Level (dB)'])
             });
           }
         })

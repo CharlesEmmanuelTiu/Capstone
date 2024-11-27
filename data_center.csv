@@ -1,0 +1,28 @@
+Category,Name,Description
+Server,Blade Servers,Compact servers housed within a blade enclosure, maximizing space and efficiency.
+Server,Rack-Mounted Servers,Standard servers mounted horizontally on rack shelves.
+Server,Hyper-Converged Servers,Combines storage, compute, and networking in a single unit.
+Networking Components,Switches,Facilitate communication between servers and other devices within the network.
+Networking Components,Routers,Direct network traffic between different networks and manage connections to external networks.
+Networking Components,Firewalls,Provide network security by filtering traffic and blocking unauthorized access.
+Networking Components,Load Balancers,Distribute network traffic across multiple servers to ensure optimal resource utilization and uptime.
+Storage Components,Storage Area Networks (SAN),High-speed network systems that connect to storage devices for efficient data transfer.
+Storage Components,Network-Attached Storage (NAS),Centralized file storage accessible via the network.
+Storage Components,Disk Arrays,Units that house multiple hard drives for redundancy and performance.
+Storage Components,Solid-State Drives (SSD) Arrays,Provide high-performance storage solutions.
+Power Management,Uninterruptable Power Supplies (UPS),Provide backup power in case of outages and prevent data loss.
+Power Management,Power Distribution Units (PDU),Distribute electrical power to devices in the rack, often with monitoring and control capabilities.
+Cooling & Thermal Management,Rack Cooling Units,Devices like in-row or rear-door cooling units to maintain optimal temperatures.
+Cooling & Thermal Management,Environmental Sensors,Monitor temperature, humidity, and airflow to prevent overheating.
+Cables & Management,Patch Panels,Organize and route network cables within the rack.
+Cables & Management,Cable Management Solutions,Guides and ties to manage cables neatly and prevent tangling.
+Monitoring & Management Devices,KVM (Keyboard, Video, Mouse) Switches,Allow administrators to control multiple servers with a single console.
+Monitoring & Management Devices,Remote Monitoring Devices,Enable remote management of servers and rack devices.
+Monitoring & Management Devices,Environmental Monitoring Systems,Track conditions like temperature, airflow, and power usage.
+Backup & Recovery Equipment,Tape Drives,Used for archival and backup purposes.
+Backup & Recovery Equipment,Replication Devices,Facilitate data replication for disaster recovery.
+Security Devices,Rack Locks,Physical locks to prevent unauthorized access to devices.
+Security Devices,Cameras and Sensors,Integrated security systems for monitoring physical access to racks.
+Specialized Equipment,GPU Servers,Designed for high-performance computing tasks like AI, ML, or rendering.
+Specialized Equipment,AI Accelerators,Hardware specifically built for AI workloads (e.g., TPUs or FPGA-based systems).
+Specialized Equipment,Edge Computing Devices,Compact units to support edge processing tasks within the data center.

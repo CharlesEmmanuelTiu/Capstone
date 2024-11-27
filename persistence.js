@@ -32,7 +32,7 @@ async function addReport(current_report){
 
 async function getReports(){
     await connectDatabase()
-    return await reports.find().toArray()
+    return await reports.find().sort({ date: -1 }).toArray();
 }
 
 async function getAlerts(){

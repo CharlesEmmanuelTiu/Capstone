@@ -93,23 +93,42 @@
                 {
                     label: 'Temperature (°C)',
                     data: [],  // This will be populated dynamically
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
                     fill: false,
+                    pointRadius: 0, // Remove dots
                 },
                 {
                     label: 'Power Consumption (W)',
                     data: [],  // This will be populated dynamically
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(255, 138, 0, 1)',
+                    backgroundColor: 'rgba(255, 138, 0, 0.2)',
                     fill: false,
+                    pointRadius: 0, // Remove dots
                 },
                 {
                     label: 'Humidity (%)',
                     data: [],  // This will be populated dynamically
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(0, 170, 255, 1)',
+                    backgroundColor: 'rgba(0, 75, 255, 0.2)',
                     fill: false,
+                    pointRadius: 0, // Remove dots
+                },
+                {
+                    label: 'Water Leakage',
+                    data: [],  // This will be populated dynamically
+                    borderColor: 'rgba(0, 32, 255, 1)',
+                    backgroundColor: 'rgba(0, 32, 255, 0.2)',
+                    fill: false,
+                    pointRadius: 0, // Remove dots
+                },
+                {
+                    label: 'Sound Levels',
+                    data: [],  // This will be populated dynamically
+                    borderColor: 'rgba(80, 209, 0, 1)',
+                    backgroundColor: 'rgba(80, 209, 0, 0.2)',
+                    fill: false,
+                    pointRadius: 0, // Remove dots
                 },
             ],
         },
@@ -128,12 +147,16 @@
         const temperatureData = data.map(entry => entry.temperature);
         const powerData = data.map(entry => entry.power);
         const humidityData = data.map(entry => entry.humidity);
+        const waterData = data.map(entry => entry.water);
+        const micData = data.map(entry => entry.mic_decibels);
 
         // Update the chart with the new data
         TempPredictionChart.data.labels = timeLabels;
         TempPredictionChart.data.datasets[0].data = temperatureData;
         TempPredictionChart.data.datasets[1].data = powerData;
         TempPredictionChart.data.datasets[2].data = humidityData;
+        TempPredictionChart.data.datasets[3].data = waterData;
+        TempPredictionChart.data.datasets[4].data = micData;
 
         // Re-render the chart
         TempPredictionChart.update();
