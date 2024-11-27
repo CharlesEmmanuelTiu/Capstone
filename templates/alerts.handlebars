@@ -49,7 +49,7 @@
         <select id="alertTypeFilter">
             <option value="">All</option>
             <option value="Temperature Alert">Temperature Alert</option>
-            <option value="Humidity Alert">Humidity Alert</option>
+            <option value="Humidity Fluctuation">Humidity Fluctuation</option>
             <option value="Water Leakage Alert">Water Leakage Alert</option>
             <option value="SoundLevel Fluctuation">SoundLevel Fluctuation</option>
             <option value="Power Fluctuation">Power Fluctuation</option>
@@ -124,7 +124,7 @@
                         <td class="temperature-alert">Noise detected! Sound level at <b>{{data.mic_decibels}} Decibels</b></td>
                     {{else if (eq alertType "Water Leakage Alert")}}
                         <td class="temperature-alert">Water leakage detected!</td>
-                    {{else if (eq  status "Stable")}}
+                    {{else if (eq status "Stable")}}
                         <td class="temperature-alert">Reached a stable temperature level of <b>{{data.temperature}}</b> with a recorded humidity of <b>{{data.humidity}}</b></td>
                     {{else if (eq alertType "Intruder Alert")}}
                         <td class="intruder-alert"><b>Intruder</b> detected in the CCTV system</td>

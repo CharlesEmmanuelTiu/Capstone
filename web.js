@@ -128,7 +128,7 @@ app.get('/traditional_dc', async (req, res) =>{
 app.post('/add-report', async (req, res) => {
     try {
         const DefineReport = req.body.reportType;
-        const description = req.body.reportType + "Summary"
+        const description = req.body.reportType + " Summary"
         const today = new Date();
         const prefix = "thermoguard_report"
         // Format the date as YYYYMMDD

@@ -3371,8 +3371,8 @@ html:not([dir=rtl]) .form-check-inline .form-check-input ~ .invalid-feedback {
 
 .btn-primary {
   --cui-btn-color: rgba(255, 255, 255, 0.87);
-  --cui-btn-bg: #321fdb;
-  --cui-btn-border-color: #321fdb;
+  --cui-btn-bg: #4f5d73;
+  --cui-btn-border-color: #4f5d73;
   --cui-btn-hover-color: rgba(255, 255, 255, 0.87);
   --cui-btn-hover-bg: #5141e0;
   --cui-btn-hover-border-color: #4735df;
@@ -10861,7 +10861,7 @@ html:not([dir=rtl]) .text-center {
 
 .bg-primary {
   --cui-bg-opacity: 1;
-  background-color: rgba(var(--cui-primary-rgb), var(--cui-bg-opacity)) !important;
+  background-color: #4f5d73 !important;
 }
 
 .bg-secondary {

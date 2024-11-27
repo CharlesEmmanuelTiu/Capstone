@@ -37,7 +37,7 @@ async function getReports(){
 
 async function getAlerts(){
     await connectDatabase()
-    return await alerts.find().toArray();
+    return await alerts.find().sort({ date: -1 }).toArray();
 }
 
 async function getSpecificAlerts(date){

@@ -54,18 +54,19 @@
     </style>
     <script>
         function filterReports() {
-            const filterDate = document.getElementById("filterDate").value;
+            //const filterDate = document.getElementById("filterDate").value;
             const filterType = document.getElementById("filterType").value;
             const rows = document.querySelectorAll(".report-row");
 
             rows.forEach(row => {
-                const rowDate = row.getAttribute("data-date");
+                //const rowDate = row.getAttribute("data-date");
                 const rowType = row.getAttribute("data-type");
 
-                const dateMatch = !filterDate || rowDate === filterDate;
+                //const dateMatch = !filterDate || rowDate === filterDate;
                 const typeMatch = !filterType || rowType === filterType;
 
-                if (dateMatch && typeMatch) {
+                //if (dateMatch && typeMatch) {
+                if (typeMatch) {
                     row.style.display = "table-row";
                 } else {
                     row.style.display = "none";
@@ -106,12 +107,15 @@
         <label for="filterType">Filter by Data Type:</label>
         <select id="filterType" onchange="filterReports()">
             <option value="">All</option>
-            <option value="Statistics">Statistics</option>
-            <option value="Alerts">Alerts</option>
-            <option value="Inventory">Inventory</option>
+            <option value="Temperature Alert">Temperature Alert</option>
+            <option value="Intruder Alert">Intruder Alert</option>
+            <option value="Temperature Fluctuation">Temperature Fluctuation</option>
+            <option value="Power Fluctuation">Power Fluctuation</option>
+            <option value="Humidity Fluctuation">Humidity Fluctuation</option>
+            <option value="SoundLevel Fluctuation">SoundLevel Fluctuation</option>
         </select>
-        <label for="filterDate">Filter by Date:</label>
-        <input type="date" id="filterDate" onchange="filterReports()">
+        {{!-- <label for="filterDate">Filter by Date:</label>
+        <input type="date" id="filterDate" onchange="filterReports()"> --}}
     </div>
 
     <div class="report-table">
@@ -125,7 +129,7 @@
             </thead>
             <tbody>
                 {{#each alerts}}
-                <tr class="report-row">
+                <tr class="report-row" data-date="{{date}}" data-type="{{alertType}}">
                     <td>{{alertType}}</td>
                     <td>{{amount}}</td>
                     <td>{{date}}</td>

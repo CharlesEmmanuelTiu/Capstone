@@ -23,7 +23,11 @@ SEQ_LENGTH = 10  # Match this with the value used in training
 def predict():
     try:
         # Load and preprocess input data
-        input_data = pd.read_csv('cpu_monitoring_log.csv', encoding='ISO-8859-1')
+        input_data = pd.read_csv(
+            'cpu_monitoring_log.csv',
+            encoding='ISO-8859-1',
+            on_bad_lines='warn'  # Warn and skip problematic lines
+        )
         input_data = input_data[['Timestamp', 'CPU Package Temperature (C)', 'CPU Power Consumption (W)', 'Humidity (%)']]
         input_data = input_data.dropna()
         input_data['Timestamp'] = pd.to_datetime(input_data['Timestamp'], errors='coerce')
