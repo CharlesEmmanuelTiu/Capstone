@@ -75,7 +75,8 @@ def append_to_csv(data):
         'Water Level': data['water_level'],
         'Mic Decibels (dB)': data['mic_decibels']
     }
-
+    if any(value is None for value in row.values()):
+        return jsonify(error="One or more sensor data values are missing")
     # Append to the CSV
     try:
         df = pd.DataFrame([row])
