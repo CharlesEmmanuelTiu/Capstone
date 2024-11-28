@@ -179,6 +179,9 @@ def handle_sensor_data():
 def get_sensor_data():
     global combined_data  # Access the global combined_data variable
     handle_sensor_data()
+
+    if any(value is None for value in combined_data.values()):
+        return jsonify(error="One or more sensor data values are missing")
     sensor_data = {
         'temperature': combined_data['temperature'],
         'power': combined_data['power'],
