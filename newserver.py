@@ -165,12 +165,10 @@ def handle_sensor_data():
             print(f"Error processing temperature/humidity data: {e}")
     # Check if data contains water level or water detection status
     elif "Humidity" not in sensor_data:
-        print("WTF BROOOOOOOOOOOOOOOOOOOOn")
         if int(sensor_data) < 100:
             combined_data['water_level'] = 0  # Water detected (1)
         elif int(sensor_data) > 100:
             combined_data['water_level'] = 1  # No water detected (0)
-    print("COME BACK")
     # Append water level to the CSV if present
     if 'water_level' in combined_data:
         append_to_csv(combined_data)

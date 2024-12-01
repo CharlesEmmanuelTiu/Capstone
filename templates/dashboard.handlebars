@@ -338,13 +338,12 @@
             return gauge;
         }
 
-        // Fetch data and update everything
         async function fetchDataAndUpdate() {
             try {
                 const response = await fetch('http://127.0.0.1:5005/data');
                 const data = await response.json();
                 const { temperature, humidity, power, water_level, mic_decibels } = data;
-                // Update the dashboard
+                const currentData = { temperature, humidity, power, water_level, mic_decibels }
                 HumidityGauge.set(humidity);
                 addLabel(humidity);
             
@@ -359,14 +358,12 @@
                     currentStatus2.style.backgroundColor = 'red';
                     currentStatus2.innerHTML = 'High';
                     addAlertRow("Humidity Alert", "Cooling System", "Warning", new Date(), currentData);
-                    console.log("Did it add?")
                 } else {
                     currentStatus2.style.backgroundColor = 'orange';
                     currentStatus2.innerHTML = 'Low';
                 }
-
+                
                 const currentStatus = document.getElementById("currentStatus");
-                const currentData = { temperature, humidity, power, water_level, mic_decibels }
                 if (temperature > 20) {
                     currentStatus.innerHTML = "Danger";
                     currentStatus.style.backgroundColor = "red";
